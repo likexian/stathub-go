@@ -20,6 +20,7 @@ const (
 
 type Config struct {
     Id     string `json:"id"`
+    Name   string `json:"name"`
     Server string `json:"server"`
     Key    string `json:"key"`
 }
@@ -58,10 +59,11 @@ func main() {
     }
 
     id, _ := config.Get("id").String()
+    name, _ := config.Get("name").String()
     server, _ := config.Get("server").String()
     key, _ := config.Get("key").String()
 
-    stat := GetStat(id, time_stamp)
+    stat := GetStat(id, name, time_stamp)
     server = server + "/api/stat"
     key = PassWord(key, stat)
 
@@ -88,6 +90,14 @@ func main() {
 
 
 func SettingConfig(time_stamp int64) {
+    host_info, _ := host_stat.GetHostInfo()
+    host_name := host_info.HostName
+
+    name := RawInput(fmt.Sprintf("> Please enter the NAME of THIS node [%s]:", host_name), true)
+    if name == "" {
+        name = host_name
+    }
+
     server := RawInput("> Please enter the URL of SERVER :", false)
     key := RawInput("> Please enter the KEY of SERVER :", false)
 
@@ -106,6 +116,7 @@ func SettingConfig(time_stamp int64) {
     config := Config{}
     config.Server = server
     config.Key = key
+    config.Name = name
 
     random := fmt.Sprintf("%s%s", os.Getpid(), time_stamp)
     config.Id = PassWord(key, random)
@@ -116,14 +127,18 @@ func SettingConfig(time_stamp int64) {
 }
 
 
-func GetStat(id string, time_stamp int64) string {
+func GetStat(id string, name string, time_stamp int64) string {
     stat := Stat{}
     stat.Id = id
     stat.TimeStamp = time_stamp
 
     host_info, _ := host_stat.GetHostInfo()
     stat.OSRelease = host_info.Release + " " + host_info.OSBit
-    stat.HostName = host_info.HostName
+    if name == "" {
+        stat.HostName = host_info.HostName
+    } else {
+        stat.HostName = name
+    }
 
     cpu_info, _ := host_stat.GetCPUInfo()
     stat.CPUName = cpu_info.ModelName

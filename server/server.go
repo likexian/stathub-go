@@ -38,6 +38,7 @@ type Config struct {
 
 type Status struct {
     IP          string
+    Name        string
     Status      string
     Uptime      string
     Load        string
@@ -83,6 +84,8 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     data.Set("ip", ip)
+    name, _ := data.Get("host_name").String()
+    data.Set("host_name", strings.Split(name, ".")[0])
 
     data_id, _ := data.Get("id").String()
     data_id_dir := SERVER_WORKDIR + DATA_DIR + "/" + data_id[:8]
