@@ -48,6 +48,9 @@ type Stat struct {
 
 func main() {
     time_stamp := time.Now().Unix()
+    if !FileExists(CONFIG_FILE) {
+        SettingConfig(time_stamp)
+    }
 
     config, err := simplejson.Load(CONFIG_FILE)
     if err != nil {
@@ -65,7 +68,7 @@ func main() {
     request, err := http.NewRequest("POST", server, bytes.NewBuffer([]byte(stat)))
     request.Header.Set("X-Client-Key", key)
     request.Header.Set("Content-Type", "application/json")
-    request.Header.Set("User-Agent", "Stat Hub Client/0.1.0 (i@likexian.com)")
+    request.Header.Set("User-Agent", "Stat Hub API Client/0.1.0 (i@likexian.com)")
 
     client := &http.Client{}
     response, err := client.Do(request)
@@ -81,6 +84,35 @@ func main() {
         fmt.Println(text)
         os.Exit(1)
     }
+}
+
+
+func SettingConfig(time_stamp int64) {
+    server := RawInput("> Please enter the URL of SERVER :", false)
+    key := RawInput("> Please enter the KEY of SERVER :", false)
+
+    if len(server) <= 7 {
+        server = "http://" + server
+    }
+
+    if server[:7] != "http://" && server[:8] != "https://" {
+        server = "http://" + server
+    }
+
+    if server[len(server) - 1:] == "/" {
+        server = server[:len(server) - 1]
+    }
+
+    config := Config{}
+    config.Server = server
+    config.Key = key
+
+    random := fmt.Sprintf("%s%s", os.Getpid(), time_stamp)
+    config.Id = PassWord(key, random)
+
+    data := simplejson.Json{}
+    data.Data = config
+    simplejson.Dump(CONFIG_FILE, &data)
 }
 
 
