@@ -107,6 +107,17 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                     s.LastUpdate = get_date
                 }
 
+                if s.DiskWarn != "" {
+                    s.Status = "warning"
+                }
+
+                diff_seconds := time.Now().Unix() - int64(time_stamp)
+                if diff_seconds > 120 {
+                    s.Status = "danger"
+                } else if diff_seconds > 90 {
+                    s.Status = "warning"
+                }
+
                 data = append(data, s)
             }
         }
