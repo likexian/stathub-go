@@ -95,10 +95,17 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                 s.DiskRate, _ = d.Get("disk_rate").Float64()
                 s.OSRelease, _ = d.Get("os_release").String()
                 time_stamp, _ := d.Get("time_stamp").Int()
-                s.LastUpdate = time.Unix(int64(time_stamp), 0).Format("2006-01-02 15:04:05")
 
                 s.Uptime = SecondToHumanTime(int(uptime))
                 s.OSRelease = PrettyLinuxVersion(s.OSRelease)
+
+                now_date := time.Now().Format("2006-01-02")
+                get_date := time.Unix(int64(time_stamp), 0).Format("2006-01-02")
+                if now_date == get_date {
+                    s.LastUpdate = time.Unix(int64(time_stamp), 0).Format("15:04:05")
+                } else {
+                    s.LastUpdate = get_date
+                }
 
                 data = append(data, s)
             }
