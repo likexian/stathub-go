@@ -1,0 +1,70 @@
+{{define "main_body"}}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>IP</th>
+            <th>Name</th>
+            <th>Uptime</th>
+            <th>Load</th>
+            <th>CPU</th>
+            <th>RAM</th>
+            <th>Swap</th>
+            <th>Disk</th>
+            <th>Net I/O</th>
+            <th>Disk R/W</th>
+            <th>System</th>
+            <th>Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .}}
+            <tr class="{{.Status}}">
+                <td>{{.IP}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.Uptime}}</td>
+                <td>{{.Load}}</td>
+                <td>
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="{{if lt .CPURate 50.0}}0{{else}}1{{end}}" aria-valuemin="0" aria-valuemax="100" style="width: {{.CPURate}}%;">
+                        {{.CPURate}}%
+                      </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="{{if lt .MemRate 50.0}}0{{else}}1{{end}}" aria-valuemin="0" aria-valuemax="100" style="width: {{.MemRate}}%;">
+                        {{.MemRate}}%
+                      </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="{{if lt .SwapRate 50.0}}0{{else}}1{{end}}" aria-valuemin="0" aria-valuemax="100" style="width: {{.SwapRate}}%;">
+                        {{.SwapRate}}%
+                      </div>
+                    </div>
+                </td>
+                <td>
+                    {{if ne .DiskWarn ""}}
+                    {{.DiskWarn}}
+                    {{else}}
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="{{if lt .DiskRate 50.0}}0{{else}}1{{end}}" aria-valuemin="0" aria-valuemax="100" style="width: {{.DiskRate}}%;">
+                        {{.DiskRate}}%
+                      </div>
+                    </div>
+                    {{end}}
+                </td>
+                <td align="center">
+                    {{if gt .NetRead 0}}{{.NetRead}}K{{else}}0{{end}}/{{if gt .NetWrite 0}}{{.NetWrite}}K{{else}}0{{end}}
+                </td>
+                <td align="center">
+                    {{if gt .DiskRead 0}}{{.DiskRead}}K{{else}}0{{end}}/{{if gt .DiskWrite 0}}{{.DiskWrite}}K{{else}}0{{end}}
+                </td>
+                <td>{{.OSRelease}}</td>
+                <td>{{.LastUpdate}}</td>
+            </tr>
+        {{end}}
+    </tbody>
+</table>
+{{end}}

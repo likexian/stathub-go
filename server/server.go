@@ -8,6 +8,7 @@ import (
     "strings"
     "net/http"
     "io/ioutil"
+    "text/template"
     "github.com/likexian/simplejson-go"
 )
 
@@ -53,6 +54,58 @@ type Status struct {
     DiskRate    float64
     OSRelease   string
     LastUpdate  string
+}
+
+
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+    if r.URL.Path != "/" {
+        HTTPErrorHandler(w, r, http.StatusNotFound)
+        return
+    }
+
+    tpl, err := template.ParseFiles("template/layout.html", "template/index.html")
+    if err != nil {
+        HTTPErrorHandler(w, r, http.StatusInternalServerError)
+        return
+    }
+
+    data := []Status{}
+    files, err := ioutil.ReadDir(SERVER_WORKDIR + DATA_DIR)
+    if err == nil {
+        for _, f := range files {
+            if FileExists(SERVER_WORKDIR + DATA_DIR + "/" + f.Name() + "/status") {
+                d, err := simplejson.Load(SERVER_WORKDIR + DATA_DIR + "/" + f.Name() + "/status")
+                if err != nil {
+                    continue
+                }
+
+                s := Status{}
+                s.IP, _ = d.Get("ip").String()
+                s.Name, _ = d.Get("host_name").String()
+                uptime, _ := d.Get("uptime").Int()
+                s.NetRead, _ = d.Get("net_read").Int()
+                s.Load, _ = d.Get("load").String()
+                s.NetWrite, _ = d.Get("net_write").Int()
+                s.DiskRead, _ = d.Get("disk_read").Int()
+                s.DiskWrite, _ = d.Get("disk_write").Int()
+                s.DiskWarn, _ = d.Get("disk_warn").String()
+                s.CPURate, _ = d.Get("cpu_rate").Float64()
+                s.MemRate, _ = d.Get("mem_rate").Float64()
+                s.SwapRate, _ = d.Get("swap_rate").Float64()
+                s.DiskRate, _ = d.Get("disk_rate").Float64()
+                s.OSRelease, _ = d.Get("os_release").String()
+                time_stamp, _ := d.Get("time_stamp").Int()
+                s.LastUpdate = time.Unix(int64(time_stamp), 0).Format("2006-01-02 15:04:05")
+
+                s.Uptime = SecondToHumanTime(int(uptime))
+                s.OSRelease = PrettyLinuxVersion(s.OSRelease)
+
+                data = append(data, s)
+            }
+        }
+    }
+
+    tpl.Execute(w, data)
 }
 
 
@@ -131,6 +184,12 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func BootstrapCSSHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/css; charset=utf-8")
+    http.ServeFile(w, r, r.URL.Path[1:])
+}
+
+
 func HTTPErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
     w.WriteHeader(status)
     if status == http.StatusNotFound {
@@ -175,6 +234,8 @@ func main() {
     CONFIG_ID, _ = config.Get("id").String()
     CONFIG_KEY, _ = config.Get("key").String()
 
+    http.HandleFunc("/", IndexHandler)
+    http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
     err = http.ListenAndServe(":15944", nil)
