@@ -162,6 +162,16 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+    expires := time.Now()
+    expires = expires.AddDate(0, 0, -1)
+    cookie := http.Cookie{Name: "id", Value: "", Expires: expires, HttpOnly: true}
+    http.SetCookie(w, &cookie)
+    http.Redirect(w, r, "/login", http.StatusFound)
+    return
+}
+
+
 func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     ip := strings.Split(r.RemoteAddr, ":")[0]
     client_key := ""
@@ -305,6 +315,7 @@ func main() {
 
     http.HandleFunc("/", IndexHandler)
     http.HandleFunc("/login", LoginHandler)
+    http.HandleFunc("/logout", LogoutHandler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
