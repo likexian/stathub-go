@@ -35,6 +35,7 @@ var (
 type Config struct {
     Id          string `json:"id"`
     Key         string `json:"key"`
+    PassWord    string `json:"password"`
 }
 
 
@@ -263,10 +264,11 @@ func HTTPErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
 }
 
 
-func WriteConfig(id, key string) {
+func WriteConfig(id, key, password string) {
     config := Config{}
     config.Id = id
     config.Key = key
+    config.PassWord = password
 
     data := simplejson.Json{}
     data.Data = config
@@ -301,7 +303,8 @@ func main() {
         time_stamp := fmt.Sprintf("%d", SERVER_START)
         id := PassWord(fmt.Sprintf("%s", os.Getpid()), time_stamp)
         key := PassWord(id, time_stamp)
-        WriteConfig(id, key)
+        password := PassWord(key, "likexian")
+        WriteConfig(id, key, password)
     }
 
     config, err := simplejson.Load(SERVER_WORKDIR + CONFIG_FILE)
@@ -311,7 +314,7 @@ func main() {
 
     CONFIG_ID, _ = config.Get("id").String()
     CONFIG_KEY, _ = config.Get("key").String()
-    CONFIG_PASSWORD = "7be84a051a01334edf5cf935cad4cc6c"
+    CONFIG_PASSWORD, _ = config.Get("password").String()
 
     http.HandleFunc("/", IndexHandler)
     http.HandleFunc("/login", LoginHandler)
