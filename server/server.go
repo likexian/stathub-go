@@ -22,6 +22,7 @@ const (
 var (
     CONFIG_ID = ""
     CONFIG_KEY = ""
+    CONFIG_PASSWORD = ""
 )
 
 
@@ -58,6 +59,11 @@ type Status struct {
 
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
+    if !IsLogin(w, r) {
+        http.Redirect(w, r, "/login", http.StatusFound)
+        return
+    }
+
     if r.URL.Path != "/" {
         HTTPErrorHandler(w, r, http.StatusNotFound)
         return
@@ -124,6 +130,35 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     tpl.Execute(w, data)
+}
+
+
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+    if r.Method == "POST" {
+        err := r.ParseForm()
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
+
+        password := r.PostForm.Get("password")
+        if PassWord(CONFIG_KEY, password) != CONFIG_PASSWORD {
+            http.Redirect(w, r, "/login", http.StatusFound)
+        } else {
+            value := PassWord(CONFIG_KEY, CONFIG_PASSWORD)
+            cookie := http.Cookie{Name: "id", Value: value, HttpOnly: true}
+            http.SetCookie(w, &cookie)
+            http.Redirect(w, r, "/", http.StatusFound)
+        }
+    } else {
+        tpl, err := template.ParseFiles("template/layout.html", "template/login.html")
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
+
+        tpl.Execute(w, map[string]string{"action": "login"})
+    }
 }
 
 
@@ -229,6 +264,21 @@ func WriteConfig(id, key string) {
 }
 
 
+func IsLogin(w http.ResponseWriter, r *http.Request) bool {
+    cookie, err := r.Cookie("id")
+    if err != nil || cookie.Value == "" {
+        return false
+    } else {
+        value := PassWord(CONFIG_KEY, CONFIG_PASSWORD)
+        if value != cookie.Value {
+            return false
+        }
+    }
+
+    return true
+}
+
+
 func main() {
     pwd, err := os.Getwd()
     if err != nil {
@@ -251,8 +301,10 @@ func main() {
 
     CONFIG_ID, _ = config.Get("id").String()
     CONFIG_KEY, _ = config.Get("key").String()
+    CONFIG_PASSWORD = "7be84a051a01334edf5cf935cad4cc6c"
 
     http.HandleFunc("/", IndexHandler)
+    http.HandleFunc("/login", LoginHandler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 

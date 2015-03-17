@@ -1,0 +1,9 @@
+{{define "main_body"}}
+<form class="form-group" role="form" method="POST" action="/{{.action}}">
+    <div class="form-group input-group input-group-lg">
+    <span class="input-group-addon">Password</span>
+        <input type="password" class="form-control" id="password" name="password" />
+    </div>
+    <button type="submit" class="btn btn-default btn-lg btn-block">Submit</button>
+</form>
+{{end}}
