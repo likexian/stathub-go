@@ -173,6 +173,39 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func PasswdHandler(w http.ResponseWriter, r *http.Request) {
+    if !IsLogin(w, r) {
+        http.Redirect(w, r, "/login", http.StatusFound)
+        return
+    }
+
+    if r.Method == "POST" {
+        err := r.ParseForm()
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
+
+        password := r.PostForm.Get("password")
+        if password == "" {
+            http.Redirect(w, r, "/passwd", http.StatusFound)
+        } else {
+            CONFIG_PASSWORD = PassWord(CONFIG_KEY, password)
+            WriteConfig(CONFIG_ID, CONFIG_KEY, CONFIG_PASSWORD)
+            http.Redirect(w, r, "/", http.StatusFound)
+        }
+    } else {
+        tpl, err := template.ParseFiles("template/layout.html", "template/login.html")
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
+
+        tpl.Execute(w, map[string]string{"action": "passwd"})
+    }
+}
+
+
 func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     ip := strings.Split(r.RemoteAddr, ":")[0]
     client_key := ""
@@ -319,6 +352,7 @@ func main() {
     http.HandleFunc("/", IndexHandler)
     http.HandleFunc("/login", LoginHandler)
     http.HandleFunc("/logout", LogoutHandler)
+    http.HandleFunc("/passwd", PasswdHandler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
