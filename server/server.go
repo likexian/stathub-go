@@ -16,6 +16,7 @@ import (
 const (
     DATA_DIR = "/data"
     CONFIG_FILE = "/server.json"
+    CLIENT_FILE = "/client"
 )
 
 
@@ -206,6 +207,11 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func ClientHandler(w http.ResponseWriter, r *http.Request) {
+    http.ServeFile(w, r, SERVER_WORKDIR + CLIENT_FILE)
+}
+
+
 func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     ip := strings.Split(r.RemoteAddr, ":")[0]
     client_key := ""
@@ -353,6 +359,7 @@ func main() {
     http.HandleFunc("/login", LoginHandler)
     http.HandleFunc("/logout", LogoutHandler)
     http.HandleFunc("/passwd", PasswdHandler)
+    http.HandleFunc("/static/client", ClientHandler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
