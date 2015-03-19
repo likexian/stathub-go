@@ -207,6 +207,22 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func HelpHandler(w http.ResponseWriter, r *http.Request) {
+    if !IsLogin(w, r) {
+        http.Redirect(w, r, "/login", http.StatusFound)
+        return
+    }
+
+    tpl, err := template.ParseFiles("template/layout.html", "template/help.html")
+    if err != nil {
+        HTTPErrorHandler(w, r, http.StatusInternalServerError)
+        return
+    }
+
+    tpl.Execute(w, map[string]string{"server": r.Host, "key": CONFIG_KEY})
+}
+
+
 func ClientHandler(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, SERVER_WORKDIR + CLIENT_FILE)
 }
@@ -359,6 +375,7 @@ func main() {
     http.HandleFunc("/login", LoginHandler)
     http.HandleFunc("/logout", LogoutHandler)
     http.HandleFunc("/passwd", PasswdHandler)
+    http.HandleFunc("/help", HelpHandler)
     http.HandleFunc("/static/client", ClientHandler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)

@@ -1,0 +1,24 @@
+{{define "main_body"}}
+<script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
+<h3>1. Login to new node, run: </h3>
+<div>
+    <code>$ mkdir /var/stathub<br />
+    $ cd /var/stathub<br />
+    $ wget http://{{.server}}/static/client<br />
+    $ chmod +x client<br />
+    $ ./client</code>
+</div>
+<h3>2. Setup config, input: </h3>
+<div>
+    <kbd>> Please enter the NAME of THIS node [vagrant]:</kbd><br />
+    (Press ENTER or input a name)<br />
+    <kbd>> Please enter the URL of SERVER :</kbd><br />
+    http://{{.server}}<br />
+    <kbd>> Please enter the KEY of SERVER :</kbd><br />
+    {{.key}}<br />
+</div>
+<h3>3. Setup crontab, run: </h3>
+<div>
+    <code>$ (crontab -l; echo "* * * * * cd /var/stathub; ./client >>/var/stathub/client.log 2>&1") | crontab -</code>
+</div>
+{{end}}
