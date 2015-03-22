@@ -14,6 +14,7 @@ import (
 
 
 const (
+    DEBUG = false
     DATA_DIR = "/data"
     CONFIG_FILE = "/server.json"
     CLIENT_FILE = "/client"
@@ -71,10 +72,24 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tpl, err := template.ParseFiles("template/layout.html", "template/index.html")
+    tpl, err := template.New("index").Parse(Template_Layout)
     if err != nil {
         HTTPErrorHandler(w, r, http.StatusInternalServerError)
         return
+    }
+
+    tpl, err = tpl.Parse(Template_Index)
+    if err != nil {
+        HTTPErrorHandler(w, r, http.StatusInternalServerError)
+        return
+    }
+
+    if DEBUG {
+        tpl, err = template.ParseFiles("template/layout.html", "template/index.html")
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
     }
 
     data := []Status{}
@@ -153,10 +168,24 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
             http.Redirect(w, r, "/", http.StatusFound)
         }
     } else {
-        tpl, err := template.ParseFiles("template/layout.html", "template/login.html")
+        tpl, err := template.New("login").Parse(Template_Layout)
         if err != nil {
             HTTPErrorHandler(w, r, http.StatusInternalServerError)
             return
+        }
+
+        tpl, err = tpl.Parse(Template_Login)
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
+
+        if DEBUG {
+            tpl, err = template.ParseFiles("template/layout.html", "template/login.html")
+            if err != nil {
+                HTTPErrorHandler(w, r, http.StatusInternalServerError)
+                return
+            }
         }
 
         tpl.Execute(w, map[string]string{"action": "login"})
@@ -196,10 +225,24 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
             http.Redirect(w, r, "/", http.StatusFound)
         }
     } else {
-        tpl, err := template.ParseFiles("template/layout.html", "template/login.html")
+        tpl, err := template.New("passwd").Parse(Template_Layout)
         if err != nil {
             HTTPErrorHandler(w, r, http.StatusInternalServerError)
             return
+        }
+
+        tpl, err = tpl.Parse(Template_Login)
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
+
+        if DEBUG {
+            tpl, err = template.ParseFiles("template/layout.html", "template/login.html")
+            if err != nil {
+                HTTPErrorHandler(w, r, http.StatusInternalServerError)
+                return
+            }
         }
 
         tpl.Execute(w, map[string]string{"action": "passwd"})
@@ -213,10 +256,24 @@ func HelpHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tpl, err := template.ParseFiles("template/layout.html", "template/help.html")
+    tpl, err := template.New("help").Parse(Template_Layout)
     if err != nil {
         HTTPErrorHandler(w, r, http.StatusInternalServerError)
         return
+    }
+
+    tpl, err = tpl.Parse(Template_Help)
+    if err != nil {
+        HTTPErrorHandler(w, r, http.StatusInternalServerError)
+        return
+    }
+
+    if DEBUG {
+        tpl, err = template.ParseFiles("template/layout.html", "template/help.html")
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
     }
 
     tpl.Execute(w, map[string]string{"server": r.Host, "key": CONFIG_KEY})
@@ -303,18 +360,22 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func BootstrapCSSHandler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/css; charset=utf-8")
-    http.ServeFile(w, r, r.URL.Path[1:])
-}
-
-
 func HTTPErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
     w.WriteHeader(status)
     if status == http.StatusNotFound {
         fmt.Fprint(w, "<title>Not Found</title><h1>Not Found</h1>")
     } else if status == http.StatusInternalServerError {
         fmt.Fprint(w, "<title>Internal Server Error</title><h1>Internal Server Error</h1>")
+    }
+}
+
+
+func BootstrapCSSHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/css; charset=utf-8")
+    if DEBUG {
+        http.ServeFile(w, r, r.URL.Path[1:])
+    } else {
+        fmt.Fprint(w, Template_Bootstrap)
     }
 }
 
