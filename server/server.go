@@ -18,6 +18,9 @@ const (
     DATA_DIR = "/data"
     CONFIG_FILE = "/server.json"
     CLIENT_FILE = "/client"
+    PROCESS_USER = "nobody"
+    PROCESS_LOCK = "/var/run/stathub.pid"
+    PROCESS_LOG = "/var/log/stathub.log"
 )
 
 
@@ -408,11 +411,29 @@ func IsLogin(w http.ResponseWriter, r *http.Request) bool {
 
 
 func main() {
+    uid, gid, err := LookupUser(PROCESS_USER)
+    if err != nil {
+        panic(err)
+    }
+
     pwd, err := os.Getwd()
     if err != nil {
         panic(err)
     }
     SERVER_WORKDIR = pwd
+
+    if !FileExists(SERVER_WORKDIR + DATA_DIR) {
+        err := os.Mkdir(SERVER_WORKDIR + DATA_DIR, 0755)
+        if err != nil {
+            return
+        }
+    }
+    os.Chown(SERVER_WORKDIR + DATA_DIR, uid, gid)
+
+    if !FileExists(PROCESS_LOG) {
+        WriteFile(PROCESS_LOG, "")
+    }
+    os.Chown(PROCESS_LOG, uid, gid)
 
     SERVER_START = time.Now().Unix()
     if !FileExists(SERVER_WORKDIR + CONFIG_FILE) {
@@ -421,6 +442,13 @@ func main() {
         key := PassWord(id, time_stamp)
         password := PassWord(key, "likexian")
         WriteConfig(id, key, password)
+    }
+
+    if !DEBUG {
+        daemon := Daemon(PROCESS_LOCK, PROCESS_LOG, uid, gid, 0, 0)
+        if daemon != 0 {
+            os.Exit(-1)
+        }
     }
 
     config, err := simplejson.Load(SERVER_WORKDIR + CONFIG_FILE)
