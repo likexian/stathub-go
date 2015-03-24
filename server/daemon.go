@@ -1,3 +1,12 @@
+/*
+ * A service for collecting Server Stat
+ * http://www.likexian.com/
+ *
+ * Copyright 2015, Li Kexian
+ * Released under the Apache License, Version 2.0
+ *
+ */
+
 package main
 
 

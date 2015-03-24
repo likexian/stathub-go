@@ -1,3 +1,12 @@
+/*
+ * A service for collecting Server Stat
+ * http://www.likexian.com/
+ *
+ * Copyright 2015, Li Kexian
+ * Released under the Apache License, Version 2.0
+ *
+ */
+
 package main
 
 
@@ -6234,6 +6243,16 @@ code {
   background-color: #f5f5f5;
 }`
     Template_Layout = `<!DOCTYPE html>
+<!--
+/*
+ * A service for collecting Server Stat
+ * http://www.likexian.com/
+ *
+ * Copyright 2015, Li Kexian
+ * Released under the Apache License, Version 2.0
+ *
+ */
+-->
 <html lang="en">
     <head>
     <meta charset="utf-8">
@@ -6254,7 +6273,7 @@ code {
         {{template "main_body" .}}
     </div>
     <div class="footer text-center">
-        &copy; 2015 <a href="http://www.likexian.com/">Kexian Li</a>, Apache License, Version 2.0.
+        &copy; 2015 <a href="http://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0.
     </div>
 </body>
 </html>`

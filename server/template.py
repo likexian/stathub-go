@@ -1,8 +1,27 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
+'''
+/*
+ * A service for collecting Server Stat
+ * http://www.likexian.com/
+ *
+ * Copyright 2015, Li Kexian
+ * Released under the Apache License, Version 2.0
+ *
+ */
+'''
 
-template = '''package main
+template = '''/*
+ * A service for collecting Server Stat
+ * http://www.likexian.com/
+ *
+ * Copyright 2015, Li Kexian
+ * Released under the Apache License, Version 2.0
+ *
+ */
+
+package main
 
 
 const (
