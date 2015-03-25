@@ -1,5 +1,5 @@
 /*
- * A service for collecting Server Stat
+ * A smart Hub for holding server stat
  * http://www.likexian.com/
  *
  * Copyright 2015, Li Kexian

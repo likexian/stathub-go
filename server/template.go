@@ -1,5 +1,5 @@
 /*
- * A service for collecting Server Stat
+ * A smart Hub for holding server stat
  * http://www.likexian.com/
  *
  * Copyright 2015, Li Kexian
@@ -6245,7 +6245,7 @@ code {
     Template_Layout = `<!DOCTYPE html>
 <!--
 /*
- * A service for collecting Server Stat
+ * A smart Hub for holding server stat
  * http://www.likexian.com/
  *
  * Copyright 2015, Li Kexian
@@ -6256,7 +6256,7 @@ code {
 <html lang="en">
     <head>
     <meta charset="utf-8">
-    <title>Stat Hub - The smart Hub to hold server Stat</title>
+    <title>Stat Hub - A smart Hub for holding server stat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/static/bootstrap.css" type="text/css" rel="stylesheet">
     <style type="text/css">.progress {margin-bottom: 0;}</style>
