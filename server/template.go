@@ -6298,7 +6298,7 @@ code {
     </thead>
     <tbody>
         {{range .}}
-            <tr class="{{.Status}}">
+            <tr class="{{.Status}}" id="id_{{.Id}}">
                 <td>{{.IP}}</td>
                 <td>{{.Name}}</td>
                 <td>{{.Uptime}}</td>

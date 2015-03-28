@@ -54,6 +54,7 @@ type Config struct {
 
 
 type Status struct {
+    Id          string
     IP          string
     Name        string
     Status      string
@@ -115,6 +116,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                 }
 
                 s := Status{}
+                s.Id = f.Name()
                 s.IP, _ = d.Get("ip").String()
                 s.Name, _ = d.Get("host_name").String()
                 uptime, _ := d.Get("uptime").Int()
