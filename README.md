@@ -10,6 +10,9 @@ Stat Hub is a service for collecting and displaying lots of servers' stat.
 
 Stat Hub have two parts, one is the SERVER for recving, storing and displaying stat, the other is CLIENT for collecting and sending stat to server.
 
+## DEMO
+![demo](demo.png)
+
 ## Install
 
 ### Download on the SERVER sile (master)
