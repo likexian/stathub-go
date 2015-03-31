@@ -6297,6 +6297,11 @@ code {
         </tr>
     </thead>
     <tbody>
+        {{if not .}}
+            <tr>
+                <td colspan="12" align="center">No data yet, please add nodes following the <a href="/help">guide</a>.</td>
+            </tr>
+        {{end}}
         {{range .}}
             <tr class="{{.Status}}" id="id_{{.Id}}">
                 <td>{{.IP}}</td>
