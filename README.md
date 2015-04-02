@@ -39,6 +39,8 @@ The default url is
 
     http://ip:15944
 
+Then enter the default password: likexian
+
 ### Add a CLIENT (node)
 
 Follow the guide
