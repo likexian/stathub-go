@@ -149,9 +149,9 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                 }
 
                 diff_seconds := time.Now().Unix() - int64(time_stamp)
-                if diff_seconds > 120 {
+                if diff_seconds > 180 {
                     s.Status = "danger"
-                } else if diff_seconds > 90 {
+                } else if diff_seconds > 120 {
                     s.Status = "warning"
                 }
 
