@@ -294,8 +294,13 @@ func HelpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func ClientHandler(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, SERVER_WORKDIR + CLIENT_FILE)
+func Client32Handler(w http.ResponseWriter, r *http.Request) {
+    http.ServeFile(w, r, SERVER_WORKDIR + CLIENT_FILE + "_x86")
+}
+
+
+func Client64Handler(w http.ResponseWriter, r *http.Request) {
+    http.ServeFile(w, r, SERVER_WORKDIR + CLIENT_FILE + "_x86_64")
 }
 
 
@@ -476,7 +481,8 @@ func main() {
     http.HandleFunc("/logout", LogoutHandler)
     http.HandleFunc("/passwd", PasswdHandler)
     http.HandleFunc("/help", HelpHandler)
-    http.HandleFunc("/static/client", ClientHandler)
+    http.HandleFunc("/static/client_x86", Client32Handler)
+    http.HandleFunc("/static/client_x86_64", Client64Handler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 

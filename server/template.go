@@ -6368,9 +6368,19 @@ code {
 <div>
     <code>$ mkdir /var/stathub<br />
     $ cd /var/stathub<br />
-    $ wget http://{{.server}}/static/client<br />
+    </code>
+    <div>on 32 bits node</div>
+    <code>
+    $ wget http://{{.server}}/static/client_x86 -O client<br />
+    </code>
+    <div>on 64 bits node</div>
+    <code>
+    $ wget http://{{.server}}/static/client_x86_64 -O client<br />
+    </code>
+    <code>
     $ chmod +x client<br />
-    $ ./client</code>
+    $ ./client
+    </code>
 </div>
 <h3>2. Setup config, input: </h3>
 <div>

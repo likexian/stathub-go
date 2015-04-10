@@ -20,18 +20,23 @@ And just TWO binary files is need for all of this.
 
 ### Download on the SERVER sile (master)
 
-- Linux 32Bit: https://github.com/likexian/stathub-go/releases/download/v0.5.1/stathub_linux_x86_0.5.1.tar.gz
-- Linux 64Bit: https://github.com/likexian/stathub-go/releases/download/v0.5.1/stathub_linux_x86_64.0.5.1.tar.gz
+    wget https://github.com/likexian/stathub-go/releases/download/v0.5.2/stathub_linux_0.5.2.tar.gz
 
 ### Untar and move
 
     tar zxvf stathub_*.tar.gz
     sudo mv stathub /var
+    cd /var/stathub
 
 ### Run it
 
-    cd /var/stathub
-    ./server
+If your server os is 32 bits, please run
+
+    ./server_x86
+
+If your server os is 64 bits, please run
+
+    ./server_x86_64
 
 ### Open on the brower
 
