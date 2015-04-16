@@ -8,9 +8,7 @@ A smart Hub for holding server stat
 
 Stat Hub is a service for collecting and displaying servers stat.
 
-Stat Hub have two parts, one is the SERVER for recving, storing and displaying stat, the other is the CLIENT for collecting and sending stat to SERVER.
-
-And just TWO binary files is need for all of this.
+Stat Hub have two parts, one is the SERVER for recving, storing and displaying stat, the other is the CLIENT for collecting and sending stat to SERVER. Just two binary files is needed for all of this.
 
 ## DEMO
 
@@ -18,14 +16,14 @@ And just TWO binary files is need for all of this.
 
 ## Install
 
-### Download on the SERVER sile (master)
+### Download on the SERVER side (master)
 
-    wget https://github.com/likexian/stathub-go/releases/download/v0.5.2/stathub_linux_0.5.2.tar.gz
+    https://github.com/likexian/stathub-go/releases/download/v0.5.2/stathub_linux_0.5.2.tar.gz
 
 ### Untar and move
 
     tar zxvf stathub_*.tar.gz
-    sudo mv stathub /var
+    mv stathub /var
     cd /var/stathub
 
 ### Run it
