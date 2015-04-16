@@ -4,6 +4,8 @@ A smart Hub for holding server stat
 
 [![Build Status](https://secure.travis-ci.org/likexian/stathub-go.png)](https://secure.travis-ci.org/likexian/stathub-go)
 
+[中文说明](README-ZH.md) | [English README](README-ZH.md)
+
 ## Overview
 
 Stat Hub is a service for collecting and displaying servers stat.
@@ -36,7 +38,7 @@ If your server os is 64 bits, please run
 
     ./server_x86_64
 
-### Open on the brower
+### Open on your PC brower
 
 The default url is
 
