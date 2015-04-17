@@ -4,7 +4,7 @@ A smart Hub for holding server stat
 
 [![Build Status](https://secure.travis-ci.org/likexian/stathub-go.png)](https://secure.travis-ci.org/likexian/stathub-go)
 
-[English README](README-ZH.md) | [中文说明](README-ZH.md)
+[English README](README.md) | [中文说明](README-ZH.md)
 
 ## 总揽
 
