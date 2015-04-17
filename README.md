@@ -38,7 +38,7 @@ If your server os is 64 bits, please run
 
     ./server_x86_64
 
-### Open on your PC brower
+### Open on your PC browser
 
 The default url is
 
