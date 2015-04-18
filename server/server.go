@@ -9,70 +9,67 @@
 
 package main
 
-
 import (
-    "os"
     "fmt"
-    "time"
-    "strings"
-    "net/http"
     "io/ioutil"
+    "net/http"
+    "os"
+    "strings"
     "text/template"
+    "time"
+
     "github.com/likexian/simplejson-go"
 )
 
-
 const (
-    DEBUG = false
-    DATA_DIR = "/data"
-    CONFIG_FILE = "/server.json"
-    CLIENT_FILE = "/client"
+    DEBUG        = false
+    DATA_DIR     = "/data"
+    CONFIG_FILE  = "/server.json"
+    CLIENT_FILE  = "/client"
     PROCESS_USER = "nobody"
     PROCESS_LOCK = "/var/run/stathub.pid"
-    PROCESS_LOG = "/var/log/stathub.log"
+    PROCESS_LOG  = "/var/log/stathub.log"
+    TLS_CERT     = "/cert.pem"
+    TLS_KEY      = "/key.pem"
 )
-
 
 var (
-    CONFIG_ID = ""
-    CONFIG_KEY = ""
+    CONFIG_ID       = ""
+    CONFIG_KEY      = ""
     CONFIG_PASSWORD = ""
+    CONFIG_TLS      = false
 )
-
 
 var (
     SERVER_WORKDIR = ""
-    SERVER_START = int64(0)
+    SERVER_START   = int64(0)
 )
 
-
 type Config struct {
-    Id          string `json:"id"`
-    Key         string `json:"key"`
-    PassWord    string `json:"password"`
+    Id       string `json:"id"`
+    Key      string `json:"key"`
+    PassWord string `json:"password"`
 }
-
 
 type Status struct {
-    Id          string
-    IP          string
-    Name        string
-    Status      string
-    Uptime      string
-    Load        string
-    NetRead     int
-    NetWrite    int
-    DiskRead    int
-    DiskWrite   int
-    DiskWarn    string
-    CPURate     float64
-    MemRate     float64
-    SwapRate    float64
-    DiskRate    float64
-    OSRelease   string
-    LastUpdate  string
+    Id         string
+    IP         string
+    Name       string
+    Status     string
+    Uptime     string
+    Load       string
+    NetRead    int
+    NetWrite   int
+    DiskRead   int
+    DiskWrite  int
+    DiskWarn   string
+    CPURate    float64
+    MemRate    float64
+    SwapRate   float64
+    DiskRate   float64
+    OSRelease  string
+    LastUpdate string
 }
-
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
     if !IsLogin(w, r) {
@@ -163,7 +160,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
     tpl.Execute(w, data)
 }
 
-
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method == "POST" {
         err := r.ParseForm()
@@ -206,7 +202,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
     expires := time.Now()
     expires = expires.AddDate(0, 0, -1)
@@ -215,7 +210,6 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/login", http.StatusFound)
     return
 }
-
 
 func PasswdHandler(w http.ResponseWriter, r *http.Request) {
     if !IsLogin(w, r) {
@@ -263,7 +257,6 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-
 func HelpHandler(w http.ResponseWriter, r *http.Request) {
     if !IsLogin(w, r) {
         http.Redirect(w, r, "/login", http.StatusFound)
@@ -293,16 +286,13 @@ func HelpHandler(w http.ResponseWriter, r *http.Request) {
     tpl.Execute(w, map[string]string{"server": r.Host, "key": CONFIG_KEY})
 }
 
-
 func Client32Handler(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, SERVER_WORKDIR + CLIENT_FILE + "_x86")
+    http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE+"_x86")
 }
-
 
 func Client64Handler(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, SERVER_WORKDIR + CLIENT_FILE + "_x86_64")
+    http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE+"_x86_64")
 }
-
 
 func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     ip := strings.Split(r.RemoteAddr, ":")[0]
@@ -345,7 +335,7 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     current, err := simplejson.Load(data_id_dir + "/current")
-    simplejson.Dump(data_id_dir + "/current", data)
+    simplejson.Dump(data_id_dir+"/current", data)
 
     if err == nil {
         o_time_stamp, _ := current.Get("time_stamp").Int()
@@ -372,12 +362,11 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
         status_set["net_write"] = (n_net_write - o_net_write) / diff_seconds
 
         current.Set("time_stamp", n_time_stamp)
-        simplejson.Dump(data_id_dir + "/status", current)
+        simplejson.Dump(data_id_dir+"/status", current)
     }
 
     return
 }
-
 
 func HTTPErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
     w.WriteHeader(status)
@@ -388,7 +377,6 @@ func HTTPErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
     }
 }
 
-
 func BootstrapCSSHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/css; charset=utf-8")
     if DEBUG {
@@ -398,7 +386,6 @@ func BootstrapCSSHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-
 func WriteConfig(id, key, password string) {
     config := Config{}
     config.Id = id
@@ -407,9 +394,8 @@ func WriteConfig(id, key, password string) {
 
     data := simplejson.Json{}
     data.Data = config
-    simplejson.Dump(SERVER_WORKDIR + CONFIG_FILE, &data)
+    simplejson.Dump(SERVER_WORKDIR+CONFIG_FILE, &data)
 }
-
 
 func IsLogin(w http.ResponseWriter, r *http.Request) bool {
     cookie, err := r.Cookie("id")
@@ -425,7 +411,6 @@ func IsLogin(w http.ResponseWriter, r *http.Request) bool {
     return true
 }
 
-
 func main() {
     uid, gid, err := LookupUser(PROCESS_USER)
     if err != nil {
@@ -439,12 +424,12 @@ func main() {
     SERVER_WORKDIR = pwd
 
     if !FileExists(SERVER_WORKDIR + DATA_DIR) {
-        err := os.Mkdir(SERVER_WORKDIR + DATA_DIR, 0755)
+        err := os.Mkdir(SERVER_WORKDIR+DATA_DIR, 0755)
         if err != nil {
             return
         }
     }
-    os.Chown(SERVER_WORKDIR + DATA_DIR, uid, gid)
+    os.Chown(SERVER_WORKDIR+DATA_DIR, uid, gid)
 
     if !FileExists(PROCESS_LOG) {
         WriteFile(PROCESS_LOG, "")
@@ -475,6 +460,7 @@ func main() {
     CONFIG_ID, _ = config.Get("id").String()
     CONFIG_KEY, _ = config.Get("key").String()
     CONFIG_PASSWORD, _ = config.Get("password").String()
+    CONFIG_TLS, _ = config.Get("tls").Bool()
 
     http.HandleFunc("/", IndexHandler)
     http.HandleFunc("/login", LoginHandler)
@@ -486,8 +472,15 @@ func main() {
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
-    err = http.ListenAndServe(":15944", nil)
-    if err != nil {
-        panic(err)
+    if CONFIG_TLS {
+        err = http.ListenAndServeTLS(":15944", SERVER_WORKDIR+TLS_CERT, SERVER_WORKDIR+TLS_KEY, nil)
+        if err != nil {
+            panic(err)
+        }
+    } else {
+        err = http.ListenAndServe(":15944", nil)
+        if err != nil {
+            panic(err)
+        }
     }
 }
