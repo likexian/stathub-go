@@ -9,23 +9,25 @@
 
 package main
 
-
 import (
-    "os"
-    "fmt"
-    "time"
     "bytes"
+    "crypto/tls"
+    "crypto/x509"
+    "fmt"
     "io/ioutil"
     "net/http"
+    "os"
+    "strings"
+    "time"
+
     "github.com/likexian/host-stat-go"
     "github.com/likexian/simplejson-go"
 )
 
-
 const (
     CONFIG_FILE = "./client.json"
+    PEM_FILE    = "./cert.pem"
 )
-
 
 type Config struct {
     Id     string `json:"id"`
@@ -34,27 +36,25 @@ type Config struct {
     Key    string `json:"key"`
 }
 
-
 type Stat struct {
-    Id          string  `json:"id"`
-    TimeStamp   int64   `json:"time_stamp"`
-    HostName    string  `json:"host_name"`
-    OSRelease   string  `json:"os_release"`
-    CPUName     string  `json:"cpu_name"`
-    CPUCore     uint64  `json:"cpu_core"`
-    Uptime      uint64  `json:"uptime"`
-    Load        string  `json:"load"`
-    CPURate     float64 `json:"cpu_rate"`
-    MemRate     float64 `json:"mem_rate"`
-    SwapRate    float64 `json:"swap_rate"`
-    DiskRate    float64 `json:"disk_rate"`
-    DiskWarn    string  `json:"disk_warn"`
-    DiskRead    uint64  `json:"disk_read"`
-    DiskWrite   uint64  `json:"disk_write"`
-    NetRead     uint64  `json:"net_read"`
-    NetWrite    uint64  `json:"net_write"`
+    Id        string  `json:"id"`
+    TimeStamp int64   `json:"time_stamp"`
+    HostName  string  `json:"host_name"`
+    OSRelease string  `json:"os_release"`
+    CPUName   string  `json:"cpu_name"`
+    CPUCore   uint64  `json:"cpu_core"`
+    Uptime    uint64  `json:"uptime"`
+    Load      string  `json:"load"`
+    CPURate   float64 `json:"cpu_rate"`
+    MemRate   float64 `json:"mem_rate"`
+    SwapRate  float64 `json:"swap_rate"`
+    DiskRate  float64 `json:"disk_rate"`
+    DiskWarn  string  `json:"disk_warn"`
+    DiskRead  uint64  `json:"disk_read"`
+    DiskWrite uint64  `json:"disk_write"`
+    NetRead   uint64  `json:"net_read"`
+    NetWrite  uint64  `json:"net_write"`
 }
-
 
 func main() {
     time_stamp := time.Now().Unix()
@@ -72,6 +72,26 @@ func main() {
     server, _ := config.Get("server").String()
     key, _ := config.Get("key").String()
 
+    client := http.DefaultClient
+    if strings.ToLower(server[:5]) == "https" {
+        rootPEM, err := ioutil.ReadFile(PEM_FILE)
+        if err != nil {
+            fmt.Println("can not load cert.pem:", err)
+            os.Exit(1)
+        }
+        roots := x509.NewCertPool()
+        ok := roots.AppendCertsFromPEM(rootPEM)
+        if !ok {
+            fmt.Println("certificate error")
+            os.Exit(1)
+        }
+        tr := &http.Transport{
+            TLSClientConfig:    &tls.Config{RootCAs: roots},
+            DisableCompression: true,
+        }
+        client = &http.Client{Transport: tr}
+    }
+
     stat := GetStat(id, name, time_stamp)
     server = server + "/api/stat"
     key = PassWord(key, stat)
@@ -81,7 +101,6 @@ func main() {
     request.Header.Set("Content-Type", "application/json")
     request.Header.Set("User-Agent", "Stat Hub API Client/0.1.0 (i@likexian.com)")
 
-    client := &http.Client{}
     response, err := client.Do(request)
     if err != nil {
         fmt.Println(err)
@@ -96,7 +115,6 @@ func main() {
         os.Exit(1)
     }
 }
-
 
 func SettingConfig(time_stamp int64) {
     host_info, _ := host_stat.GetHostInfo()
@@ -118,8 +136,8 @@ func SettingConfig(time_stamp int64) {
         server = "http://" + server
     }
 
-    if server[len(server) - 1:] == "/" {
-        server = server[:len(server) - 1]
+    if server[len(server)-1:] == "/" {
+        server = server[:len(server)-1]
     }
 
     config := Config{}
@@ -134,7 +152,6 @@ func SettingConfig(time_stamp int64) {
     data.Data = config
     simplejson.Dump(CONFIG_FILE, &data)
 }
-
 
 func GetStat(id string, name string, time_stamp int64) string {
     stat := Stat{}
@@ -154,7 +171,7 @@ func GetStat(id string, name string, time_stamp int64) string {
     stat.CPUCore = cpu_info.CoreCount
 
     cpu_stat, _ := host_stat.GetCPUStat()
-    stat.CPURate = Round(100 - cpu_stat.IdleRate, 2)
+    stat.CPURate = Round(100-cpu_stat.IdleRate, 2)
 
     mem_stat, _ := host_stat.GetMemStat()
     stat.MemRate = mem_stat.MemRate
@@ -170,7 +187,7 @@ func GetStat(id string, name string, time_stamp int64) string {
             stat.DiskWarn += fmt.Sprintf("%s %.2f;", v.Mount, v.UsedRate)
         }
     }
-    stat.DiskRate = Round(float64(disk_used) / float64(disk_total), 2)
+    stat.DiskRate = Round(float64(disk_used)/float64(disk_total), 2)
 
     io_stat, _ := host_stat.GetIOStat()
     disk_read := uint64(0)
