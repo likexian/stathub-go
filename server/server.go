@@ -17,7 +17,6 @@ import (
     "strings"
     "text/template"
     "time"
-
     "github.com/likexian/simplejson-go"
 )
 
@@ -29,8 +28,8 @@ const (
     PROCESS_USER = "nobody"
     PROCESS_LOCK = "/var/run/stathub.pid"
     PROCESS_LOG  = "/var/log/stathub.log"
-    TLS_CERT     = "/cert.pem"
-    TLS_KEY      = "/key.pem"
+    TLS_CERT     = "/cert/cert.pem"
+    TLS_KEY      = "/cert/cert.key"
 )
 
 var (

@@ -11,22 +11,18 @@ package main
 
 import (
     "bytes"
-    "crypto/tls"
-    "crypto/x509"
     "fmt"
     "io/ioutil"
     "net/http"
+    "crypto/tls"
     "os"
-    "strings"
     "time"
-
     "github.com/likexian/host-stat-go"
     "github.com/likexian/simplejson-go"
 )
 
 const (
     CONFIG_FILE = "./client.json"
-    PEM_FILE    = "./cert.pem"
 )
 
 type Config struct {
@@ -72,26 +68,6 @@ func main() {
     server, _ := config.Get("server").String()
     key, _ := config.Get("key").String()
 
-    client := http.DefaultClient
-    if strings.ToLower(server[:5]) == "https" {
-        rootPEM, err := ioutil.ReadFile(PEM_FILE)
-        if err != nil {
-            fmt.Println("can not load cert.pem:", err)
-            os.Exit(1)
-        }
-        roots := x509.NewCertPool()
-        ok := roots.AppendCertsFromPEM(rootPEM)
-        if !ok {
-            fmt.Println("certificate error")
-            os.Exit(1)
-        }
-        tr := &http.Transport{
-            TLSClientConfig:    &tls.Config{RootCAs: roots},
-            DisableCompression: true,
-        }
-        client = &http.Client{Transport: tr}
-    }
-
     stat := GetStat(id, name, time_stamp)
     server = server + "/api/stat"
     key = PassWord(key, stat)
@@ -100,6 +76,13 @@ func main() {
     request.Header.Set("X-Client-Key", key)
     request.Header.Set("Content-Type", "application/json")
     request.Header.Set("User-Agent", "Stat Hub API Client/0.1.0 (i@likexian.com)")
+
+    client := &http.Client{}
+    tr := &http.Transport{
+        // If not self-signed certificate please disabled this.
+        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    }
+    client.Transport = tr
 
     response, err := client.Do(request)
     if err != nil {
