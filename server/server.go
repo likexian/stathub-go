@@ -36,7 +36,7 @@ var (
     CONFIG_ID       = ""
     CONFIG_KEY      = ""
     CONFIG_PASSWORD = ""
-    CONFIG_TLS      = false
+    CONFIG_ISTLS    = false
 )
 
 var (
@@ -48,6 +48,7 @@ type Config struct {
     Id       string `json:"id"`
     Key      string `json:"key"`
     PassWord string `json:"password"`
+    IsTLS    bool   `json:"istls"`
 }
 
 type Status struct {
@@ -228,7 +229,7 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
             http.Redirect(w, r, "/passwd", http.StatusFound)
         } else {
             CONFIG_PASSWORD = PassWord(CONFIG_KEY, password)
-            WriteConfig(CONFIG_ID, CONFIG_KEY, CONFIG_PASSWORD)
+            WriteConfig(CONFIG_ID, CONFIG_KEY, CONFIG_PASSWORD, CONFIG_ISTLS)
             http.Redirect(w, r, "/", http.StatusFound)
         }
     } else {
@@ -385,11 +386,12 @@ func BootstrapCSSHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-func WriteConfig(id, key, password string) {
+func WriteConfig(id, key, password string, istls bool) {
     config := Config{}
     config.Id = id
     config.Key = key
     config.PassWord = password
+    config.IsTLS = istls
 
     data := simplejson.Json{}
     data.Data = config
@@ -441,7 +443,8 @@ func main() {
         id := PassWord(fmt.Sprintf("%s", os.Getpid()), time_stamp)
         key := PassWord(id, time_stamp)
         password := PassWord(key, "likexian")
-        WriteConfig(id, key, password)
+        istls := true
+        WriteConfig(id, key, password, istls)
     }
 
     if !DEBUG {
@@ -459,7 +462,7 @@ func main() {
     CONFIG_ID, _ = config.Get("id").String()
     CONFIG_KEY, _ = config.Get("key").String()
     CONFIG_PASSWORD, _ = config.Get("password").String()
-    CONFIG_TLS, _ = config.Get("tls").Bool()
+    CONFIG_ISTLS, _ = config.Get("istls").Bool()
 
     http.HandleFunc("/", IndexHandler)
     http.HandleFunc("/login", LoginHandler)
@@ -471,7 +474,7 @@ func main() {
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
-    if CONFIG_TLS {
+    if CONFIG_ISTLS {
         err = http.ListenAndServeTLS(":15944", SERVER_WORKDIR+TLS_CERT, SERVER_WORKDIR+TLS_KEY, nil)
         if err != nil {
             panic(err)

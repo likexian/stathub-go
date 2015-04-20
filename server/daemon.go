@@ -55,17 +55,17 @@ func Daemon(pfile, lfile string, uid, gid, nochdir, noclose int) int {
         panic(err)
     }
 
-    if runtime.GOOS != "linux" {
-        err = syscall.Setgid(gid)
-        if err != nil {
-            panic(err)
-        }
-
-        err = syscall.Setuid(uid)
-        if err != nil {
-            panic(err)
-        }
+    /*
+    err = syscall.Setgid(gid)
+    if err != nil {
+        panic(err)
     }
+
+    err = syscall.Setuid(uid)
+    if err != nil {
+        panic(err)
+    }
+    */
 
     if nochdir == 0 {
         os.Chdir("/")
