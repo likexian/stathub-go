@@ -17,6 +17,7 @@ import (
     "crypto/tls"
     "os"
     "time"
+    "strings"
     "github.com/likexian/host-stat-go"
     "github.com/likexian/simplejson-go"
 )
@@ -58,6 +59,7 @@ func main() {
         SettingConfig(time_stamp)
     }
 
+start:
     config, err := simplejson.Load(CONFIG_FILE)
     if err != nil {
         return
@@ -69,11 +71,11 @@ func main() {
     key, _ := config.Get("key").String()
 
     stat := GetStat(id, name, time_stamp)
-    server = server + "/api/stat"
-    key = PassWord(key, stat)
+    surl := server + "/api/stat"
+    skey := PassWord(key, stat)
 
-    request, err := http.NewRequest("POST", server, bytes.NewBuffer([]byte(stat)))
-    request.Header.Set("X-Client-Key", key)
+    request, err := http.NewRequest("POST", surl, bytes.NewBuffer([]byte(stat)))
+    request.Header.Set("X-Client-Key", skey)
     request.Header.Set("Content-Type", "application/json")
     request.Header.Set("User-Agent", "Stat Hub API Client/0.1.0 (i@likexian.com)")
 
@@ -86,8 +88,19 @@ func main() {
 
     response, err := client.Do(request)
     if err != nil {
-        fmt.Println(err)
-        os.Exit(1)
+        // auto select http or https
+        if strings.Contains(err.Error(), "malformed HTTP response") {
+            server = "https://" + strings.Split(server, "://")[1]
+            WriteConfig(id, name, server, key)
+            goto start
+        } else if strings.Contains(err.Error(), "oversized record received with length") {
+            server = "http://" + strings.Split(server, "://")[1]
+            WriteConfig(id, name, server, key)
+            goto start
+        } else {
+            fmt.Println(err)
+            os.Exit(1)
+        }
     }
     defer response.Body.Close()
 
@@ -123,13 +136,18 @@ func SettingConfig(time_stamp int64) {
         server = server[:len(server)-1]
     }
 
+    random := fmt.Sprintf("%s%s", os.Getpid(), time_stamp)
+    id := PassWord(key, random)
+
+    WriteConfig(id, name, server, key)
+}
+
+func WriteConfig(id, name, server, key string) {
     config := Config{}
+    config.Id = id
+    config.Name = name
     config.Server = server
     config.Key = key
-    config.Name = name
-
-    random := fmt.Sprintf("%s%s", os.Getpid(), time_stamp)
-    config.Id = PassWord(key, random)
 
     data := simplejson.Json{}
     data.Data = config
