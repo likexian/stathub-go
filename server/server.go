@@ -296,6 +296,10 @@ func Client64Handler(w http.ResponseWriter, r *http.Request) {
 
 func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     ip := strings.Split(r.RemoteAddr, ":")[0]
+    if test, ok := r.Header["X-Real-Ip"]; ok {
+        ip = test[0]
+    }
+
     client_key := ""
     if test, ok := r.Header["X-Client-Key"]; !ok {
         fmt.Fprintf(w, "Key invalid")
