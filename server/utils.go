@@ -84,6 +84,7 @@ func PrettyLinuxVersion(version string) (string) {
     version = strings.Replace(version, "GNU", "", -1)
     version = strings.Replace(version, "LINUX", "", -1)
     version = strings.Replace(version, "Linux", "", -1)
+    version = strings.Replace(version, "LTS", "", -1)
     version = strings.Replace(version, "/", "", -1)
     version = strings.Replace(version, "  ", " ", -1)
     return version
