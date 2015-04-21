@@ -116,7 +116,7 @@ func SettingConfig(time_stamp int64) {
     }
 
     if server[:7] != "http://" && server[:8] != "https://" {
-        server = "http://" + server
+        server = "https://" + server
     }
 
     if server[len(server)-1:] == "/" {

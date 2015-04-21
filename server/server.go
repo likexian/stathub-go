@@ -447,6 +447,28 @@ func main() {
         WriteConfig(id, key, password, istls)
     }
 
+    cert_dir := strings.Split(TLS_CERT, "/")[1]
+    if !FileExists(SERVER_WORKDIR + "/" + cert_dir) {
+        err := os.Mkdir(SERVER_WORKDIR + "/" + cert_dir, 0755)
+        if err != nil {
+            panic(err)
+        }
+    }
+
+    if !FileExists(SERVER_WORKDIR + TLS_CERT) {
+        err := WriteFile(SERVER_WORKDIR + TLS_CERT, Default_TLS_CERT)
+        if err != nil {
+            panic(err)
+        }
+    }
+
+    if !FileExists(SERVER_WORKDIR + TLS_KEY) {
+        err := WriteFile(SERVER_WORKDIR + TLS_KEY, Default_TLS_KEY)
+        if err != nil {
+            panic(err)
+        }
+    }
+
     if !DEBUG {
         daemon := Daemon(PROCESS_LOCK, PROCESS_LOG, uid, gid, 0, 0)
         if daemon != 0 {
@@ -475,7 +497,7 @@ func main() {
     http.HandleFunc("/api/stat", APIStatHandler)
 
     if CONFIG_ISTLS {
-        err = http.ListenAndServeTLS(":15944", SERVER_WORKDIR+TLS_CERT, SERVER_WORKDIR+TLS_KEY, nil)
+        err = http.ListenAndServeTLS(":15944", SERVER_WORKDIR + TLS_CERT, SERVER_WORKDIR + TLS_KEY, nil)
         if err != nil {
             panic(err)
         }

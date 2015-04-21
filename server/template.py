@@ -30,6 +30,8 @@ const (
     Template_Index = `%s`
     Template_Login = `%s`
     Template_Help = `%s`
+    Default_TLS_CERT = `%s`
+    Default_TLS_KEY = `%s`
 )
 '''
 
@@ -52,5 +54,8 @@ Template_Layout = read_file('./template/layout.html')
 Template_Index = read_file('./template/index.html')
 Template_Login = read_file('./template/login.html')
 Template_Help = read_file('./template/help.html')
-template = template % (Template_Bootstrap, Template_Layout, Template_Index, Template_Login, Template_Help)
+Default_TLS_CERT = read_file('./cert/cert.pem')
+Default_TLS_KEY = read_file('./cert/cert.key')
+template = template % (Template_Bootstrap, Template_Layout, Template_Index, Template_Login, Template_Help,
+    Default_TLS_CERT, Default_TLS_KEY)
 write_file('template.go', template)
