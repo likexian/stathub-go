@@ -58,10 +58,10 @@ type Status struct {
     Status     string
     Uptime     string
     Load       string
-    NetRead    int
-    NetWrite   int
-    DiskRead   int
-    DiskWrite  int
+    NetRead    float64
+    NetWrite   float64
+    DiskRead   float64
+    DiskWrite  float64
     DiskWarn   string
     CPURate    float64
     MemRate    float64
@@ -117,11 +117,11 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                 s.IP, _ = d.Get("ip").String()
                 s.Name, _ = d.Get("host_name").String()
                 uptime, _ := d.Get("uptime").Int()
-                s.NetRead, _ = d.Get("net_read").Int()
                 s.Load, _ = d.Get("load").String()
-                s.NetWrite, _ = d.Get("net_write").Int()
-                s.DiskRead, _ = d.Get("disk_read").Int()
-                s.DiskWrite, _ = d.Get("disk_write").Int()
+                s.NetRead, _ = d.Get("net_read").Float64()
+                s.NetWrite, _ = d.Get("net_write").Float64()
+                s.DiskRead, _ = d.Get("disk_read").Float64()
+                s.DiskWrite, _ = d.Get("disk_write").Float64()
                 s.DiskWarn, _ = d.Get("disk_warn").String()
                 s.CPURate, _ = d.Get("cpu_rate").Float64()
                 s.MemRate, _ = d.Get("mem_rate").Float64()
@@ -132,6 +132,11 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
                 s.Uptime = SecondToHumanTime(int(uptime))
                 s.OSRelease = PrettyLinuxVersion(s.OSRelease)
+
+                s.NetRead = Round(s.NetRead, 1)
+                s.NetWrite = Round(s.NetWrite, 1)
+                s.DiskRead = Round(s.DiskRead, 1)
+                s.DiskWrite = Round(s.DiskWrite, 1)
 
                 now_date := time.Now().Format("2006-01-02")
                 get_date := time.Unix(int64(time_stamp), 0).Format("2006-01-02")
@@ -343,20 +348,20 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
 
     if err == nil {
         o_time_stamp, _ := current.Get("time_stamp").Int()
-        o_disk_read, _ := current.Get("disk_read").Int()
-        o_disk_write, _ := current.Get("disk_write").Int()
-        o_net_read, _ := current.Get("net_read").Int()
-        o_net_write, _ := current.Get("net_write").Int()
+        o_disk_read, _ := current.Get("disk_read").Float64()
+        o_disk_write, _ := current.Get("disk_write").Float64()
+        o_net_read, _ := current.Get("net_read").Float64()
+        o_net_write, _ := current.Get("net_write").Float64()
 
         n_time_stamp, _ := data.Get("time_stamp").Int()
-        n_disk_read, _ := data.Get("disk_read").Int()
-        n_disk_write, _ := data.Get("disk_write").Int()
-        n_net_read, _ := data.Get("net_read").Int()
-        n_net_write, _ := data.Get("net_write").Int()
+        n_disk_read, _ := data.Get("disk_read").Float64()
+        n_disk_write, _ := data.Get("disk_write").Float64()
+        n_net_read, _ := data.Get("net_read").Float64()
+        n_net_write, _ := data.Get("net_write").Float64()
 
         status_set, _ := current.Map()
-        diff_seconds := n_time_stamp - o_time_stamp
-        if diff_seconds == 0 {
+        diff_seconds := float64(n_time_stamp - o_time_stamp)
+        if diff_seconds <= 0 {
             return
         }
 

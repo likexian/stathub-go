@@ -6341,10 +6341,10 @@ code {
                     {{end}}
                 </td>
                 <td align="center">
-                    {{if gt .NetRead 0}}{{.NetRead}}K{{else}}0{{end}}/{{if gt .NetWrite 0}}{{.NetWrite}}K{{else}}0{{end}}
+                    {{if gt .NetRead 0.0}}{{.NetRead}}K{{else}}0{{end}}/{{if gt .NetWrite 0.0}}{{.NetWrite}}K{{else}}0{{end}}
                 </td>
                 <td align="center">
-                    {{if gt .DiskRead 0}}{{.DiskRead}}K{{else}}0{{end}}/{{if gt .DiskWrite 0}}{{.DiskWrite}}K{{else}}0{{end}}
+                    {{if gt .DiskRead 0.0}}{{.DiskRead}}K{{else}}0{{end}}/{{if gt .DiskWrite 0.0}}{{.DiskWrite}}K{{else}}0{{end}}
                 </td>
                 <td>{{.OSRelease}}</td>
                 <td>{{.LastUpdate}}</td>
