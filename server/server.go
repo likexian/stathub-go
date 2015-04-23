@@ -315,6 +315,7 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
 
     body, err := ioutil.ReadAll(r.Body)
     if err != nil {
+        fmt.Fprintf(w, "Body error")
         return
     }
 
@@ -327,6 +328,7 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
 
     data, err := simplejson.Loads(text)
     if err != nil {
+        fmt.Fprintf(w, "Body invalid")
         return
     }
 
