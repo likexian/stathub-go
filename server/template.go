@@ -6215,6 +6215,8 @@ button.close {
 }
 /*# sourceMappingURL=bootstrap.css.map */
 
+
+/* add by stat hub (https://github.com/likexian/stathub-go) */
 code {
   padding: 2px 0;
 }
@@ -6241,7 +6243,15 @@ code {
   margin-top: 30px;
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;
-}`
+}
+#auto_reload {
+  color: #999;
+  text-align: right;
+  margin-top: -15px;
+  padding-right: 5px;
+}
+/* add by stat hub (https://github.com/likexian/stathub-go) */
+`
     Template_Layout = `<!DOCTYPE html>
 <!--
 /*
@@ -6352,6 +6362,34 @@ code {
         {{end}}
     </tbody>
 </table>
+<div id="auto_reload">
+    Stat will refresh after <span id="after_seconds">00</span> seconds, <a style="cursor:pointer" id="after_action" onclick="after_action()">stop</a>.
+</div>
+<script type="text/javascript">
+var c = 0;
+function $(id) {
+    return document.getElementById(id);
+}
+function do_start() {
+    return setInterval(function() {
+        var s = new Date().getSeconds();
+        var d = s < 4 ? 3 - s  : 63 - s;
+        $('after_seconds').innerText = d > 9 ? d : '0' + d;
+        if (s == 3) location.href = location.href;
+    }, 1000);
+}
+function after_action() {
+    if (c) {
+        c = clearInterval(c);
+        $('after_seconds').innerText = '--';
+        $('after_action').innerText = 'start';
+    } else {
+        c = do_start();
+        $('after_action').innerText = 'stop';
+    }
+}
+c = do_start();
+</script>
 {{end}}`
     Template_Login = `{{define "main_body"}}
 <form class="form-group" role="form" method="POST" action="/{{.action}}">

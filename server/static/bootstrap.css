@@ -6202,6 +6202,8 @@ button.close {
 }
 /*# sourceMappingURL=bootstrap.css.map */
 
+
+/* add by stat hub (https://github.com/likexian/stathub-go) */
 code {
   padding: 2px 0;
 }
@@ -6229,3 +6231,10 @@ code {
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;
 }
+#auto_reload {
+  color: #999;
+  text-align: right;
+  margin-top: -15px;
+  padding-right: 5px;
+}
+/* add by stat hub (https://github.com/likexian/stathub-go) */
