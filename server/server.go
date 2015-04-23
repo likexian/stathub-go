@@ -26,8 +26,8 @@ const (
     CONFIG_FILE  = "/server.json"
     CLIENT_FILE  = "/client"
     PROCESS_USER = "nobody"
-    PROCESS_LOCK = "/var/run/stathub.pid"
-    PROCESS_LOG  = "/var/log/stathub.log"
+    PROCESS_LOCK = "/stathub.pid"
+    PROCESS_LOG  = "/stathub.log"
     TLS_CERT     = "/cert/cert.pem"
     TLS_KEY      = "/cert/cert.key"
 )
@@ -344,7 +344,7 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     current, err := simplejson.Load(data_id_dir + "/current")
-    simplejson.Dump(data_id_dir+"/current", data)
+    simplejson.Dump(data_id_dir + "/current", data)
 
     if err == nil {
         o_time_stamp, _ := current.Get("time_stamp").Int()
@@ -439,12 +439,12 @@ func main() {
             return
         }
     }
-    os.Chown(SERVER_WORKDIR+DATA_DIR, uid, gid)
+    os.Chown(SERVER_WORKDIR + DATA_DIR, uid, gid)
 
-    if !FileExists(PROCESS_LOG) {
-        WriteFile(PROCESS_LOG, "")
+    if !FileExists(SERVER_WORKDIR + DATA_DIR + PROCESS_LOG) {
+        WriteFile(SERVER_WORKDIR + DATA_DIR + PROCESS_LOG, "")
     }
-    os.Chown(PROCESS_LOG, uid, gid)
+    // os.Chown(SERVER_WORKDIR + DATA_DIR + PROCESS_LOG, uid, gid)
 
     SERVER_START = time.Now().Unix()
     if !FileExists(SERVER_WORKDIR + CONFIG_FILE) {
@@ -479,7 +479,7 @@ func main() {
     }
 
     if !DEBUG {
-        daemon := Daemon(PROCESS_LOCK, PROCESS_LOG, uid, gid, 0, 0)
+        daemon := Daemon(SERVER_WORKDIR + DATA_DIR + PROCESS_LOCK, SERVER_WORKDIR + DATA_DIR + PROCESS_LOG, uid, gid, 0, 0)
         if daemon != 0 {
             os.Exit(-1)
         }
