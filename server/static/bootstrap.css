@@ -6231,6 +6231,13 @@ code {
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;
 }
+#update {
+  display: none;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: #999;
+  text-align: right;
+}
 #auto_reload {
   color: #999;
   text-align: right;

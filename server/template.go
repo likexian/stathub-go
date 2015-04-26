@@ -6244,6 +6244,13 @@ code {
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;
 }
+#update {
+  display: none;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: #999;
+  text-align: right;
+}
 #auto_reload {
   color: #999;
   text-align: right;
@@ -6289,6 +6296,9 @@ code {
 </html>`
     Template_Index = `{{define "main_body"}}
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
+<div id="update" class="bg-warning">
+    New version available, Please download from <a target="_blank" href="https://github.com/likexian/stathub-go">https://github.com/likexian/stathub-go</a>.
+</div>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -6388,7 +6398,37 @@ function after_action() {
         $('after_action').innerText = 'stop';
     }
 }
+function setCookie(name, value, day) {
+    if (day) {
+        var now = new Date();
+        now.setTime(now.getTime() + (day * 86400000));
+        var expire = "; expires=" + now.toGMTString();
+    } else {
+        var expire = "";
+    }
+    document.cookie = name + "=" + value + expire + "; path=/";
+}
+function getCookie(name) {
+    var find = RegExp(name + "=.[^;]*");
+    match = document.cookie.match(find);
+    return match ? match[0].split('=')[1] : false;
+}
+function stat_hub_version_result(update) {
+    // check update every day
+    setCookie('chkver', update, 1);
+    if (!update) $('update').style.display = 'block';
+}
 c = do_start();
+var ver = '0.7.2';
+var v = getCookie('chkver');
+if (v === false) {
+    var u = document.createElement('script');
+    u.src = '//www.likexian.com/dream/stathub/chkver/' + ver + '.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(u, s);
+} else {
+    stat_hub_version_result(v);
+}
 </script>
 {{end}}`
     Template_Login = `{{define "main_body"}}
