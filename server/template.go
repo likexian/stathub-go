@@ -6444,19 +6444,9 @@ if (v === false) {
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
 <h3>1. Login to new node, run: </h3>
 <div>
-    <code>$ mkdir /var/stathub<br />
-    $ cd /var/stathub<br />
-    </code>
-    <div>on 32 bits node</div>
     <code>
-    $ wget http://{{.server}}/static/client_x86 -O client<br />
-    </code>
-    <div>on 64 bits node</div>
-    <code>
-    $ wget http://{{.server}}/static/client_x86_64 -O client<br />
-    </code>
-    <code>
-    $ chmod +x client<br />
+    $ mkdir /var/stathub && cd /var/stathub<br />
+    $ wget https://{{.server}}/static/client_$(uname -m) --no-check-certificate -O client && chmod +x client<br />
     $ ./client
     </code>
 </div>
