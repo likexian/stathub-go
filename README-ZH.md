@@ -16,11 +16,18 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ![demo](demo.png)
 
+## 特性
+
+- 用 Go 语言编写
+- 只需两个文件就可以完成一切
+- 部署简单，没有依赖不需要数据库
+- 支持SSL安全，支持域名访问，安全并简单
+
 ## 安装
 
 ### 在服务端下载
 
-    https://github.com/likexian/stathub-go/releases/download/v0.5.2/stathub_linux_0.5.2.tar.gz
+    https://github.com/likexian/stathub-go/releases/download/v0.7.2/stathub_linux_0.7.2.tar.gz
 
 ### 解压并移动
 
@@ -42,7 +49,7 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 默认URL是
 
-    http://ip:15944
+    https://ip:15944
 
 输入默认密码: likexian
 
@@ -50,7 +57,42 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 按以下提示操作
 
-    http://ip:15944/help
+    https://ip:15944/help
+
+## FAQ
+
+- 为什么页面上什么也没有？
+
+    请先添加一个客户端，您可以参考一下帮助页面
+
+- 我添加了一个客户端，还是没有数据显示？
+
+    请在客户端查看 client.log 的内容看看出错原因。
+
+- 我需要在服务端也运行 client 吗？
+
+    当然要，服务端也同时是一个客户端。
+
+- 我可以使用域名而不是 IP 访问页面吗？
+
+    当然可以，请在域名解析中添加一条指向服务器端 IP 的 A 记录，然后用 https://子域名.域名:15944 访问即可。
+
+- 我可以用 https 访问页面吗？
+
+    没问题，并且SSL是默认启用的，不过用的是自签名证书。
+
+- 我可以不用自签名证书，而是使用自己的有效证书吗？
+
+    当然可以，并且强烈推荐这么做。请用您的证书替换掉 cert 目录里对应的文件。
+
+- 我可以跟 nginx 一起部署吗？
+
+    没问题，请将以下配置加到 nginx 配置文件。
+
+    location /stathub/ {
+        proxy_pass https://127.0.0.1:15944;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
 
 ## 版权
 
@@ -61,3 +103,11 @@ Apache License, Version 2.0
 ## 关于
 
 - [Li Kexian](https://www.likexian.com/)
+
+## 感谢
+
+- [All stargazers](https://github.com/likexian/stathub-go/stargazers)
+- [Livid](https://github.com/livid)
+- [Septembers](https://github.com/Septembers)
+- [Bluek404](https://github.com/Bluek404)
+- [renjie45](https://github.com/renjie45)
