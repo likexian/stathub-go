@@ -1,10 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
 pname=$(uname -m)
-if [ "$pname" != "x86_64" ]; then
-    pname="x86"
-fi
-
 [ ! -d stathub ] && mkdir stathub
 rm -rf stathub/*_$pname
 
@@ -17,3 +13,9 @@ cd client
 go build
 cd ..
 mv client/client stathub/client_$pname
+
+cp CHANGS.md stathub
+cp CHANGS-ZH.md stathub
+cp LICENSE.md stathub
+cp README.md stathub
+cp README-ZH.md stathub
