@@ -8,6 +8,8 @@ cd server
 go build
 cd ..
 mv server/server stathub/server_$pname
+cp server/start.sh stathub
+cp server/stop.sh stathub
 
 cd client
 go build

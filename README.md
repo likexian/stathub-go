@@ -37,13 +37,7 @@ Stat Hub have two parts, one is the SERVER for recving, storing and displaying s
 
 ### Run it
 
-If your server os is 32 bits, please run
-
-    ./server_x86
-
-If your server os is 64 bits, please run
-
-    ./server_x86_64
+    ./start.sh
 
 ### Open on your PC browser
 
@@ -58,6 +52,10 @@ Then enter the default password: likexian
 Follow the guide
 
     https://ip:15944/help
+
+### Stop it
+
+    ./stop.sh
 
 ## FAQ
 
