@@ -58,15 +58,16 @@ type Status struct {
     Status     string
     Uptime     string
     Load       string
-    NetRead    float64
-    NetWrite   float64
-    DiskRead   float64
-    DiskWrite  float64
+    NetRead    string
+    NetWrite   string
+    DiskRead   string
+    DiskWrite  string
     DiskWarn   string
     CPURate    float64
     MemRate    float64
     SwapRate   float64
     DiskRate   float64
+    NetTotal   string
     OSRelease  string
     LastUpdate string
 }
@@ -116,27 +117,30 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                 s.Id = f.Name()
                 s.IP, _ = d.Get("ip").String()
                 s.Name, _ = d.Get("host_name").String()
-                uptime, _ := d.Get("uptime").Int()
                 s.Load, _ = d.Get("load").String()
-                s.NetRead, _ = d.Get("net_read").Float64()
-                s.NetWrite, _ = d.Get("net_write").Float64()
-                s.DiskRead, _ = d.Get("disk_read").Float64()
-                s.DiskWrite, _ = d.Get("disk_write").Float64()
                 s.DiskWarn, _ = d.Get("disk_warn").String()
                 s.CPURate, _ = d.Get("cpu_rate").Float64()
                 s.MemRate, _ = d.Get("mem_rate").Float64()
                 s.SwapRate, _ = d.Get("swap_rate").Float64()
                 s.DiskRate, _ = d.Get("disk_rate").Float64()
                 s.OSRelease, _ = d.Get("os_release").String()
+
+                net_read, _ := d.Get("net_read").Float64()
+                net_write, _ := d.Get("net_write").Float64()
+                disk_read, _ := d.Get("disk_read").Float64()
+                disk_write, _ := d.Get("disk_write").Float64()
+                net_total, _ := d.Get("net_total").Float64()
                 time_stamp, _ := d.Get("time_stamp").Int()
+                uptime, _ := d.Get("uptime").Int()
 
                 s.Uptime = SecondToHumanTime(int(uptime))
                 s.OSRelease = PrettyLinuxVersion(s.OSRelease)
 
-                s.NetRead = Round(s.NetRead, 1)
-                s.NetWrite = Round(s.NetWrite, 1)
-                s.DiskRead = Round(s.DiskRead, 1)
-                s.DiskWrite = Round(s.DiskWrite, 1)
+                s.NetRead = HumanByte(net_read * 1024)
+                s.NetWrite = HumanByte(net_write * 1024)
+                s.DiskRead = HumanByte(disk_read * 1024)
+                s.DiskWrite = HumanByte(disk_write * 1024)
+                s.NetTotal = HumanByte(net_total * 1024)
 
                 now_date := time.Now().Format("2006-01-02")
                 get_date := time.Unix(int64(time_stamp), 0).Format("2006-01-02")
@@ -346,14 +350,13 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     current, err := simplejson.Load(data_id_dir + "/current")
-    simplejson.Dump(data_id_dir + "/current", data)
-
     if err == nil {
         o_time_stamp, _ := current.Get("time_stamp").Int()
         o_disk_read, _ := current.Get("disk_read").Float64()
         o_disk_write, _ := current.Get("disk_write").Float64()
         o_net_read, _ := current.Get("net_read").Float64()
         o_net_write, _ := current.Get("net_write").Float64()
+        o_net_total, _ := current.Get("net_total").Float64()
 
         n_time_stamp, _ := data.Get("time_stamp").Int()
         n_disk_read, _ := data.Get("disk_read").Float64()
@@ -372,9 +375,25 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
         status_set["net_read"] = (n_net_read - o_net_read) / diff_seconds
         status_set["net_write"] = (n_net_write - o_net_write) / diff_seconds
 
+        o_net := o_net_read + o_net_write
+        n_net := n_net_read + n_net_write
+        diff := n_net
+        if n_net >= o_net {
+            diff = n_net - o_net
+        }
+
+        if (time.Unix(int64(o_time_stamp), 0).Format("2006-01") == time.Unix(int64(n_time_stamp), 0).Format("2006-01")) {
+            status_set["net_total"] = o_net_total + diff
+        } else {
+            status_set["net_total"] = 0
+        }
+        data.Set("net_total", status_set["net_total"])
+
         current.Set("time_stamp", n_time_stamp)
-        simplejson.Dump(data_id_dir+"/status", current)
+        simplejson.Dump(data_id_dir + "/status", current)
     }
+
+    simplejson.Dump(data_id_dir + "/current", data)
 
     return
 }

@@ -22,6 +22,42 @@ import(
 )
 
 
+const (
+    BYTE     = 1.0
+    KILOBYTE = 1024 * BYTE
+    MEGABYTE = 1024 * KILOBYTE
+    GIGABYTE = 1024 * MEGABYTE
+    TERABYTE = 1024 * GIGABYTE
+)
+
+
+func HumanByte(bytes float64) string {
+    unit := ""
+    value := bytes
+
+    switch {
+        case bytes >= TERABYTE:
+            unit = "T"
+            value = value / TERABYTE
+        case bytes >= GIGABYTE:
+            unit = "G"
+            value = value / GIGABYTE
+        case bytes >= MEGABYTE:
+            unit = "M"
+            value = value / MEGABYTE
+        case bytes >= KILOBYTE:
+            unit = "K"
+            value = value / KILOBYTE
+        case bytes >= BYTE:
+            unit = "B"
+        case bytes == 0:
+            return "0"
+    }
+
+    return fmt.Sprintf("%.1f%s", Round(value, 1), unit)
+}
+
+
 func Round(data float64, precision int) (result float64) {
     pow := math.Pow(10, float64(precision))
     digit := pow * data

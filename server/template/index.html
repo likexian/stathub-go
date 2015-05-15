@@ -16,6 +16,7 @@
             <th>Disk</th>
             <th>Net I/O</th>
             <th>Disk R/W</th>
+            <th>Bandwidth</th>
             <th>System</th>
             <th>Updated</th>
         </tr>
@@ -65,11 +66,12 @@
                     {{end}}
                 </td>
                 <td align="center">
-                    {{if gt .NetRead 0.0}}{{.NetRead}}K{{else}}0{{end}}/{{if gt .NetWrite 0.0}}{{.NetWrite}}K{{else}}0{{end}}
+                    {{.NetRead}}/{{.NetWrite}}
                 </td>
                 <td align="center">
-                    {{if gt .DiskRead 0.0}}{{.DiskRead}}K{{else}}0{{end}}/{{if gt .DiskWrite 0.0}}{{.DiskWrite}}K{{else}}0{{end}}
+                    {{.DiskRead}}/{{.DiskWrite}}
                 </td>
+                <td>{{.NetTotal}}</td>
                 <td>{{.OSRelease}}</td>
                 <td>{{.LastUpdate}}</td>
             </tr>
