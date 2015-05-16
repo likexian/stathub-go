@@ -1,0 +1,24 @@
+#!/bin/sh
+
+mkdir /var/stathub
+cd /var/stathub
+wget https://{{.server}}/static/client_$(uname -m) --no-check-certificate -O client
+
+find=$(crontab -l | grep stathub)
+if [ "$find" == "" ]; then
+    (crontab -l; echo "* * * * * cd /var/stathub; ./client >>/var/stathub/client.log 2>&1") | crontab -
+fi
+
+cat <<EOF > client.json
+{
+    "id": "{{.id}}",
+    "name": "",
+    "server": "https://{{.server}}",
+    "key": "{{.key}}"
+}
+EOF
+
+chmod +x client
+./client
+sleep 3
+./client

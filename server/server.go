@@ -295,6 +295,31 @@ func HelpHandler(w http.ResponseWriter, r *http.Request) {
     tpl.Execute(w, map[string]string{"server": r.Host, "key": CONFIG_KEY})
 }
 
+func NodeHandler(w http.ResponseWriter, r *http.Request) {
+    key := r.URL.Query().Get("key")
+    if key != CONFIG_KEY {
+        HTTPErrorHandler(w, r, http.StatusForbidden)
+        return
+    }
+
+    tpl, err := template.New("node").Parse(Template_Node)
+    if err != nil {
+        HTTPErrorHandler(w, r, http.StatusInternalServerError)
+        return
+    }
+
+    if DEBUG {
+        tpl, err = template.ParseFiles("template/node.html")
+        if err != nil {
+            HTTPErrorHandler(w, r, http.StatusInternalServerError)
+            return
+        }
+    }
+
+    id := PassWord(CONFIG_KEY, fmt.Sprintf("%s", time.Now().Unix()))
+    tpl.Execute(w, map[string]string{"id": id, "server": r.Host, "key": CONFIG_KEY})
+}
+
 func Client32Handler(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE+"_i686")
 }
@@ -400,7 +425,9 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
 
 func HTTPErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
     w.WriteHeader(status)
-    if status == http.StatusNotFound {
+    if status == http.StatusForbidden {
+        fmt.Fprint(w, "<title>Forbidden</title><h1>Forbidden</h1>")
+    } else if status == http.StatusNotFound {
         fmt.Fprint(w, "<title>Not Found</title><h1>Not Found</h1>")
     } else if status == http.StatusInternalServerError {
         fmt.Fprint(w, "<title>Internal Server Error</title><h1>Internal Server Error</h1>")
@@ -521,6 +548,7 @@ func main() {
     http.HandleFunc("/logout", LogoutHandler)
     http.HandleFunc("/passwd", PasswdHandler)
     http.HandleFunc("/help", HelpHandler)
+    http.HandleFunc("/node", NodeHandler)
     http.HandleFunc("/static/client_i686", Client32Handler)
     http.HandleFunc("/static/client_x86_64", Client64Handler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
