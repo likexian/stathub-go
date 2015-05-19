@@ -6462,6 +6462,7 @@ if [ "$find" == "" ]; then
     (crontab -l; echo "* * * * * cd /var/stathub; ./client >>/var/stathub/client.log 2>&1") | crontab -
 fi
 
+if [ ! -f client.json ]; then
 cat <<EOF > client.json
 {
     "id": "{{.id}}",
@@ -6470,6 +6471,7 @@ cat <<EOF > client.json
     "key": "{{.key}}"
 }
 EOF
+fi
 
 chmod +x client
 ./client
