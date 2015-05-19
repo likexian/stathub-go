@@ -136,11 +136,11 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                 s.Uptime = SecondToHumanTime(int(uptime))
                 s.OSRelease = PrettyLinuxVersion(s.OSRelease)
 
-                s.NetRead = HumanByte(net_read * 1024)
-                s.NetWrite = HumanByte(net_write * 1024)
-                s.DiskRead = HumanByte(disk_read * 1024)
-                s.DiskWrite = HumanByte(disk_write * 1024)
-                s.NetTotal = HumanByte(net_total * 1024)
+                s.NetRead = HumanByte(net_read)
+                s.NetWrite = HumanByte(net_write)
+                s.DiskRead = HumanByte(disk_read)
+                s.DiskWrite = HumanByte(disk_write)
+                s.NetTotal = HumanByte(net_total)
 
                 now_date := time.Now().Format("2006-01-02")
                 get_date := time.Unix(int64(time_stamp), 0).Format("2006-01-02")

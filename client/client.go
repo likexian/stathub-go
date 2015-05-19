@@ -205,8 +205,8 @@ func GetStat(id string, name string, time_stamp int64) string {
     disk_read := uint64(0)
     disk_write := uint64(0)
     for _, v := range io_stat {
-        disk_read += v.ReadBytes / 1024
-        disk_write += v.WriteBytes / 1024
+        disk_read += v.ReadBytes
+        disk_write += v.WriteBytes
     }
     stat.DiskRead = disk_read
     stat.DiskWrite = disk_write
@@ -216,8 +216,8 @@ func GetStat(id string, name string, time_stamp int64) string {
     net_read := uint64(0)
     for _, v := range net_stat {
         if v.Device != "lo" {
-            net_write += v.TXBytes / 1024
-            net_read += v.RXBytes / 1024
+            net_write += v.TXBytes
+            net_read += v.RXBytes
         }
     }
     stat.NetWrite = net_write
