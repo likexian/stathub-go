@@ -23,7 +23,12 @@ import (
 )
 
 const (
-    CONFIG_FILE = "./client.json"
+    CONFIG_FILE = "/client.json"
+)
+
+var (
+    CLIENT_WORKDIR = ""
+    CLIENT_START   = int64(0)
 )
 
 type Config struct {
@@ -54,13 +59,19 @@ type Stat struct {
 }
 
 func main() {
-    time_stamp := time.Now().Unix()
-    if !FileExists(CONFIG_FILE) {
-        SettingConfig(time_stamp)
+    pwd, err := os.Getwd()
+    if err != nil {
+        panic(err)
+    }
+    CLIENT_WORKDIR := pwd
+
+    CLIENT_START = time.Now().Unix()
+    if !FileExists(CLIENT_WORKDIR + CONFIG_FILE) {
+        SettingConfig(CLIENT_START)
     }
 
 start:
-    config, err := simplejson.Load(CONFIG_FILE)
+    config, err := simplejson.Load(CLIENT_WORKDIR + CONFIG_FILE)
     if err != nil {
         return
     }
@@ -70,7 +81,7 @@ start:
     server, _ := config.Get("server").String()
     key, _ := config.Get("key").String()
 
-    stat := GetStat(id, name, time_stamp)
+    stat := GetStat(id, name, CLIENT_START)
     surl := server + "/api/stat"
     skey := PassWord(key, stat)
 
@@ -151,7 +162,7 @@ func WriteConfig(id, name, server, key string) {
 
     data := simplejson.Json{}
     data.Data = config
-    simplejson.Dump(CONFIG_FILE, &data)
+    simplejson.Dump(CLIENT_WORKDIR + CONFIG_FILE, &data)
 }
 
 func GetStat(id string, name string, time_stamp int64) string {
