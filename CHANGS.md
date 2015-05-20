@@ -1,3 +1,12 @@
+Changes with Stat Hub 0.9.2 Beta    2015-05-20
+
+- Feature: add monthly bandwidth data
+- Feature: improve client install guide
+
+- Bugfix: fail to collect stat when swap is off
+- Bugfix: make traffic and io data more accurate
+
+
 Changes with Stat Hub 0.7.2 Beta    2015-04-30
 
 - Feature: ssl support

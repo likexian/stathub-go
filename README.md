@@ -18,7 +18,7 @@ Stat Hub have two parts, one is the SERVER for recving, storing and displaying s
 
 ## Feature
 
-- Written by Go lang
+- Powered by Go lang
 - Only two binary files, doing and displaying data
 - Easy deploy, no depends, no database required
 - SSL support, your domain support, secure and easy
@@ -27,7 +27,7 @@ Stat Hub have two parts, one is the SERVER for recving, storing and displaying s
 
 ### Download on the SERVER side (master)
 
-    https://github.com/likexian/stathub-go/releases/download/v0.7.2/stathub_linux_0.7.2.tar.gz
+    https://github.com/likexian/stathub-go/releases/download/v0.9.2/stathub_linux_0.9.2.tar.gz
 
 ### Untar and move
 
@@ -109,3 +109,4 @@ Apache License, Version 2.0
 - [Septembers](https://github.com/Septembers)
 - [Bluek404](https://github.com/Bluek404)
 - [renjie45](https://github.com/renjie45)
+- [vijaygadde](https://github.com/vijaygadde)

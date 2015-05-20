@@ -18,7 +18,7 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ## 特性
 
-- 用 Go 语言编写
+- Go 语言编写
 - 只需两个文件就可以完成一切
 - 部署简单，没有依赖不需要数据库
 - 支持SSL安全，支持域名访问，安全并简单
@@ -27,7 +27,7 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ### 在服务端下载
 
-    https://github.com/likexian/stathub-go/releases/download/v0.7.2/stathub_linux_0.7.2.tar.gz
+    https://github.com/likexian/stathub-go/releases/download/v0.9.2/stathub_linux_0.9.2.tar.gz
 
 ### 解压并移动
 
@@ -109,3 +109,4 @@ Apache License, Version 2.0
 - [Septembers](https://github.com/Septembers)
 - [Bluek404](https://github.com/Bluek404)
 - [renjie45](https://github.com/renjie45)
+- [vijaygadde](https://github.com/vijaygadde)
