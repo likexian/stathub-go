@@ -6453,13 +6453,32 @@ if (v === false) {
 {{end}}`
     Template_Node = `#!/bin/sh
 
-mkdir /var/stathub
-cd /var/stathub
-wget https://{{.server}}/static/client_$(uname -m) --no-check-certificate -O client
+VERSION="0.9.2"
+STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/client_$(uname -m).tar.gz"
 
-find=$(crontab -l | grep stathub)
-if [ "$find" == "" ]; then
-    (crontab -l; echo "* * * * * cd /var/stathub; ./client >>/var/stathub/client.log 2>&1") | crontab -
+sudo mkdir -p /var/stathub
+sudo chown -R $UID:$UID /var/stathub
+cd /var/stathub
+
+if [ -f $(which wget) ]; then
+    wget --no-check-certificate $STATHUB_URL
+elif [ -f $(which curl) ]; then
+    curl --insecure $STATHUB_URL
+else
+    echo "Unable to find curl or wget, Please install and try again."
+    exit 1
+fi
+
+tar zxf client_$(uname -m).tar.gz
+rm -rf client_$(uname -m).tar.gz
+
+if [ -f $(which crontab) ]; then
+    if [ -z "$(crontab -l | grep stathub)" ]; then
+        (crontab -l; echo "* * * * * cd /var/stathub; ./client >>/var/stathub/client.log 2>&1") | crontab -
+    fi
+else
+    echo "Unable to find crontab, Please install and try again."
+    exit 1
 fi
 
 if [ ! -f client.json ]; then
@@ -6473,9 +6492,18 @@ cat <<EOF > client.json
 EOF
 fi
 
-chmod +x client
+echo "----------------------------------------------------"
+echo "| Client install sucessful                         |"
+echo "| It will shown on your server minutes later       |"
+echo "| Please Refer to https://your-server-ip:15944     |"
+echo "|                                                  |"
+echo "| Feedback: https://github.com/likexian/stathub-go |"
+echo "| Thank you for your using, By Li Kexian           |"
+echo "| StatHub, Apache License, Version 2.0             |"
+echo "----------------------------------------------------"
+
 ./client
-sleep 3
+sleep 1
 ./client
 `
     Default_TLS_CERT = `-----BEGIN CERTIFICATE-----
