@@ -1,23 +1,42 @@
 #!/bin/sh
 
-pname=$(uname -m)
+echo '+ building stathub start'
 [ ! -d stathub ] && mkdir stathub
-rm -rf stathub/*_$pname
+rm -rf tmp && mkdir tmp
 
+echo 'building the server'
 cd server
 go build
 cd ..
-mv server/server stathub/server_$pname
-cp server/start.sh stathub
-cp server/stop.sh stathub
+mv server/server tmp
+cp server/service tmp
 
+echo 'building the client'
 cd client
 go build
 cd ..
-mv client/client stathub/client_$pname
+mv client/client tmp
 
-cp CHANGS.md stathub
-cp CHANGS-ZH.md stathub
-cp LICENSE.md stathub
-cp README.md stathub
-cp README-ZH.md stathub
+cp CHANGS.md tmp
+cp CHANGS-ZH.md tmp
+cp LICENSE.md tmp
+cp README.md tmp
+cp README-ZH.md tmp
+cp VERSION tmp
+
+echo 'goupxing binary files'
+cd tmp
+if [ -f $(which goupx) ]; then
+    goupx server client >/dev/null 2>&1
+fi
+
+echo 'packaging the server'
+tar zcf server_$(uname -m).tar.gz server service VERSION *.md
+echo 'packaging the client'
+tar zcf client_$(uname -m).tar.gz client VERSION *.md
+
+cd ..
+cp tmp/server_$(uname -m).tar.gz tmp/client_$(uname -m).tar.gz stathub
+rm -rf tmp
+
+echo '+ building stathub done'
