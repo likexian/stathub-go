@@ -1,0 +1,46 @@
+#!/bin/sh
+
+cd /var/stathub
+PID="data/stathub.pid"
+
+start() {
+    echo "starting"
+    if [ ! -f $PID ]; then
+        ./server
+        echo "ok"
+        echo "----------------------------------------------------"
+        echo "| Please open the below URL on your PC browser:    |"
+        echo "| https://this-server-ip:15944                     |"
+        echo "| Default password: likexian                       |"
+        echo "|                                                  |"
+        echo "| Feedback: https://github.com/likexian/stathub-go |"
+        echo "| Thank you for your using, By Li Kexian           |"
+        echo "| StatHub, Apache License, Version 2.0             |"
+        echo "----------------------------------------------------"
+    fi
+}
+
+stop() {
+    echo "stopping"
+    if [ -f $PID ]; then
+        kill `cat $PID`
+        rm -rf $PID
+        echo "ok"
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
