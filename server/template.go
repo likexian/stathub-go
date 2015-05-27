@@ -6463,7 +6463,7 @@ cd /var/stathub
 if [ -f $(which wget) ]; then
     wget --no-check-certificate $STATHUB_URL
 elif [ -f $(which curl) ]; then
-    curl --insecure $STATHUB_URL
+    curl --insecure -O $STATHUB_URL
 else
     echo "Unable to find curl or wget, Please install and try again."
     exit 1
