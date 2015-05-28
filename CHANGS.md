@@ -1,3 +1,9 @@
+Changes with Stat Hub 0.10.2 Beta    2015-05-28
+
+- Feature: install client by one line shell
+- Feature: install server by one line shell
+
+
 Changes with Stat Hub 0.9.2 Beta    2015-05-20
 
 - Feature: add monthly bandwidth data

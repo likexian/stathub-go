@@ -72,6 +72,18 @@ type Status struct {
     LastUpdate string
 }
 
+func Version() string {
+    return "0.10.2"
+}
+
+func Author() string {
+    return "[Li Kexian](https://www.likexian.com/)"
+}
+
+func License() string {
+    return "Apache License, Version 2.0"
+}
+
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
     if !IsLogin(w, r) {
         http.Redirect(w, r, "/login", http.StatusFound)
@@ -470,6 +482,14 @@ func IsLogin(w http.ResponseWriter, r *http.Request) bool {
 }
 
 func main() {
+    if (len(os.Args) > 1) {
+        if (os.Args[1] == "-v" || os.Args[1] == "--version") {
+            version := fmt.Sprintf("StatHub Server v%s\n%s\n%s", Version(), License(), Author())
+            fmt.Println(version)
+            os.Exit(0)
+        }
+    }
+
     uid, gid, err := LookupUser(PROCESS_USER)
     if err != nil {
         panic(err)

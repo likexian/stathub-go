@@ -6421,7 +6421,7 @@ function stat_hub_version_result(update) {
     if (!update) $('update').style.display = 'block';
 }
 c = do_start();
-var ver = '0.9.2';
+var ver = '0.10.2';
 var v = getCookie('chkver');
 if (v === false) {
     var u = document.createElement('script');
@@ -6453,7 +6453,7 @@ if (v === false) {
 {{end}}`
     Template_Node = `#!/bin/sh
 
-VERSION="0.9.2"
+VERSION="0.10.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/client_$(uname -m).tar.gz"
 
 sudo mkdir -p /var/stathub

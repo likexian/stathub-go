@@ -58,7 +58,27 @@ type Stat struct {
     NetWrite  uint64  `json:"net_write"`
 }
 
+func Version() string {
+    return "0.10.2"
+}
+
+func Author() string {
+    return "[Li Kexian](https://www.likexian.com/)"
+}
+
+func License() string {
+    return "Apache License, Version 2.0"
+}
+
 func main() {
+    if (len(os.Args) > 1) {
+        if (os.Args[1] == "-v" || os.Args[1] == "--version") {
+            version := fmt.Sprintf("StatHub Client v%s\n%s\n%s", Version(), License(), Author())
+            fmt.Println(version)
+            os.Exit(0)
+        }
+    }
+
     pwd, err := os.Getwd()
     if err != nil {
         panic(err)
