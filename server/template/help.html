@@ -1,9 +1,14 @@
 {{define "main_body"}}
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
-<h3>Login to new node and run: </h3>
+<h3>Login to new node and run, with curl: </h3>
 <div>
     <code>
     $ curl --insecure https://{{.server}}/node?key={{.key}} | sh
+    </code>
+<h3>If the system don't have curl, try wget: </h3>
+<div>
+    <code>
+    $ wget --no-check-certificate -O - https://{{.server}}/node?key={{.key}} | sh
     </code>
 </div>
 {{end}}
