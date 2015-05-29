@@ -25,21 +25,19 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ## 安装
 
-### 在服务端下载
+请选择其中一台服务器做主服务器，并按以下说明在上面安装服务端。
 
-    https://github.com/likexian/stathub-go/releases/download/v0.9.2/stathub_linux_0.9.2.tar.gz
+### Linux (如果有curl)
 
-### 解压并移动
+    curl --insecure https://github.com/likexian/stathub-go/blob/master/setup.sh | sh
 
-    tar zxvf stathub_*.tar.gz
-    mv stathub /var
-    cd /var/stathub
+### Linux (如果有wget)
 
-### 运行它
-
-    ./start.sh
+    wget --no-check-certificate -O - https://github.com/likexian/stathub-go/blob/master/setup.sh | sh
 
 ### 在您电脑的浏览器打开它
+
+对于大多数系统，到这里服务已经成功安装并启动了，现在您可以通过本地电脑上的浏览器打开它。
 
 默认URL是
 
@@ -52,10 +50,6 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 按以下提示操作
 
     https://ip:15944/help
-
-### 停止它
-
-    ./stop.sh
 
 ## FAQ
 
@@ -110,3 +104,4 @@ Apache License, Version 2.0
 - [Bluek404](https://github.com/Bluek404)
 - [renjie45](https://github.com/renjie45)
 - [vijaygadde](https://github.com/vijaygadde)
+- [davoola](https://github.com/davoola)
