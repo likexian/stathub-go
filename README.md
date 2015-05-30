@@ -27,11 +27,11 @@ Stat Hub have two parts, one is the SERVER for recving, storing and displaying s
 
 You shall choose a server for master, and install it following the below
 
-### Linux with curl
+### Linux via curl
 
     curl --insecure https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
 
-### Linux with wget
+### Linux via wget
 
     wget --no-check-certificate -O - https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
 
