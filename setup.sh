@@ -5,6 +5,10 @@ STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION
 
 sudo mkdir -p /var/stathub
 sudo chown -R $UID:$UID /var/stathub
+if [ ! -d /var/stathub ]; then
+    echo "Unable to create dir /var/stathub and chown to current user, Please manual do it"
+    exit 1
+fi
 cd /var/stathub
 
 if [ -f $(which wget) ]; then
@@ -16,6 +20,10 @@ else
     exit 1
 fi
 
+if [ ! -f server_$(uname -m).tar.gz ]; then
+    echo "Unable to get server file, Please manual download it"
+    exit 1
+fi
 tar zxf server_$(uname -m).tar.gz
 rm -rf server_$(uname -m).tar.gz
 
