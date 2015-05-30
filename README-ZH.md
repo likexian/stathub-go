@@ -29,11 +29,11 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ### Linux (如果有curl)
 
-    curl --insecure https://github.com/likexian/stathub-go/blob/master/setup.sh | sh
+    curl --insecure https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
 
 ### Linux (如果有wget)
 
-    wget --no-check-certificate -O - https://github.com/likexian/stathub-go/blob/master/setup.sh | sh
+    wget --no-check-certificate -O - https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
 
 ### 在您电脑的浏览器打开它
 

@@ -29,11 +29,11 @@ You shall choose a server for master, and install it following the below
 
 ### Linux with curl
 
-    curl --insecure https://github.com/likexian/stathub-go/blob/master/setup.sh | sh
+    curl --insecure https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
 
 ### Linux with wget
 
-    wget --no-check-certificate -O - https://github.com/likexian/stathub-go/blob/master/setup.sh | sh
+    wget --no-check-certificate -O - https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
 
 ### Open on your PC browser
 
