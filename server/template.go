@@ -6470,9 +6470,13 @@ if [ ! -d /var/stathub ]; then
 fi
 cd /var/stathub
 
-if [ -f $(which wget) ]; then
+command_exists() {
+    type "$1" &> /dev/null
+}
+
+if command_exists wget; then
     wget --no-check-certificate $STATHUB_URL
-elif [ -f $(which curl) ]; then
+elif command_exists curl; then
     curl --insecure -O $STATHUB_URL
 else
     echo "Unable to find curl or wget, Please install and try again."
@@ -6486,7 +6490,7 @@ fi
 tar zxf client_$(uname -m).tar.gz
 rm -rf client_$(uname -m).tar.gz
 
-if [ -f $(which crontab) ]; then
+if command_exists crontab; then
     if [ -z "$(crontab -l | grep stathub)" ]; then
         (crontab -l; echo "* * * * * cd /var/stathub; ./client >>/var/stathub/client.log 2>&1") | crontab -
     fi

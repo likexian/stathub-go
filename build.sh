@@ -24,9 +24,13 @@ cp README.md tmp
 cp README-ZH.md tmp
 cp VERSION tmp
 
+command_exists() {
+    type "$1" &> /dev/null
+}
+
 echo 'goupxing binary files'
 cd tmp
-if [ -f $(which goupx) ]; then
+if command_exists goupx; then
     goupx server client >/dev/null 2>&1
 fi
 

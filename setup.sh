@@ -12,9 +12,13 @@ if [ ! -d /var/stathub ]; then
 fi
 cd /var/stathub
 
-if [ -f $(which wget) ]; then
+command_exists() {
+    type "$1" &> /dev/null
+}
+
+if command_exists wget; then
     wget --no-check-certificate $STATHUB_URL
-elif [ -f $(which curl) ]; then
+elif command_exists curl; then
     curl --insecure -O $STATHUB_URL
 else
     echo "Unable to find curl or wget, Please install and try again."
@@ -47,9 +51,9 @@ sleep 1
 
 KEY=$(grep key server.json | cut -d \" -f 4)
 STATHUB_CLIENT_URL=https://127.0.0.1:15944/node?key=$KEY
-if [ -f $(which wget) ]; then
+if command_exists wget; then
     wget --no-check-certificate -O - $STATHUB_CLIENT_URL | sh
-elif [ -f $(which curl) ]; then
+elif command_exists curl; then
     curl --insecure $STATHUB_CLIENT_URL | sh
 else
     echo "Unable to find curl or wget, Please install and try again."
