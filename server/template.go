@@ -6461,9 +6461,9 @@ if (v === false) {
 VERSION="0.10.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/client_$(uname -m).tar.gz"
 
-[ $UID -ne 0 ] && sudo="sudo" || sudo=""
+[ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""
 $sudo mkdir -p /var/stathub
-$sudo chown -R $USER:$USER /var/stathub
+$sudo chown -R $(id -u -n):$(id -g -n) /var/stathub
 if [ ! -d /var/stathub ]; then
     echo "Unable to create dir /var/stathub and chown to current user, Please manual do it"
     exit 1
