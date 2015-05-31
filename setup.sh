@@ -29,7 +29,7 @@ tar zxf server_$(uname -m).tar.gz
 rm -rf server_$(uname -m).tar.gz
 
 if [ -z "$(grep stathub /etc/rc.local)" ]; then
-    echo "cd /var/stathub; ./service start >/var/stathub/data/stathub.log 2>&1" >> /etc/rc.local
+    $sudo sh -c 'echo "cd /var/stathub; rm -f data/stathub.pid; ./service start >/var/stathub/data/stathub.log 2>&1" >> /etc/rc.local'
 fi
 
 echo "----------------------------------------------------"
