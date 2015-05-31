@@ -43,6 +43,7 @@ echo "| StatHub, Apache License, Version 2.0             |"
 echo "----------------------------------------------------"
 
 ./service start
+sleep 1
 
 KEY=$(grep key server.json | cut -d \" -f 4)
 STATHUB_CLIENT_URL=https://127.0.0.1:15944/node?key=$KEY
