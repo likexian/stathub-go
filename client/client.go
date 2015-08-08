@@ -59,7 +59,7 @@ type Stat struct {
 }
 
 func Version() string {
-    return "0.10.2"
+    return "0.11.2"
 }
 
 func Author() string {
