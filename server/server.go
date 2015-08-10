@@ -85,6 +85,11 @@ func License() string {
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
+    if IsRobots(w, r) {
+        HTTPErrorHandler(w, r, http.StatusForbidden)
+        return
+    }
+
     if !IsLogin(w, r) {
         http.Redirect(w, r, "/login", http.StatusFound)
         return
@@ -182,6 +187,11 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+    if IsRobots(w, r) {
+        HTTPErrorHandler(w, r, http.StatusForbidden)
+        return
+    }
+
     if r.Method == "POST" {
         err := r.ParseForm()
         if err != nil {
@@ -483,6 +493,24 @@ func IsLogin(w http.ResponseWriter, r *http.Request) bool {
     }
 
     return true
+}
+
+func IsRobots(w http.ResponseWriter, r *http.Request) bool {
+    agent := ""
+    if test, ok := r.Header["User-Agent"]; !ok {
+        return true
+    } else {
+        agent = strings.ToLower(test[0])
+    }
+
+    robots := []string{"bot", "spider", "archiver", "yahoo! slurp", "haosou"}
+    for _, v := range robots {
+        if strings.Contains(agent, v) {
+            return true
+        }
+    }
+
+    return false
 }
 
 func main() {
