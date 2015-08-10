@@ -340,6 +340,10 @@ func Client64Handler(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE+"_x86_64")
 }
 
+func RobotsTXTHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "User-agent: *\r\nDisallow: /")
+}
+
 func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     ip := strings.Split(r.RemoteAddr, ":")[0]
     if test, ok := r.Header["X-Real-Ip"]; ok {
@@ -572,6 +576,7 @@ func main() {
     http.HandleFunc("/static/client_i686", Client32Handler)
     http.HandleFunc("/static/client_x86_64", Client64Handler)
     http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
+    http.HandleFunc("/robots.txt", RobotsTXTHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
     if CONFIG_ISTLS {
