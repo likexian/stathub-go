@@ -1,3 +1,10 @@
+Changes with Stat Hub 0.12.2 Beta    2015-08-14
+
+- Feature: block spider/bot requests
+
+- Bugfix: improve server and client setup
+
+
 Changes with Stat Hub 0.11.2 Beta    2015-08-08
 
 - Bugfix: improve server and client setup
