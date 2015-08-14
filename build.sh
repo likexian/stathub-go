@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo '+ building stathub start'
 [ ! -d stathub ] && mkdir stathub

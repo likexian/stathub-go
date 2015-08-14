@@ -6456,7 +6456,7 @@ if (v === false) {
     </code>
 </div>
 {{end}}`
-    Template_Node = `#!/bin/sh
+    Template_Node = `#!/bin/bash
 
 VERSION="0.11.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/client_$(uname -m).tar.gz"
