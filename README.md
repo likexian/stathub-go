@@ -53,17 +53,9 @@ Follow the guide
 
 ## FAQ
 
-- Why no data on the page ?
-
-    Please add a client first, the guide will show how to.
-
-- A client added, still no list on the page ?
+- A client added, but no list on the page ?
 
     Please refer to the client.log on the node, it may show what is wrong.
-
-- Shall I run the client on the server side ?
-
-    Sure, server is a client on the other side.
 
 - Can I use my domain instead of the https://ip:15944 ?
 
@@ -79,7 +71,7 @@ Follow the guide
 
 - Can I deploy it with my nginx ?
 
-    Sure, please add the folling config to nginx conf file.
+Sure, please add the folling config to nginx conf file.
 
     location /stathub/ {
         proxy_pass https://127.0.0.1:15944;
