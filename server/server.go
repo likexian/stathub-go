@@ -19,6 +19,7 @@ import (
     "time"
     "sort"
     "github.com/likexian/simplejson-go"
+    "github.com/likexian/daemon-go"
 )
 
 const (
@@ -530,7 +531,7 @@ func main() {
         }
     }
 
-    uid, gid, err := LookupUser(PROCESS_USER)
+    uid, gid, err := daemon.LookupUser(PROCESS_USER)
     if err != nil {
         panic(err)
     }
@@ -548,11 +549,6 @@ func main() {
         }
     }
     os.Chown(SERVER_WORKDIR + DATA_DIR, uid, gid)
-
-    if !FileExists(SERVER_WORKDIR + DATA_DIR + PROCESS_LOG) {
-        WriteFile(SERVER_WORKDIR + DATA_DIR + PROCESS_LOG, "")
-    }
-    // os.Chown(SERVER_WORKDIR + DATA_DIR + PROCESS_LOG, uid, gid)
 
     SERVER_START = time.Now().Unix()
     if !FileExists(SERVER_WORKDIR + CONFIG_FILE) {
@@ -587,9 +583,16 @@ func main() {
     }
 
     if !DEBUG {
-        daemon := Daemon(SERVER_WORKDIR + DATA_DIR + PROCESS_LOCK, SERVER_WORKDIR + DATA_DIR + PROCESS_LOG, uid, gid, 0, 0)
-        if daemon != 0 {
-            os.Exit(-1)
+        c := daemon.Config {
+            Pid:   SERVER_WORKDIR + DATA_DIR + PROCESS_LOCK,
+            Log:   SERVER_WORKDIR + DATA_DIR + PROCESS_LOG,
+            User:  PROCESS_USER,
+            Chdir: "",
+        }
+
+        err := c.Daemon()
+        if err != nil {
+            panic(err)
         }
     }
 

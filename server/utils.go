@@ -14,9 +14,7 @@ import(
     "fmt"
     "os"
     "math"
-    "errors"
     "strings"
-    "strconv"
     "crypto/md5"
     "io/ioutil"
 )
@@ -129,40 +127,4 @@ func PrettyLinuxVersion(version string) (string) {
 
 func PassWord(key, password string) string {
     return fmt.Sprintf("%x", md5.Sum([]byte(key + password)))
-}
-
-
-func LookupUser(name string) (uid, gid int, err error) {
-    text, err := ReadFile("/etc/passwd")
-    if err != nil {
-        return
-    }
-
-    s_uid := ""
-    s_gid := ""
-    lines := strings.Split(text, "\n")
-    for _, v := range lines {
-        ls := strings.Split(v, ":")
-        if ls[0] == name {
-            s_uid = ls[2]
-            s_gid = ls[3]
-        }
-    }
-
-    if s_uid == "" || s_gid == "" {
-        err = errors.New("User not exits")
-        return
-    }
-
-    gid, err = strconv.Atoi(s_gid)
-    if err != nil {
-        return
-    }
-
-    uid, err = strconv.Atoi(s_uid)
-    if err != nil {
-        return
-    }
-
-    return
 }
