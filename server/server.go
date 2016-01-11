@@ -17,6 +17,7 @@ import (
     "strings"
     "text/template"
     "time"
+    "sort"
     "github.com/likexian/simplejson-go"
 )
 
@@ -71,6 +72,12 @@ type Status struct {
     OSRelease  string
     LastUpdate string
 }
+
+type Statuses []Status
+
+func (n Statuses) Len() int {return len(n)}
+func (n Statuses) Swap(i, j int) {n[i], n[j] = n[j], n[i]}
+func (n Statuses) Less(i, j int) bool {return n[i].Name < n[j].Name}
 
 func Version() string {
     return "0.12.2"
@@ -183,6 +190,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
         }
     }
 
+    sort.Sort(Statuses(data))
     tpl.Execute(w, data)
 }
 
