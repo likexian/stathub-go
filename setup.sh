@@ -4,6 +4,12 @@ VERSION="0.12.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/server_$(uname -m).tar.gz"
 
 [ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""
+if id -u nobody >/dev/null 2>&1; then
+else
+    $sudo groupadd nogroup
+    useradd -g nogroup nobody -s /bin/false
+fi
+
 $sudo mkdir -p /var/stathub
 $sudo chown -R $(id -u -n):$(id -g -n) /var/stathub
 if [ ! -d /var/stathub ]; then
@@ -46,7 +52,7 @@ echo "| Thank you for your using, By Li Kexian           |"
 echo "| StatHub, Apache License, Version 2.0             |"
 echo "----------------------------------------------------"
 
-./service start
+$sudo ./service start
 sleep 1
 
 KEY=$(grep key server.json | cut -d \" -f 4)
