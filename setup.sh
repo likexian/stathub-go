@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.12.2"
+VERSION="0.13.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/server_$(uname -m).tar.gz"
 
 [ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""

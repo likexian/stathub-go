@@ -1,3 +1,9 @@
+Changes with Stat Hub 0.13.2 Beta    2016-01-13
+
+- Feature: sort server list by hostname
+- Feature: server run as daemon and do setuid
+
+
 Changes with Stat Hub 0.12.2 Beta    2015-08-14
 
 - Feature: block spider/bot requests
