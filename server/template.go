@@ -2,7 +2,7 @@
  * A smart Hub for holding server stat
  * https://www.likexian.com/
  *
- * Copyright 2015, Li Kexian
+ * Copyright 2015-2016, Li Kexian
  * Released under the Apache License, Version 2.0
  *
  */
@@ -6265,7 +6265,7 @@ code {
  * A smart Hub for holding server stat
  * https://www.likexian.com/
  *
- * Copyright 2015, Li Kexian
+ * Copyright 2015-2016, Li Kexian
  * Released under the Apache License, Version 2.0
  *
  */
@@ -6290,10 +6290,11 @@ code {
         {{template "main_body" .}}
     </div>
     <div class="footer text-center">
-        &copy; 2015 <a href="https://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0.
+        &copy; 2015-2016 <a href="https://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0.
     </div>
 </body>
-</html>`
+</html>
+`
     Template_Index = `{{define "main_body"}}
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
 <div id="update" class="bg-warning">

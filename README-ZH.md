@@ -80,7 +80,7 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ## 版权
 
-Copyright 2015, Li Kexian
+Copyright 2015-2016, Li Kexian
 
 Apache License, Version 2.0
 

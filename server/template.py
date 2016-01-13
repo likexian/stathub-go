@@ -6,7 +6,7 @@
  * A smart Hub for holding server stat
  * https://www.likexian.com/
  *
- * Copyright 2015, Li Kexian
+ * Copyright 2015-2016, Li Kexian
  * Released under the Apache License, Version 2.0
  *
  */
@@ -16,7 +16,7 @@ template = '''/*
  * A smart Hub for holding server stat
  * https://www.likexian.com/
  *
- * Copyright 2015, Li Kexian
+ * Copyright 2015-2016, Li Kexian
  * Released under the Apache License, Version 2.0
  *
  */
