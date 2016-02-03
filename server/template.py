@@ -12,29 +12,8 @@
  */
 '''
 
-template = '''/*
- * A smart Hub for holding server stat
- * https://www.likexian.com/
- *
- * Copyright 2015-2016, Li Kexian
- * Released under the Apache License, Version 2.0
- *
- */
 
-package main
-
-
-const (
-    Template_Bootstrap = `%s`
-    Template_Layout = `%s`
-    Template_Index = `%s`
-    Template_Login = `%s`
-    Template_Help = `%s`
-    Template_Node = `%s`
-    Default_TLS_CERT = `%s`
-    Default_TLS_KEY = `%s`
-)
-'''
+import os
 
 
 def read_file(fname):
@@ -50,14 +29,32 @@ def write_file(fname, text):
     fp.close()
 
 
-Template_Bootstrap = read_file('./static/bootstrap.css')
-Template_Layout = read_file('./template/layout.html')
-Template_Index = read_file('./template/index.html')
-Template_Login = read_file('./template/login.html')
-Template_Help = read_file('./template/help.html')
-Template_Node = read_file('./template/node.html')
-Default_TLS_CERT = read_file('./cert/cert.pem')
-Default_TLS_KEY = read_file('./cert/cert.key')
-template = template % (Template_Bootstrap, Template_Layout, Template_Index, Template_Login, Template_Help, Template_Node,
-    Default_TLS_CERT, Default_TLS_KEY)
+template = '''/*
+ * A smart Hub for holding server stat
+ * https://www.likexian.com/
+ *
+ * Copyright 2015-2016, Li Kexian
+ * Released under the Apache License, Version 2.0
+ *
+ */
+
+package main
+
+
+var TPL_CERT = map[string]string{}
+var TPL_STATIC = map[string]string{}
+var TPL_TEMPLATE = map[string]string{}
+
+
+func init() {'''
+
+
+mapper = {'cert': 'TPL_CERT', 'static': 'TPL_STATIC', 'template': 'TPL_TEMPLATE'}
+for i in mapper:
+    for j in os.listdir(i):
+        f = '%s/%s' % (i, j)
+        t = read_file(f)
+        template += '\n%s%s["%s"] = `%s`\n' % (' ' * 4, mapper[i], j, t)
+
+template += '\n}\n'
 write_file('template.go', template)

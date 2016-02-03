@@ -10,8 +10,63 @@
 package main
 
 
-const (
-    Template_Bootstrap = `/*!
+var TPL_CERT = map[string]string{}
+var TPL_STATIC = map[string]string{}
+var TPL_TEMPLATE = map[string]string{}
+
+
+func init() {
+    TPL_CERT["cert.key"] = `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAqrl2dsxFwiDwixIU2C6u4tJJRwqKXpDgbURW/CX92mcl/4Co
+C5Kc4V8ujkKS0tCcWYtiyQzDQZ3o7/Va86SgCq8nWLS7JhPg0V0DDhBY63BDe1eW
+y4jxCFjnidDf2CrfEiitdX4+VtLJ4a/I229BcTNAdTrWhXYVVhmKcxRBevlwzFh/
+7JFui3VK3ZI3i/Y+c+5NwKtxbwoDwHdnpQlqD41HGf/PIurwCT5Wi/HjdAS7MDdS
+/gpZqPLkKx+j1nBSnagAPVPuL6fcSpJopM/m60VsLbltyr1ofGpoq//CNnrO24uX
+pMjjavcx7oTlO6j6AiAc6RgFPN0Pcu7KyvbOLQIDAQABAoIBAE10aQeKs5dYZGlj
+4asWuudTKkWdxZsTtY49NA2fmuUMaRPbJeJiOOSSz0dhcsVMObLyZvX54VgSsUy0
+jvf811MhlgNLs6CZ4iR6Q1mNFxpxy1vZKCPdVCVKWHmRFw02ng/Z/qBQjy3K4iaP
+HtxXRGR8MSE+eXcBVLrESajeJrsIVFrCD55zAR1KeHmIZOWZnF7C+b4h9vW7YSCZ
+grmQ7ayC+lR/UDt4Fd0uNRQZWyO19jTG9jgGrqEKDDgJLuX2bfTDt3u7ABbIhZRo
+xEhxyoDyr8kF0KtoXdieqzvdDMPhNoc+DI6uSY6JhYb9ED6A0QGsP26h1rt9IVcZ
+VH9SoYECgYEAywc2181sKGrNuUk2Q9KjsnfOEHwObo6RW0qDxeUYXYbMMDfHdknS
+VGcdS7VBQ0NExx05khzydcZK/kxQZUoLqBBsjHjHOTCa04RalarOlXHW1PIs1uXR
+RMXtDKsJSGp/a552IASK9v78Ug39WcFB0g01XJtOdwZITed6SUejtaECgYEA10SZ
+L4JIsMJnpnwHT/rOMdpCjeY99w7XdqtllyrfJ8frgOB3fHpZcCaViGvAHyKYG3Ml
+VV3lRD3qZih23RdLf//k16yGD8pK2/otG3zkpcSjbHyVatOXGvcaXzXv/K+hK0Cx
+8Bcaj3PzvrLQaLBjC3QZ5f/SYKnncpSwFOskdQ0CgYEAn7NiCWhVvokcn7WeEMV8
+7GJe3gqnU4GjhvrbImwtuUvSC8+kf0BcSPX/TlEaL+2XCUTMx0kr00aSMOwYhUQ0
+XRPmPqy2kR7RerXuhzIfY+BzC3gfmz6VWRKTf1Z+a88RwbaY1mCcauNx2J2WfuaM
+fszS/7BOjUOM1nLRdxj6BmECgYAwuLz3DMTJBOcSvkWla32ZuO2RUkg6D6jimf5f
+TXu+dDgwLh29FbACeyki/Eg6g8jrhY8wmBTY8i6IOqZUef5DlTZFPi4FiuKQkTn+
+W7Egd7YJStVCnWs41i6o1/teNJ4EvRrI3WHMkBDd23jiCPIR2JA4B0OlTy8sNsz3
+nxTcTQKBgDWJZHv1OD+UaA/PI/5hM3trYC0FIgh1MHyQLu/hJj71s/1qFOPxFUjV
+sFA7aKUpgmdzK7T0i9n/ys6NeeXDFGqQgPQ6VpWfTmiMzLx69ctuVl4fQw3zcUwV
+Lu2gDkrz5X6qTdI+t2eX1KEi+HmYOw2oblztj7CU6CanIVmh5TK3
+-----END RSA PRIVATE KEY-----
+`
+
+    TPL_CERT["cert.pem"] = `-----BEGIN CERTIFICATE-----
+MIIDATCCAeugAwIBAgIRAObvl+LyI1FPGPLqnzJuABAwCwYJKoZIhvcNAQELMBIx
+EDAOBgNVBAoTB1N0YXRIdWIwHhcNMTUwNDIwMDgzMTAxWhcNMjUwNDE3MDgzMTAx
+WjASMRAwDgYDVQQKEwdTdGF0SHViMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAqrl2dsxFwiDwixIU2C6u4tJJRwqKXpDgbURW/CX92mcl/4CoC5Kc4V8u
+jkKS0tCcWYtiyQzDQZ3o7/Va86SgCq8nWLS7JhPg0V0DDhBY63BDe1eWy4jxCFjn
+idDf2CrfEiitdX4+VtLJ4a/I229BcTNAdTrWhXYVVhmKcxRBevlwzFh/7JFui3VK
+3ZI3i/Y+c+5NwKtxbwoDwHdnpQlqD41HGf/PIurwCT5Wi/HjdAS7MDdS/gpZqPLk
+Kx+j1nBSnagAPVPuL6fcSpJopM/m60VsLbltyr1ofGpoq//CNnrO24uXpMjjavcx
+7oTlO6j6AiAc6RgFPN0Pcu7KyvbOLQIDAQABo1YwVDAOBgNVHQ8BAf8EBAMCAKAw
+EwYDVR0lBAwwCgYIKwYBBQUHAwEwDAYDVR0TAQH/BAIwADAfBgNVHREEGDAWgQ5p
+QGxpa2V4aWFuLmNvbYcEfwAAATALBgkqhkiG9w0BAQsDggEBAAtB350C0uPmvUZS
+MYNOvkfhCUCW0qQKoEpoB1wQ1TpU4lT13aoHqExTP8s3oqSc0sFDjL4N78kuvjTY
+4xqb+2upu5SaZmIWEt8HYGOOAz3eE7tJUZgjOGPgV9aQv5KCfATdESxNOu2O9/oA
+9NNw3x+nnGf0LAVh6ggySJ7b7UtOLXGRWcKl3dtbCXpvpKwY1jhSti7H2hNXk+oI
+p8ReKLzeUPowyp5p373COpz1v3NbvXgHzB3wYZ9g9PMq0a9ukkAhpaRkPXNZmMmY
+eP2If28jxLlI19pW2HwXxT+5h9FblbPIY6YJ+KaYVcZn+V2fuKQ+Z/taxm/p6Y4P
+//xaKEc=
+-----END CERTIFICATE-----
+`
+
+    TPL_STATIC["bootstrap.css"] = `/*!
  * Bootstrap v3.2.0 (http://getbootstrap.com)
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -6259,43 +6314,24 @@ code {
 }
 /* add by stat hub (https://github.com/likexian/stathub-go) */
 `
-    Template_Layout = `<!DOCTYPE html>
-<!--
-/*
- * A smart Hub for holding server stat
- * https://www.likexian.com/
- *
- * Copyright 2015-2016, Li Kexian
- * Released under the Apache License, Version 2.0
- *
- */
--->
-<html lang="en">
-    <head>
-    <meta charset="utf-8">
-    <title>Stat Hub - A smart Hub for holding server stat</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/static/bootstrap.css" type="text/css" rel="stylesheet">
-    <style type="text/css">.progress {margin-bottom: 0;}</style>
-</head>
-<body>
-<div class="container">
-    <div class="header clearfix">
-        <h3 class="pull-left"><a href="/">Stat Hub</a></h3>
-        <span id="auth-span" class="pull-right">
-            <a href="/help">Help</a> <a href="/passwd">Passwd</a> <a href="/logout">Logout</a>
-        </span>
-    </div>
-    <div>
-        {{template "main_body" .}}
-    </div>
-    <div class="footer text-center">
-        &copy; 2015-2016 <a href="https://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0.
-    </div>
-</body>
-</html>
+
+    TPL_TEMPLATE["help.html"] = `{{define "main_body"}}
+<script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
+<h3>Login to new node and run, with curl: </h3>
+<div>
+    <code>
+    $ curl --insecure https://{{.server}}/node?key={{.key}} | sh
+    </code>
+<h3>If the system don't have curl, try wget: </h3>
+<div>
+    <code>
+    $ wget --no-check-certificate -O - https://{{.server}}/node?key={{.key}} | sh
+    </code>
+</div>
+{{end}}
 `
-    Template_Index = `{{define "main_body"}}
+
+    TPL_TEMPLATE["index.html"] = `{{define "main_body"}}
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
 <div id="update" class="bg-warning">
     New version available, Please download from <a target="_blank" href="https://github.com/likexian/stathub-go">https://github.com/likexian/stathub-go</a>.
@@ -6433,8 +6469,47 @@ if (v === false) {
     stat_hub_version_result(v);
 }
 </script>
-{{end}}`
-    Template_Login = `{{define "main_body"}}
+{{end}}
+`
+
+    TPL_TEMPLATE["layout.html"] = `<!DOCTYPE html>
+<!--
+/*
+ * A smart Hub for holding server stat
+ * https://www.likexian.com/
+ *
+ * Copyright 2015-2016, Li Kexian
+ * Released under the Apache License, Version 2.0
+ *
+ */
+-->
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <title>Stat Hub - A smart Hub for holding server stat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/bootstrap.css" type="text/css" rel="stylesheet">
+    <style type="text/css">.progress {margin-bottom: 0;}</style>
+</head>
+<body>
+<div class="container">
+    <div class="header clearfix">
+        <h3 class="pull-left"><a href="/">Stat Hub</a></h3>
+        <span id="auth-span" class="pull-right">
+            <a href="/help">Help</a> <a href="/passwd">Passwd</a> <a href="/logout">Logout</a>
+        </span>
+    </div>
+    <div>
+        {{template "main_body" .}}
+    </div>
+    <div class="footer text-center">
+        &copy; 2015-2016 <a href="https://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0.
+    </div>
+</body>
+</html>
+`
+
+    TPL_TEMPLATE["login.html"] = `{{define "main_body"}}
 <form class="form-group" role="form" method="POST" action="/{{.action}}">
     <div class="form-group input-group input-group-lg">
     <span class="input-group-addon">Password</span>
@@ -6442,22 +6517,10 @@ if (v === false) {
     </div>
     <button type="submit" class="btn btn-default btn-lg btn-block">Submit</button>
 </form>
-{{end}}`
-    Template_Help = `{{define "main_body"}}
-<script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
-<h3>Login to new node and run, with curl: </h3>
-<div>
-    <code>
-    $ curl --insecure https://{{.server}}/node?key={{.key}} | sh
-    </code>
-<h3>If the system don't have curl, try wget: </h3>
-<div>
-    <code>
-    $ wget --no-check-certificate -O - https://{{.server}}/node?key={{.key}} | sh
-    </code>
-</div>
-{{end}}`
-    Template_Node = `#!/bin/bash
+{{end}}
+`
+
+    TPL_TEMPLATE["node.html"] = `#!/bin/bash
 
 VERSION="0.13.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/client_$(uname -m).tar.gz"
@@ -6525,52 +6588,5 @@ echo "----------------------------------------------------"
 sleep 1
 ./client
 `
-    Default_TLS_CERT = `-----BEGIN CERTIFICATE-----
-MIIDATCCAeugAwIBAgIRAObvl+LyI1FPGPLqnzJuABAwCwYJKoZIhvcNAQELMBIx
-EDAOBgNVBAoTB1N0YXRIdWIwHhcNMTUwNDIwMDgzMTAxWhcNMjUwNDE3MDgzMTAx
-WjASMRAwDgYDVQQKEwdTdGF0SHViMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
-CgKCAQEAqrl2dsxFwiDwixIU2C6u4tJJRwqKXpDgbURW/CX92mcl/4CoC5Kc4V8u
-jkKS0tCcWYtiyQzDQZ3o7/Va86SgCq8nWLS7JhPg0V0DDhBY63BDe1eWy4jxCFjn
-idDf2CrfEiitdX4+VtLJ4a/I229BcTNAdTrWhXYVVhmKcxRBevlwzFh/7JFui3VK
-3ZI3i/Y+c+5NwKtxbwoDwHdnpQlqD41HGf/PIurwCT5Wi/HjdAS7MDdS/gpZqPLk
-Kx+j1nBSnagAPVPuL6fcSpJopM/m60VsLbltyr1ofGpoq//CNnrO24uXpMjjavcx
-7oTlO6j6AiAc6RgFPN0Pcu7KyvbOLQIDAQABo1YwVDAOBgNVHQ8BAf8EBAMCAKAw
-EwYDVR0lBAwwCgYIKwYBBQUHAwEwDAYDVR0TAQH/BAIwADAfBgNVHREEGDAWgQ5p
-QGxpa2V4aWFuLmNvbYcEfwAAATALBgkqhkiG9w0BAQsDggEBAAtB350C0uPmvUZS
-MYNOvkfhCUCW0qQKoEpoB1wQ1TpU4lT13aoHqExTP8s3oqSc0sFDjL4N78kuvjTY
-4xqb+2upu5SaZmIWEt8HYGOOAz3eE7tJUZgjOGPgV9aQv5KCfATdESxNOu2O9/oA
-9NNw3x+nnGf0LAVh6ggySJ7b7UtOLXGRWcKl3dtbCXpvpKwY1jhSti7H2hNXk+oI
-p8ReKLzeUPowyp5p373COpz1v3NbvXgHzB3wYZ9g9PMq0a9ukkAhpaRkPXNZmMmY
-eP2If28jxLlI19pW2HwXxT+5h9FblbPIY6YJ+KaYVcZn+V2fuKQ+Z/taxm/p6Y4P
-//xaKEc=
------END CERTIFICATE-----
-`
-    Default_TLS_KEY = `-----BEGIN RSA PRIVATE KEY-----
-MIIEowIBAAKCAQEAqrl2dsxFwiDwixIU2C6u4tJJRwqKXpDgbURW/CX92mcl/4Co
-C5Kc4V8ujkKS0tCcWYtiyQzDQZ3o7/Va86SgCq8nWLS7JhPg0V0DDhBY63BDe1eW
-y4jxCFjnidDf2CrfEiitdX4+VtLJ4a/I229BcTNAdTrWhXYVVhmKcxRBevlwzFh/
-7JFui3VK3ZI3i/Y+c+5NwKtxbwoDwHdnpQlqD41HGf/PIurwCT5Wi/HjdAS7MDdS
-/gpZqPLkKx+j1nBSnagAPVPuL6fcSpJopM/m60VsLbltyr1ofGpoq//CNnrO24uX
-pMjjavcx7oTlO6j6AiAc6RgFPN0Pcu7KyvbOLQIDAQABAoIBAE10aQeKs5dYZGlj
-4asWuudTKkWdxZsTtY49NA2fmuUMaRPbJeJiOOSSz0dhcsVMObLyZvX54VgSsUy0
-jvf811MhlgNLs6CZ4iR6Q1mNFxpxy1vZKCPdVCVKWHmRFw02ng/Z/qBQjy3K4iaP
-HtxXRGR8MSE+eXcBVLrESajeJrsIVFrCD55zAR1KeHmIZOWZnF7C+b4h9vW7YSCZ
-grmQ7ayC+lR/UDt4Fd0uNRQZWyO19jTG9jgGrqEKDDgJLuX2bfTDt3u7ABbIhZRo
-xEhxyoDyr8kF0KtoXdieqzvdDMPhNoc+DI6uSY6JhYb9ED6A0QGsP26h1rt9IVcZ
-VH9SoYECgYEAywc2181sKGrNuUk2Q9KjsnfOEHwObo6RW0qDxeUYXYbMMDfHdknS
-VGcdS7VBQ0NExx05khzydcZK/kxQZUoLqBBsjHjHOTCa04RalarOlXHW1PIs1uXR
-RMXtDKsJSGp/a552IASK9v78Ug39WcFB0g01XJtOdwZITed6SUejtaECgYEA10SZ
-L4JIsMJnpnwHT/rOMdpCjeY99w7XdqtllyrfJ8frgOB3fHpZcCaViGvAHyKYG3Ml
-VV3lRD3qZih23RdLf//k16yGD8pK2/otG3zkpcSjbHyVatOXGvcaXzXv/K+hK0Cx
-8Bcaj3PzvrLQaLBjC3QZ5f/SYKnncpSwFOskdQ0CgYEAn7NiCWhVvokcn7WeEMV8
-7GJe3gqnU4GjhvrbImwtuUvSC8+kf0BcSPX/TlEaL+2XCUTMx0kr00aSMOwYhUQ0
-XRPmPqy2kR7RerXuhzIfY+BzC3gfmz6VWRKTf1Z+a88RwbaY1mCcauNx2J2WfuaM
-fszS/7BOjUOM1nLRdxj6BmECgYAwuLz3DMTJBOcSvkWla32ZuO2RUkg6D6jimf5f
-TXu+dDgwLh29FbACeyki/Eg6g8jrhY8wmBTY8i6IOqZUef5DlTZFPi4FiuKQkTn+
-W7Egd7YJStVCnWs41i6o1/teNJ4EvRrI3WHMkBDd23jiCPIR2JA4B0OlTy8sNsz3
-nxTcTQKBgDWJZHv1OD+UaA/PI/5hM3trYC0FIgh1MHyQLu/hJj71s/1qFOPxFUjV
-sFA7aKUpgmdzK7T0i9n/ys6NeeXDFGqQgPQ6VpWfTmiMzLx69ctuVl4fQw3zcUwV
-Lu2gDkrz5X6qTdI+t2eX1KEi+HmYOw2oblztj7CU6CanIVmh5TK3
------END RSA PRIVATE KEY-----
-`
-)
+
+}

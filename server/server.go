@@ -108,13 +108,13 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tpl, err := template.New("index").Parse(Template_Layout)
+    tpl, err := template.New("index").Parse(TPL_TEMPLATE["layout.html"])
     if err != nil {
         HTTPErrorHandler(w, r, http.StatusInternalServerError)
         return
     }
 
-    tpl, err = tpl.Parse(Template_Index)
+    tpl, err = tpl.Parse(TPL_TEMPLATE["index.html"])
     if err != nil {
         HTTPErrorHandler(w, r, http.StatusInternalServerError)
         return
@@ -218,13 +218,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
             http.Redirect(w, r, "/", http.StatusFound)
         }
     } else {
-        tpl, err := template.New("login").Parse(Template_Layout)
+        tpl, err := template.New("login").Parse(TPL_TEMPLATE["layout.html"])
         if err != nil {
             HTTPErrorHandler(w, r, http.StatusInternalServerError)
             return
         }
 
-        tpl, err = tpl.Parse(Template_Login)
+        tpl, err = tpl.Parse(TPL_TEMPLATE["login.html"])
         if err != nil {
             HTTPErrorHandler(w, r, http.StatusInternalServerError)
             return
@@ -273,13 +273,13 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
             http.Redirect(w, r, "/", http.StatusFound)
         }
     } else {
-        tpl, err := template.New("passwd").Parse(Template_Layout)
+        tpl, err := template.New("passwd").Parse(TPL_TEMPLATE["layout.html"])
         if err != nil {
             HTTPErrorHandler(w, r, http.StatusInternalServerError)
             return
         }
 
-        tpl, err = tpl.Parse(Template_Login)
+        tpl, err = tpl.Parse(TPL_TEMPLATE["login.html"])
         if err != nil {
             HTTPErrorHandler(w, r, http.StatusInternalServerError)
             return
@@ -303,13 +303,13 @@ func HelpHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tpl, err := template.New("help").Parse(Template_Layout)
+    tpl, err := template.New("help").Parse(TPL_TEMPLATE["layout.html"])
     if err != nil {
         HTTPErrorHandler(w, r, http.StatusInternalServerError)
         return
     }
 
-    tpl, err = tpl.Parse(Template_Help)
+    tpl, err = tpl.Parse(TPL_TEMPLATE["help.html"])
     if err != nil {
         HTTPErrorHandler(w, r, http.StatusInternalServerError)
         return
@@ -333,7 +333,7 @@ func NodeHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tpl, err := template.New("node").Parse(Template_Node)
+    tpl, err := template.New("node").Parse(TPL_TEMPLATE["node.html"])
     if err != nil {
         HTTPErrorHandler(w, r, http.StatusInternalServerError)
         return
@@ -352,11 +352,11 @@ func NodeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func Client32Handler(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE+"_i686")
+    http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE + "_i686")
 }
 
 func Client64Handler(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE+"_x86_64")
+    http.ServeFile(w, r, SERVER_WORKDIR+CLIENT_FILE + "_x86_64")
 }
 
 func RobotsTXTHandler(w http.ResponseWriter, r *http.Request) {
@@ -469,12 +469,28 @@ func HTTPErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
     }
 }
 
-func BootstrapCSSHandler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/css; charset=utf-8")
+func StaticHandler(w http.ResponseWriter, r *http.Request) {
+    n := strings.LastIndex(r.URL.Path, ".")
+    if n == -1 {
+        HTTPErrorHandler(w, r, http.StatusNotFound)
+        return
+    }
+
+    ext := r.URL.Path[n + 1:]
+    if ext == "css" {
+        w.Header().Set("Content-Type", "text/css; charset=utf-8")
+    } else if (ext == "js") {
+        w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+    }
+
     if DEBUG {
         http.ServeFile(w, r, r.URL.Path[1:])
     } else {
-        fmt.Fprint(w, Template_Bootstrap)
+        if test, ok := TPL_STATIC[r.URL.Path[8:]]; ok {
+            fmt.Fprint(w, test)
+        } else {
+            HTTPErrorHandler(w, r, http.StatusNotFound)
+        }
     }
 }
 
@@ -569,14 +585,14 @@ func main() {
     }
 
     if !FileExists(SERVER_WORKDIR + TLS_CERT) {
-        err := WriteFile(SERVER_WORKDIR + TLS_CERT, Default_TLS_CERT)
+        err := WriteFile(SERVER_WORKDIR + TLS_CERT, TPL_CERT["cert.pem"])
         if err != nil {
             panic(err)
         }
     }
 
     if !FileExists(SERVER_WORKDIR + TLS_KEY) {
-        err := WriteFile(SERVER_WORKDIR + TLS_KEY, Default_TLS_KEY)
+        err := WriteFile(SERVER_WORKDIR + TLS_KEY, TPL_CERT["cert.key"])
         if err != nil {
             panic(err)
         }
@@ -612,9 +628,9 @@ func main() {
     http.HandleFunc("/passwd", PasswdHandler)
     http.HandleFunc("/help", HelpHandler)
     http.HandleFunc("/node", NodeHandler)
-    http.HandleFunc("/static/client_i686", Client32Handler)
-    http.HandleFunc("/static/client_x86_64", Client64Handler)
-    http.HandleFunc("/static/bootstrap.css", BootstrapCSSHandler)
+    http.HandleFunc("/client/client_i686", Client32Handler)
+    http.HandleFunc("/client/client_x86_64", Client64Handler)
+    http.HandleFunc("/static/", StaticHandler)
     http.HandleFunc("/robots.txt", RobotsTXTHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
 
