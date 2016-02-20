@@ -6813,4 +6813,11 @@ code {
   -webkit-box-shadow: none;
           box-shadow: none;
 }
+.delete-node {
+  cursor: pointer;
+}
+.delete-node:hover {
+  color: #ff0000;
+  text-decoration: none;
+}
 /* add by stat hub (https://github.com/likexian/stathub-go) */

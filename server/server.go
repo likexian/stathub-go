@@ -363,6 +363,47 @@ func RobotsTXTHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "User-agent: *\r\nDisallow: /")
 }
 
+func APINodeHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json; charset=utf-8")
+    if !IsLogin(w, r) {
+        result := `{"status": {"code": 0, "message": "login timeout"}}`
+        fmt.Fprintf(w, result)
+        return
+    }
+
+    body, err := ioutil.ReadAll(r.Body)
+    if err != nil {
+        result := `{"status": {"code": 0, "message": "data error"}}`
+        fmt.Fprintf(w, result)
+        return
+    }
+
+    data, err := simplejson.Loads(string(body))
+    if err != nil {
+        result := `{"status": {"code": 0, "message": "data invalid"}}`
+        fmt.Fprintf(w, result)
+        return
+    }
+
+    data_id, _ := data.Get("id").String()
+    data_id_dir := SERVER_WORKDIR + DATA_DIR + "/" + data_id[3:]
+    if !FileExists(data_id_dir) {
+        result := `{"status": {"code": 0, "message": "node id invalid"}}`
+        fmt.Fprintf(w, result)
+        return
+    }
+
+    err = os.RemoveAll(data_id_dir)
+    if err != nil {
+        result := `{"status": {"code": 0, "message": "` + err.Error() + `"}}`
+        fmt.Fprintf(w, result)
+        return
+    }
+
+    result := `{"status": {"code": 1, "message": "ok"}}`
+    fmt.Fprintf(w, result)
+}
+
 func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     ip := strings.Split(r.RemoteAddr, ":")[0]
     if test, ok := r.Header["X-Real-Ip"]; ok {
@@ -633,6 +674,7 @@ func main() {
     http.HandleFunc("/static/", StaticHandler)
     http.HandleFunc("/robots.txt", RobotsTXTHandler)
     http.HandleFunc("/api/stat", APIStatHandler)
+    http.HandleFunc("/api/node", APINodeHandler)
 
     if CONFIG_ISTLS {
         err = http.ListenAndServeTLS(":15944", SERVER_WORKDIR + TLS_CERT, SERVER_WORKDIR + TLS_KEY, nil)

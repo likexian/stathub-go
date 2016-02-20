@@ -19,6 +19,7 @@
             <th>Bandwidth</th>
             <th>System</th>
             <th>Updated</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -74,6 +75,7 @@
                 <td>{{.NetTotal}}</td>
                 <td>{{.OSRelease}}</td>
                 <td>{{.LastUpdate}}</td>
+                <td><a class="delete-node">&#10006;</a></td>
             </tr>
         {{end}}
     </tbody>
@@ -81,27 +83,25 @@
 <div id="auto_reload">
     Stat will refresh after <span id="after_seconds">00</span> seconds, <a style="cursor:pointer" id="after_action" onclick="after_action()">stop</a>.
 </div>
+<script type="text/javascript" src="/static/jquery.js"></script>
 <script type="text/javascript">
 var c = 0;
-function $(id) {
-    return document.getElementById(id);
-}
 function do_start() {
     return setInterval(function() {
         var s = new Date().getSeconds();
         var d = s < 4 ? 3 - s  : 63 - s;
-        $('after_seconds').innerText = d > 9 ? d : '0' + d;
+        $('#after_seconds').text(d > 9 ? d : '0' + d);
         if (s == 3) location.href = location.href;
     }, 1000);
 }
 function after_action() {
     if (c) {
         c = clearInterval(c);
-        $('after_seconds').innerText = '--';
-        $('after_action').innerText = 'start';
+        $('#after_seconds').text('--');
+        $('#after_action').text('start');
     } else {
         c = do_start();
-        $('after_action').innerText = 'stop';
+        $('#after_action').text('stop');
     }
 }
 function setCookie(name, value, day) {
@@ -122,7 +122,7 @@ function getCookie(name) {
 function stat_hub_version_result(update) {
     // check update every day
     setCookie('chkver', update, 1);
-    if (!update) $('update').style.display = 'block';
+    if (!update) $('#update').style.display = 'block';
 }
 c = do_start();
 var ver = '0.13.2';
@@ -135,5 +135,28 @@ if (v === false) {
 } else {
     stat_hub_version_result(v);
 }
+$('.delete-node').click(function(e){
+    var tr = $(e.target).parents('tr');
+    var id = tr.attr('id');
+    var tds = $('td', tr);
+    if (confirm('Are you sure to delete ' +
+        tds.eq(1).text() + '(' + tds.eq(0).text() +
+        ')?\nThis is unrecoverable!')) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/node',
+                data: JSON.stringify({"id": id, "action": "delete"}),
+                contentType: 'application/json',
+                success: function(data) {
+                    if (data.status.code == 1) {
+                        alert('node deleted');
+                        tr.remove();
+                    } else {
+                        alert(data.status.message);
+                    }
+                }
+            });
+    }
+});
 </script>
 {{end}}
