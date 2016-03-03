@@ -4,8 +4,8 @@ VERSION="0.13.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/server_$(uname -m).tar.gz"
 
 [ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""
-if id -u nobody >/dev/null 2>&1; then
-else
+id -u nobody >/dev/null 2>&1
+if [ "$?" != "0" ]; then
     $sudo groupadd nogroup
     useradd -g nogroup nobody -s /bin/false
 fi
