@@ -6865,7 +6865,6 @@ code {
 }
 #auto_reload {
   color: #999;
-  text-align: right;
   margin-top: -15px;
   padding-right: 5px;
 }
@@ -6887,6 +6886,17 @@ code {
 .delete-node:hover {
   color: #ff0000;
   text-decoration: none;
+}
+.img-circle {
+  height: 18px;
+  width: 18px;
+}
+.clear {
+  clear: both;
+}
+.pull-left > .img-circle {
+  margin-left: 9px;
+  margin-right: 5px;
 }
 /* add by stat hub (https://github.com/likexian/stathub-go) */
 `
@@ -17944,6 +17954,7 @@ return jQuery;
 <table class="table table-striped">
     <thead>
         <tr>
+            <th></th>
             <th>IP</th>
             <th>Name</th>
             <th>Uptime</th>
@@ -17967,7 +17978,8 @@ return jQuery;
             </tr>
         {{end}}
         {{range .}}
-            <tr class="{{.Status}}" id="id_{{.Id}}">
+            <tr id="id_{{.Id}}">
+                <td><div class="img-circle bg-{{.Status}}"></div></td>
                 <td>{{.IP}}</td>
                 <td>{{.Name}}</td>
                 <td>{{.Uptime}}</td>
@@ -18019,11 +18031,20 @@ return jQuery;
     </tbody>
 </table>
 <div id="auto_reload">
-    Stat will refresh after <span id="after_seconds">00</span> seconds, <a style="cursor:pointer" id="after_action" onclick="after_action()">stop</a>.
+    <div class="pull-left">
+        <div class="pull-left"><div class="pull-left img-circle bg-success"></div>seems ok</div>
+        <div class="pull-left"><div class="pull-left img-circle bg-warning"></div>went wrong</div>
+        <div class="pull-left"><div class="pull-left img-circle bg-danger"></div>lost touch</div>
+        <div class="clear"></div>
+    </div>
+    <div class="pull-right">
+        Stat will refresh after <span id="after_seconds">00</span> seconds,
+        <a style="cursor:pointer" id="after_action" onclick="after_action()">stop</a>.
+    </div>
+    <div class="clear"></div>
 </div>
 <script type="text/javascript" src="/static/jquery.js"></script>
 <script type="text/javascript">
-var c = 0;
 function do_start() {
     return setInterval(function() {
         var s = new Date().getSeconds();
@@ -18031,16 +18052,6 @@ function do_start() {
         $('#after_seconds').text(d > 9 ? d : '0' + d);
         if (s == 3) location.href = location.href;
     }, 1000);
-}
-function after_action() {
-    if (c) {
-        c = clearInterval(c);
-        $('#after_seconds').text('--');
-        $('#after_action').text('start');
-    } else {
-        c = do_start();
-        $('#after_action').text('stop');
-    }
 }
 function setCookie(name, value, day) {
     if (day) {
@@ -18057,28 +18068,39 @@ function getCookie(name) {
     match = document.cookie.match(find);
     return match ? match[0].split('=')[1] : false;
 }
-function stat_hub_version_result(update) {
+function version_result(is_update) {
     // check update every day
-    setCookie('chkver', update, 1);
-    if (!update) $('#update').style.display = 'block';
+    setCookie('is_update', is_update, 1);
+    if (!is_update) $('#update').show();
 }
-c = do_start();
 var ver = '0.13.2';
-var v = getCookie('chkver');
+var v = getCookie('is_update');
 if (v === false) {
     var u = document.createElement('script');
-    u.src = '//www.likexian.com/dream/stathub/chkver/' + ver + '.js';
+    u.src = '//www.likexian.com/dream/stathub/v' + ver + '.js';
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(u, s);
 } else {
-    stat_hub_version_result(v);
+    version_result(v - 0);
 }
+var c = 0;
+c = do_start();
+$('#after_action').click(function() {
+    if (c) {
+        c = clearInterval(c);
+        $('#after_seconds').text('--');
+        $('#after_action').text('start');
+    } else {
+        c = do_start();
+        $('#after_action').text('stop');
+    }
+});
 $('.delete-node').click(function(e){
     var tr = $(e.target).parents('tr');
     var id = tr.attr('id');
     var tds = $('td', tr);
     if (confirm('Are you sure to delete ' +
-        tds.eq(1).text() + '(' + tds.eq(0).text() +
+        tds.eq(2).text() + '(' + tds.eq(1).text() +
         ')?\nThis is unrecoverable!')) {
             $.ajax({
                 type: 'POST',

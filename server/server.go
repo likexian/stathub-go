@@ -175,6 +175,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
                     s.LastUpdate = get_date
                 }
 
+                s.Status = "success"
                 if s.DiskWarn != "" {
                     s.Status = "warning"
                 }

@@ -6797,7 +6797,6 @@ code {
 }
 #auto_reload {
   color: #999;
-  text-align: right;
   margin-top: -15px;
   padding-right: 5px;
 }
@@ -6819,5 +6818,16 @@ code {
 .delete-node:hover {
   color: #ff0000;
   text-decoration: none;
+}
+.img-circle {
+  height: 18px;
+  width: 18px;
+}
+.clear {
+  clear: both;
+}
+.pull-left > .img-circle {
+  margin-left: 9px;
+  margin-right: 5px;
 }
 /* add by stat hub (https://github.com/likexian/stathub-go) */
