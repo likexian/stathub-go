@@ -84,6 +84,10 @@ Copyright 2015-2016, Li Kexian
 
 Apache License, Version 2.0
 
+## 打赏
+
+- [以赏表赞](https://www.likexian.com/zh-CN/donate/)
+
 ## 关于
 
 - [Li Kexian](https://www.likexian.com/)

@@ -81,7 +81,7 @@ func (n Statuses) Swap(i, j int) {n[i], n[j] = n[j], n[i]}
 func (n Statuses) Less(i, j int) bool {return n[i].Name < n[j].Name}
 
 func Version() string {
-    return "0.13.2"
+    return "0.14.2"
 }
 
 func Author() string {

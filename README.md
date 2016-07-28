@@ -84,6 +84,10 @@ Copyright 2015-2016, Li Kexian
 
 Apache License, Version 2.0
 
+## DONATE
+
+- [Help me make perfect](https://www.likexian.com/en-US/donate/)
+
 ## About
 
 - [Li Kexian](https://www.likexian.com/)

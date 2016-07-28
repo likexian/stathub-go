@@ -1,3 +1,12 @@
+Changes with Stat Hub 0.14.2 Beta    2016-07-28
+
+- Feature: remove node from list
+- Feature: add status icon to list
+
+- Bugfix: check user compatibility in setup script
+- Bugfix: sorry for so long no see
+
+
 Changes with Stat Hub 0.13.2 Beta    2016-01-13
 
 - Feature: sort server list by hostname

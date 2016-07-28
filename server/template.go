@@ -18073,7 +18073,7 @@ function version_result(is_update) {
     setCookie('is_update', is_update, 1);
     if (!is_update) $('#update').show();
 }
-var ver = '0.13.2';
+var ver = '0.14.2';
 var v = getCookie('is_update');
 if (v === false) {
     var u = document.createElement('script');
@@ -18153,7 +18153,7 @@ $('.delete-node').click(function(e){
         {{template "main_body" .}}
     </div>
     <div class="footer text-center">
-        &copy; 2015-2016 <a href="https://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0.
+        &copy; 2015-2016 <a href="https://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0, <a href="https://www.likexian.com/en-US/donate/">donate</a>.
     </div>
 </body>
 </html>
@@ -18172,7 +18172,7 @@ $('.delete-node').click(function(e){
 
     TPL_TEMPLATE["node.html"] = `#!/bin/bash
 
-VERSION="0.13.2"
+VERSION="0.14.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/client_$(uname -m).tar.gz"
 
 [ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""
