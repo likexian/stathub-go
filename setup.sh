@@ -5,7 +5,7 @@ STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION
 
 [ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""
 id -u nobody >/dev/null 2>&1
-if [ "$?" != "0" ]; then
+if [ $? -ne 0 ]; then
     $sudo groupadd nogroup
     useradd -g nogroup nobody -s /bin/false
 fi
