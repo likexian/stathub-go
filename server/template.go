@@ -9,14 +9,12 @@
 
 package main
 
-
 var TPL_CERT = map[string]string{}
 var TPL_STATIC = map[string]string{}
 var TPL_TEMPLATE = map[string]string{}
 
-
 func init() {
-    TPL_CERT["cert.key"] = `-----BEGIN RSA PRIVATE KEY-----
+	TPL_CERT["cert.key"] = `-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAqrl2dsxFwiDwixIU2C6u4tJJRwqKXpDgbURW/CX92mcl/4Co
 C5Kc4V8ujkKS0tCcWYtiyQzDQZ3o7/Va86SgCq8nWLS7JhPg0V0DDhBY63BDe1eW
 y4jxCFjnidDf2CrfEiitdX4+VtLJ4a/I229BcTNAdTrWhXYVVhmKcxRBevlwzFh/
@@ -45,7 +43,7 @@ Lu2gDkrz5X6qTdI+t2eX1KEi+HmYOw2oblztj7CU6CanIVmh5TK3
 -----END RSA PRIVATE KEY-----
 `
 
-    TPL_CERT["cert.pem"] = `-----BEGIN CERTIFICATE-----
+	TPL_CERT["cert.pem"] = `-----BEGIN CERTIFICATE-----
 MIIDATCCAeugAwIBAgIRAObvl+LyI1FPGPLqnzJuABAwCwYJKoZIhvcNAQELMBIx
 EDAOBgNVBAoTB1N0YXRIdWIwHhcNMTUwNDIwMDgzMTAxWhcNMjUwNDE3MDgzMTAx
 WjASMRAwDgYDVQQKEwdTdGF0SHViMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
@@ -66,7 +64,7 @@ eP2If28jxLlI19pW2HwXxT+5h9FblbPIY6YJ+KaYVcZn+V2fuKQ+Z/taxm/p6Y4P
 -----END CERTIFICATE-----
 `
 
-    TPL_STATIC["bootstrap.css"] = `/*!
+	TPL_STATIC["bootstrap.css"] = `/*!
  * Bootstrap v3.3.6 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -6901,7 +6899,7 @@ code {
 /* add by stat hub (https://github.com/likexian/stathub-go) */
 `
 
-    TPL_STATIC["jquery.js"] = `/*!
+	TPL_STATIC["jquery.js"] = `/*!
  * jQuery JavaScript Library v1.12.0
  * http://jquery.com/
  *
@@ -17930,7 +17928,7 @@ return jQuery;
 }));
 `
 
-    TPL_TEMPLATE["help.html"] = `{{define "main_body"}}
+	TPL_TEMPLATE["help.html"] = `{{define "main_body"}}
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
 <h3>Login to new node and run, with curl: </h3>
 <div>
@@ -17946,7 +17944,7 @@ return jQuery;
 {{end}}
 `
 
-    TPL_TEMPLATE["index.html"] = `{{define "main_body"}}
+	TPL_TEMPLATE["index.html"] = `{{define "main_body"}}
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
 <div id="update" class="bg-warning">
     New version available, Please download from <a target="_blank" href="https://github.com/likexian/stathub-go">https://github.com/likexian/stathub-go</a>.
@@ -18122,7 +18120,7 @@ $('.delete-node').click(function(e){
 {{end}}
 `
 
-    TPL_TEMPLATE["layout.html"] = `<!DOCTYPE html>
+	TPL_TEMPLATE["layout.html"] = `<!DOCTYPE html>
 <!--
 /*
  * A smart Hub for holding server stat
@@ -18159,7 +18157,7 @@ $('.delete-node').click(function(e){
 </html>
 `
 
-    TPL_TEMPLATE["login.html"] = `{{define "main_body"}}
+	TPL_TEMPLATE["login.html"] = `{{define "main_body"}}
 <form class="form-group" role="form" method="POST" action="/{{.action}}">
     <div class="form-group input-group input-group-lg">
     <span class="input-group-addon">Password</span>
@@ -18170,7 +18168,7 @@ $('.delete-node').click(function(e){
 {{end}}
 `
 
-    TPL_TEMPLATE["node.html"] = `#!/bin/bash
+	TPL_TEMPLATE["node.html"] = `#!/bin/bash
 
 VERSION="0.14.2"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/client_$(uname -m).tar.gz"
