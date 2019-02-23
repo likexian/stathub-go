@@ -14,7 +14,7 @@ Stat Hub have two parts, one is the SERVER for recving, storing and displaying s
 
 ## DEMO
 
-![demo](demo.png)
+![demo](doc/demo.png)
 
 ## Feature
 
@@ -73,32 +73,21 @@ Follow the guide
 
 Sure, please add the folling config to nginx conf file.
 
-    location /stathub/ {
+    location / {
         proxy_pass https://127.0.0.1:15944;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
 ## LICENSE
 
-Copyright 2015-2016, Li Kexian
+Copyright 2015-2019, Li Kexian
 
 Apache License, Version 2.0
-
-## DONATE
-
-- [Help me make perfect](https://www.likexian.com/en-US/donate/)
 
 ## About
 
 - [Li Kexian](https://www.likexian.com/)
 
-## Thanks
+## DONATE
 
-- [All stargazers](https://github.com/likexian/stathub-go/stargazers)
-- [Livid](https://github.com/livid)
-- [Septembers](https://github.com/Septembers)
-- [Bluek404](https://github.com/Bluek404)
-- [renjie45](https://github.com/renjie45)
-- [vijaygadde](https://github.com/vijaygadde)
-- [davoola](https://github.com/davoola)
-- [ShenXuGongZi](https://github.com/ShenXuGongZi)
+- [Help me make perfect](https://www.likexian.com/donate/)

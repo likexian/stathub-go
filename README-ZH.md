@@ -14,7 +14,7 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ## 演示
 
-![demo](demo.png)
+![demo](doc/demo.png)
 
 ## 特性
 
@@ -73,32 +73,21 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 没问题，请将以下配置加到 nginx 配置文件。
 
-    location /stathub/ {
+    location / {
         proxy_pass https://127.0.0.1:15944;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-## 版权
+## LICENSE
 
-Copyright 2015-2016, Li Kexian
+Copyright 2015-2019, Li Kexian
 
 Apache License, Version 2.0
 
-## 打赏
-
-- [以赏表赞](https://www.likexian.com/zh-CN/donate/)
-
-## 关于
+## About
 
 - [Li Kexian](https://www.likexian.com/)
 
-## 感谢
+## DONATE
 
-- [All stargazers](https://github.com/likexian/stathub-go/stargazers)
-- [Livid](https://github.com/livid)
-- [Septembers](https://github.com/Septembers)
-- [Bluek404](https://github.com/Bluek404)
-- [renjie45](https://github.com/renjie45)
-- [vijaygadde](https://github.com/vijaygadde)
-- [davoola](https://github.com/davoola)
-- [ShenXuGongZi](https://github.com/ShenXuGongZi)
+- [Help me make perfect](https://www.likexian.com/donate/)

@@ -1,12 +1,14 @@
 #!/bin/bash
 
-cd /var/stathub
-PID="data/stathub.pid"
+BASEDIR="/usr/local/stathub"
+PIDFILE="log/stathub.pid"
+
+cd $BASEDIR
 
 start() {
     echo "starting"
     if [ ! -f $PID ]; then
-        ./server
+        ./stathub -c stathub.conf
         echo "ok"
         echo "----------------------------------------------------"
         echo "| Please open the below URL on your PC browser:    |"
@@ -23,7 +25,7 @@ start() {
 stop() {
     echo "stopping"
     if [ -f $PID ]; then
-        kill `cat $PID`
+        kill -9 `cat $PID`
         rm -rf $PID
         echo "ok"
     fi

@@ -2,7 +2,7 @@
  * A smart Hub for holding server stat
  * https://www.likexian.com/
  *
- * Copyright 2015-2016, Li Kexian
+ * Copyright 2015-2019, Li Kexian
  * Released under the Apache License, Version 2.0
  *
  */
@@ -11,12 +11,14 @@ package main
 
 
 import(
-    "fmt"
     "os"
+    "fmt"
     "math"
+    "bufio"
     "strings"
     "crypto/md5"
     "io/ioutil"
+    "path/filepath"
 )
 
 
@@ -90,9 +92,15 @@ func ReadFile(fname string) (result string, err error) {
 
 
 func WriteFile(fname, text string) (err error) {
-    content := []byte(text)
-    err = ioutil.WriteFile(fname, content, 0644)
-    return
+    ds, _ := filepath.Split(fname)
+    if ds != "" && !FileExists(ds) {
+        err = os.MkdirAll(ds, 0755)
+        if err != nil {
+            return
+        }
+    }
+
+    return ioutil.WriteFile(fname, []byte(text), 0644)
 }
 
 
@@ -127,4 +135,26 @@ func PrettyLinuxVersion(version string) (string) {
 
 func PassWord(key, password string) string {
     return fmt.Sprintf("%x", md5.Sum([]byte(key + password)))
+}
+
+
+func RawInput(message string, allow_empty bool) (result string) {
+    fmt.Println(message)
+
+    reader := bufio.NewReader(os.Stdin)
+    result, _ = reader.ReadString('\n')
+    result = strings.Trim(strings.Trim(result, "\n"), " ")
+
+    if !allow_empty && result == "" {
+        fmt.Println("No data inputed\n")
+        os.Exit(1)
+    }
+
+    return
+}
+
+
+func ErrorExit(msg string) {
+    fmt.Println(msg)
+    os.Exit(-1)
 }

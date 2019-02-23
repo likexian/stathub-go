@@ -17,19 +17,19 @@
             <th>Disk</th>
             <th>Net I/O</th>
             <th>Disk R/W</th>
-            <th>Bandwidth</th>
+            <th>Traffic</th>
             <th>System</th>
             <th>Updated</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        {{if not .}}
+        {{if not .data}}
             <tr>
                 <td colspan="12" align="center">No data yet, please add nodes following the <a href="/help">guide</a>.</td>
             </tr>
         {{end}}
-        {{range .}}
+        {{range .data}}
             <tr id="id_{{.Id}}">
                 <td><div class="img-circle bg-{{.Status}}"></div></td>
                 <td>{{.IP}}</td>
@@ -125,11 +125,10 @@ function version_result(is_update) {
     setCookie('is_update', is_update, 1);
     if (!is_update) $('#update').show();
 }
-var ver = '0.14.2';
 var v = getCookie('is_update');
 if (v === false) {
     var u = document.createElement('script');
-    u.src = '//www.likexian.com/dream/stathub/v' + ver + '.js';
+    u.src = '//www.likexian.com/dream/stathub/v{{.version}}.js';
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(u, s);
 } else {

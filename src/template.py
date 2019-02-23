@@ -6,7 +6,7 @@
  * A smart Hub for holding server stat
  * https://www.likexian.com/
  *
- * Copyright 2015-2016, Li Kexian
+ * Copyright 2015-2019, Li Kexian
  * Released under the Apache License, Version 2.0
  *
  */
@@ -14,6 +14,7 @@
 
 
 import os
+import re
 
 
 def read_file(fname):
@@ -29,24 +30,39 @@ def write_file(fname, text):
     fp.close()
 
 
+version = read_file('VERSION').strip()
+build = os.popen("git rev-parse --short HEAD").read().strip()
+
+
+setup_file = "../setup.sh"
+setup_script = read_file(setup_file)
+setup_script = re.sub(r'VERSION="[^"]+?"', 'VERSION="%s"' % version, setup_script)
+write_file(setup_file, setup_script)
+
+
 template = '''/*
  * A smart Hub for holding server stat
  * https://www.likexian.com/
  *
- * Copyright 2015-2016, Li Kexian
+ * Copyright 2015-2019, Li Kexian
  * Released under the Apache License, Version 2.0
  *
  */
 
 package main
 
+// variable for tpl file
+var (
+    TPL_REVHEAD     = "%s"
+    TPL_VERSION     = "%s"
+    TPL_LICENSE     = "Apache License, Version 2.0"
+    TPL_AUTHOR      = "[Li Kexian](https://www.likexian.com/)"
+    TPL_CERT        = map[string]string{}
+    TPL_STATIC      = map[string]string{}
+    TPL_TEMPLATE    = map[string]string{}
+)
 
-var TPL_CERT = map[string]string{}
-var TPL_STATIC = map[string]string{}
-var TPL_TEMPLATE = map[string]string{}
-
-
-func init() {'''
+func init() {''' % (build, version)
 
 
 mapper = {'cert': 'TPL_CERT', 'static': 'TPL_STATIC', 'template': 'TPL_TEMPLATE'}

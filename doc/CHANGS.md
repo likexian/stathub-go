@@ -1,3 +1,9 @@
+Changes with Stat Hub 0.101.0 Beta    2019-02-24
+
+- Feature: Refactoring all the code
+- Feature: This version is NOT downward compatibility
+
+
 Changes with Stat Hub 0.14.2 Beta    2016-07-28
 
 - Feature: remove node from list
