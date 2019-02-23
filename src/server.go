@@ -35,6 +35,7 @@ func HttpService() {
     http.HandleFunc("/api/stat", APIStatHandler)
     http.HandleFunc("/api/node", APINodeHandler)
 
+    SERVER_LOGGER.Info("start http service")
     err := http.ListenAndServeTLS(":15944",
         SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSCert, SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSKey, nil)
     if err != nil {

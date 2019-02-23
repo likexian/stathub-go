@@ -146,15 +146,9 @@ func RawInput(message string, allow_empty bool) (result string) {
     result = strings.Trim(strings.Trim(result, "\n"), " ")
 
     if !allow_empty && result == "" {
-        fmt.Println("No data inputed\n")
+        fmt.Println("No data inputed")
         os.Exit(1)
     }
 
     return
-}
-
-
-func ErrorExit(msg string) {
-    fmt.Println(msg)
-    os.Exit(-1)
 }

@@ -18,6 +18,7 @@ import (
     "path/filepath"
     "github.com/likexian/daemon-go"
     "github.com/likexian/host-stat-go"
+    "github.com/likexian/logger-go"
 )
 
 
@@ -26,11 +27,17 @@ var (
     SERVER_START   = int64(0)
     // SERVER_CONFIG is server config data
     SERVER_CONFIG  = Config{}
+    // SERVER_LOGGER is server logger
+    SERVER_LOGGER  = logger.New(os.Stderr, logger.INFO)
 )
 
 
 func main() {
-    SERVER_START    = time.Now().Unix()
+    SERVER_START = time.Now().Unix()
+
+    if DEBUG {
+        SERVER_LOGGER = logger.New(os.Stderr, logger.DEBUG)
+    }
 
     show_version    := flag.Bool("v", false, "show current version")
     config_file     := flag.String("c", "", "set configuration file")
@@ -55,60 +62,73 @@ func main() {
     if *init_server {
         hostInfo, _ := hoststat.GetHostInfo()
         time_stamp := fmt.Sprintf("%d", SERVER_START)
-        id := PassWord(fmt.Sprintf("%s", os.Getpid()), time_stamp)
+        id := PassWord(fmt.Sprintf("%d", os.Getpid()), time_stamp)
         key := PassWord(id, time_stamp)
         password := PassWord(key, "likexian")
         err := newServerConfig(*config_file, id, hostInfo.HostName, password, key)
         if err != nil {
-            ErrorExit(err.Error())
+            SERVER_LOGGER.Critical(err.Error())
+            os.Exit(-1)
+        } else {
+            SERVER_LOGGER.Info("init server configuration successful")
+            os.Exit(0)
         }
-        os.Exit(0)
     }
 
     if *init_client {
         if *server_key == "" {
-            ErrorExit("server key is required, set it by --server-key.")
+            SERVER_LOGGER.Critical("server key is required, set it by --server-key.")
+            os.Exit(-1)
         }
         if *server_url == "" {
-            ErrorExit("server url is required, set it by --server-url.")
+            SERVER_LOGGER.Critical("server url is required, set it by --server-url.")
+            os.Exit(-1)
         }
         hostInfo, _ := hoststat.GetHostInfo()
         time_stamp := fmt.Sprintf("%d", SERVER_START)
-        id := PassWord(fmt.Sprintf("%s", os.Getpid()), time_stamp)
+        id := PassWord(fmt.Sprintf("%d", os.Getpid()), time_stamp)
         err := newClientConfig(*config_file, id, hostInfo.HostName, *server_key, *server_url)
         if err != nil {
-            ErrorExit(err.Error())
+            SERVER_LOGGER.Critical(err.Error())
+            os.Exit(-1)
+        } else {
+            SERVER_LOGGER.Info("init client configuration successful")
+            os.Exit(0)
         }
-        os.Exit(0)
     }
 
     if !FileExists(*config_file) {
-        ErrorExit(fmt.Sprintf("configuration file %s is not found.\n", *config_file))
+        SERVER_LOGGER.Critical(fmt.Sprintf("configuration file %s is not found.\n", *config_file))
+        os.Exit(-1)
     }
 
     var err error
     SERVER_CONFIG, err = GetConfig(*config_file)
     if err != nil {
-        ErrorExit(fmt.Sprintf("configuration load failed, %s", err.Error()))
+        SERVER_LOGGER.Critical(fmt.Sprintf("configuration load failed, %s", err.Error()))
+        os.Exit(-1)
     }
 
     if SERVER_CONFIG.Role == "server" {
         if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir) {
             err := os.MkdirAll(SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir, 0755)
             if err != nil {
-                ErrorExit(err.Error())
+                SERVER_LOGGER.Critical(err.Error())
+                os.Exit(-1)
             }
         }
         if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSCert) {
             err := WriteFile(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSCert, TPL_CERT["cert.pem"])
             if err != nil {
-                ErrorExit(err.Error())
+                SERVER_LOGGER.Critical(err.Error())
+                os.Exit(-1)
             }
         }
         if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSKey) {
             err := WriteFile(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSKey, TPL_CERT["cert.key"])
             if err != nil {
-                ErrorExit(err.Error())
+                SERVER_LOGGER.Critical(err.Error())
+                os.Exit(-1)
             }
         }
     }
@@ -118,7 +138,8 @@ func main() {
         if ds != "" && !FileExists(ds) {
             err := os.MkdirAll(ds, 0755)
             if err != nil {
-                ErrorExit(err.Error())
+                SERVER_LOGGER.Critical(err.Error())
+                os.Exit(-1)
             }
         }
     }
@@ -130,13 +151,14 @@ func main() {
             User:  SERVER_CONFIG.DaemonUser,
             Chdir: "",
         }
-
         err := c.Daemon()
         if err != nil {
-            panic(err)
+            SERVER_LOGGER.Critical(err.Error())
+            os.Exit(-1)
         }
     }
 
+    SERVER_LOGGER.Info("server start at %d", SERVER_START)
     if SERVER_CONFIG.Role == "server" {
         go StatService()
         HttpService()

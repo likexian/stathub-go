@@ -9,6 +9,7 @@
 
 package main
 
+
 import (
     "fmt"
     "time"
@@ -38,31 +39,47 @@ type Stat struct {
 }
 
 
-func GetStat(id string, name string) string {
+func GetStat(id string, name string) (result string, err error) {
     stat := Stat{}
     stat.Id = id
     stat.TimeStamp = time.Now().Unix()
 
-    host_info, _ := hoststat.GetHostInfo()
+    host_info, err := hoststat.GetHostInfo()
+    if err != nil {
+        SERVER_LOGGER.Debug("get host info failed: %s", err.Error())
+    }
     stat.OSRelease = host_info.Release + " " + host_info.OSBit
+
     if name == "" {
         stat.HostName = host_info.HostName
     } else {
         stat.HostName = name
     }
 
-    cpu_info, _ := hoststat.GetCPUInfo()
+    cpu_info, err := hoststat.GetCPUInfo()
+    if err != nil {
+        SERVER_LOGGER.Debug("get cpu info failed: %s", err.Error())
+    }
     stat.CPUName = cpu_info.ModelName
     stat.CPUCore = cpu_info.CoreCount
 
-    cpu_stat, _ := hoststat.GetCPUStat()
+    cpu_stat, err := hoststat.GetCPUStat()
+    if err != nil {
+        SERVER_LOGGER.Debug("get cpu stat failed: %s", err.Error())
+    }
     stat.CPURate = Round(100 - cpu_stat.IdleRate, 2)
 
-    mem_stat, _ := hoststat.GetMemStat()
+    mem_stat, err := hoststat.GetMemStat()
+    if err != nil {
+        SERVER_LOGGER.Debug("get mem stat failed: %s", err.Error())
+    }
     stat.MemRate = mem_stat.MemRate
     stat.SwapRate = mem_stat.SwapRate
 
-    disk_stat, _ := hoststat.GetDiskStat()
+    disk_stat, err := hoststat.GetDiskStat()
+    if err != nil {
+        SERVER_LOGGER.Debug("get disk stat failed: %s", err.Error())
+    }
     disk_total := uint64(0)
     disk_used := uint64(0)
     for _, v := range disk_stat {
@@ -74,7 +91,10 @@ func GetStat(id string, name string) string {
     }
     stat.DiskRate = Round(float64(disk_used) / float64(disk_total), 2)
 
-    io_stat, _ := hoststat.GetIOStat()
+    io_stat, err := hoststat.GetIOStat()
+    if err != nil {
+        SERVER_LOGGER.Debug("get io stat failed: %s", err.Error())
+    }
     disk_read := uint64(0)
     disk_write := uint64(0)
     for _, v := range io_stat {
@@ -84,7 +104,10 @@ func GetStat(id string, name string) string {
     stat.DiskRead = disk_read
     stat.DiskWrite = disk_write
 
-    net_stat, _ := hoststat.GetNetStat()
+    net_stat, err := hoststat.GetNetStat()
+    if err != nil {
+        SERVER_LOGGER.Debug("get net stat failed: %s", err.Error())
+    }
     net_write := uint64(0)
     net_read := uint64(0)
     for _, v := range net_stat {
@@ -96,14 +119,20 @@ func GetStat(id string, name string) string {
     stat.NetWrite = net_write
     stat.NetRead = net_read
 
-    uptime_stat, _ := hoststat.GetUptimeStat()
+    uptime_stat, err := hoststat.GetUptimeStat()
+    if err != nil {
+        SERVER_LOGGER.Debug("get uptime stat failed: %s", err.Error())
+    }
     stat.Uptime = uint64(uptime_stat.Uptime)
 
-    load_stat, _ := hoststat.GetLoadStat()
+    load_stat, err := hoststat.GetLoadStat()
+    if err != nil {
+        SERVER_LOGGER.Debug("get load stat failed: %s", err.Error())
+    }
     stat.Load = fmt.Sprintf("%.2f %.2f %.2f", load_stat.LoadNow, load_stat.LoadPre, load_stat.LoadFar)
 
     data := simplejson.New(stat)
-    result, _ := data.Dumps()
+    result, err = data.Dumps()
 
-    return result
+    return
 }
