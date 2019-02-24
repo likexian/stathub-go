@@ -30,15 +30,7 @@ def write_file(fname, text):
     fp.close()
 
 
-version = read_file('VERSION').strip()
 build = os.popen("git rev-parse --short HEAD").read().strip()
-
-
-setup_file = "../setup.sh"
-setup_script = read_file(setup_file)
-setup_script = re.sub(r'VERSION="[^"]+?"', 'VERSION="%s"' % version, setup_script)
-write_file(setup_file, setup_script)
-
 
 template = '''/*
  * A smart Hub for holding server stat

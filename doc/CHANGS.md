@@ -1,3 +1,9 @@
+Changes with Stat Hub 0.101.0 Beta    2019-02-25
+
+- Bugfix: add the logger
+- Bugfix: refine the code
+
+
 Changes with Stat Hub 0.101.0 Beta    2019-02-24
 
 - Feature: Refactoring all the code

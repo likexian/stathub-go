@@ -13,7 +13,6 @@ for i in "i686" "x86_64"; do
     cp LICENSE tmp
     cp README.md tmp
     cp README-ZH.md tmp
-    cp src/VERSION tmp
 
     echo "building the $i stathub"
     cd src
@@ -40,5 +39,9 @@ for i in "i686" "x86_64"; do
     cp tmp/stathub.$i.tar.gz .
     rm -rf tmp
 done
+
+VERSION=`grep -C1 'func Version' src/version.go | grep 'return ' | awk -F'"' '{print $2}'`
+sed -ie "s/VERSION=\".*\"/VERSION=\"$VERSION\"/g" setup.sh
+rm -rf setup.she
 
 echo '+ building stathub done'
