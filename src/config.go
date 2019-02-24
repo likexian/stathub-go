@@ -126,13 +126,13 @@ func GetConfig(fname string) (config Config, err error) {
 
 
 // newServerConfig generate the new server config file
-func newServerConfig(fname, id, name, password, server_key string) (err error) {
+func newServerConfig(fname, id, name, passWord, serverKey string) (err error) {
     config := Config{
         id,
         name,
         "server",
-        password,
-        server_key,
+        passWord,
+        serverKey,
         DEFAULT_SERVER_URL,
         DEFAULT_PROCESS_USER,
         DEFAULT_PROCESS_LOCK,
@@ -149,14 +149,14 @@ func newServerConfig(fname, id, name, password, server_key string) (err error) {
 
 
 // newClientConfig generate the new cilent config file
-func newClientConfig(fname, id, name, server_key, server_url string) (err error) {
+func newClientConfig(fname, id, name, serverKey, serverUrl string) (err error) {
     config := Config{
         id,
         name,
         "client",
         "",
-        server_key,
-        server_url,
+        serverKey,
+        serverUrl,
         DEFAULT_PROCESS_USER,
         DEFAULT_PROCESS_LOCK,
         DEFAULT_PROCESS_LOG,

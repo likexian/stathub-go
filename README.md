@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/likexian/stathub-go.svg?branch=master)](https://travis-ci.org/likexian/stathub-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/likexian/stathub-go)](https://goreportcard.com/report/github.com/likexian/stathub-go)
 [![Download Total](https://img.shields.io/github/downloads/likexian/stathub-go/total.svg)](https://github.com/likexian/stathub-go/releases)
-[![Paypal Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXJZTJEZTLUM8)
+[![Paypal Donate](https://img.shields.io/badge/donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXJZTJEZTLUM8)
 
 A smart Hub for holding server stat
 

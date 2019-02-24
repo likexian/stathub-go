@@ -22,6 +22,7 @@ import(
 )
 
 
+// Byte units
 const (
     BYTE     = 1.0
     KILOBYTE = 1024 * BYTE
@@ -31,6 +32,7 @@ const (
 )
 
 
+// HumanByte returns readable string for bytes
 func HumanByte(bytes float64) string {
     unit := ""
     value := bytes
@@ -58,6 +60,7 @@ func HumanByte(bytes float64) string {
 }
 
 
+// Round returns round number
 func Round(data float64, precision int) (result float64) {
     pow := math.Pow(10, float64(precision))
     digit := pow * data
@@ -74,12 +77,14 @@ func Round(data float64, precision int) (result float64) {
 }
 
 
+// FileExists returns file is exists
 func FileExists(fname string) bool {
     _, err := os.Stat(fname)
     return !os.IsNotExist(err)
 }
 
 
+// ReadFile return text of file
 func ReadFile(fname string) (result string, err error) {
     text, err := ioutil.ReadFile(fname)
     if err != nil {
@@ -91,6 +96,7 @@ func ReadFile(fname string) (result string, err error) {
 }
 
 
+// WriteFile write text to file
 func WriteFile(fname, text string) (err error) {
     ds, _ := filepath.Split(fname)
     if ds != "" && !FileExists(ds) {
@@ -104,6 +110,7 @@ func WriteFile(fname, text string) (err error) {
 }
 
 
+// SecondToHumanTime returns readable string for seconds
 func SecondToHumanTime(second int) (string) {
     if second < 60 {
         return fmt.Sprintf("%d sec", second)
@@ -111,12 +118,13 @@ func SecondToHumanTime(second int) (string) {
         return fmt.Sprintf("%d min", uint64(second / 60))
     } else if second < 86400 {
         return fmt.Sprintf("%d hours", uint64(second / 3600))
-    } else {
-        return fmt.Sprintf("%d days", uint64(second / 86400))
     }
+
+    return fmt.Sprintf("%d days", uint64(second / 86400))
 }
 
 
+// PrettyLinuxVersion returns readable linux version
 func PrettyLinuxVersion(version string) (string) {
     find := strings.Index(version, "(")
     if find != -1 {
@@ -133,19 +141,21 @@ func PrettyLinuxVersion(version string) (string) {
 }
 
 
-func PassWord(key, password string) string {
-    return fmt.Sprintf("%x", md5.Sum([]byte(key + password)))
+// Md5 returns hex md5 of string
+func Md5(str, key string) string {
+    return fmt.Sprintf("%x", md5.Sum([]byte(str + key)))
 }
 
 
-func RawInput(message string, allow_empty bool) (result string) {
+// RawInput returns read args from stdin
+func RawInput(message string, allowEmpty bool) (result string) {
     fmt.Println(message)
 
     reader := bufio.NewReader(os.Stdin)
     result, _ = reader.ReadString('\n')
-    result = strings.Trim(strings.Trim(result, "\n"), " ")
+    result = strings.TrimSpace(result)
 
-    if !allow_empty && result == "" {
+    if !allowEmpty && result == "" {
         fmt.Println("No data inputed")
         os.Exit(1)
     }

@@ -39,33 +39,33 @@ func main() {
         SERVER_LOGGER = logger.New(os.Stderr, logger.DEBUG)
     }
 
-    show_version    := flag.Bool("v", false, "show current version")
-    config_file     := flag.String("c", "", "set configuration file")
-    init_server     := flag.Bool("init-server", false, "init server configuration")
-    init_client     := flag.Bool("init-client", false, "init client configuration")
-    server_key      := flag.String("server-key", "", "set server key, required when init client")
-    server_url      := flag.String("server-url", "", "set server url, required when init client")
+    showVersion    := flag.Bool("v", false, "show current version")
+    configFile     := flag.String("c", "", "set configuration file")
+    initServer     := flag.Bool("init-server", false, "init server configuration")
+    initClient     := flag.Bool("init-client", false, "init client configuration")
+    serverKey      := flag.String("server-key", "", "set server key, required when init client")
+    serverUrl      := flag.String("server-url", "", "set server url, required when init client")
 
     flag.Parse()
 
-    if *show_version {
-        version := fmt.Sprintf("StatHub v%s-%s\n%s\n%s", TPL_VERSION, TPL_REVHEAD, TPL_LICENSE, TPL_AUTHOR)
+    if *showVersion {
+        version := fmt.Sprintf("StatHub v%s-%s\n%s\n%s", Version(), TPL_REVHEAD, License(), Author())
         fmt.Println(version)
         os.Exit(0)
     }
 
-    if *config_file == "" {
+    if *configFile == "" {
         flag.Usage()
         os.Exit(-1)
     }
 
-    if *init_server {
+    if *initServer {
         hostInfo, _ := hoststat.GetHostInfo()
         time_stamp := fmt.Sprintf("%d", SERVER_START)
-        id := PassWord(fmt.Sprintf("%d", os.Getpid()), time_stamp)
-        key := PassWord(id, time_stamp)
-        password := PassWord(key, "likexian")
-        err := newServerConfig(*config_file, id, hostInfo.HostName, password, key)
+        id := Md5(fmt.Sprintf("%d", os.Getpid()), time_stamp)
+        key := Md5(id, time_stamp)
+        password := Md5(key, "likexian")
+        err := newServerConfig(*configFile, id, hostInfo.HostName, password, key)
         if err != nil {
             SERVER_LOGGER.Critical(err.Error())
             os.Exit(-1)
@@ -75,19 +75,19 @@ func main() {
         }
     }
 
-    if *init_client {
-        if *server_key == "" {
+    if *initClient {
+        if *serverKey == "" {
             SERVER_LOGGER.Critical("server key is required, set it by --server-key.")
             os.Exit(-1)
         }
-        if *server_url == "" {
+        if *serverUrl == "" {
             SERVER_LOGGER.Critical("server url is required, set it by --server-url.")
             os.Exit(-1)
         }
         hostInfo, _ := hoststat.GetHostInfo()
         time_stamp := fmt.Sprintf("%d", SERVER_START)
-        id := PassWord(fmt.Sprintf("%d", os.Getpid()), time_stamp)
-        err := newClientConfig(*config_file, id, hostInfo.HostName, *server_key, *server_url)
+        id := Md5(fmt.Sprintf("%d", os.Getpid()), time_stamp)
+        err := newClientConfig(*configFile, id, hostInfo.HostName, *serverKey, *serverUrl)
         if err != nil {
             SERVER_LOGGER.Critical(err.Error())
             os.Exit(-1)
@@ -97,13 +97,13 @@ func main() {
         }
     }
 
-    if !FileExists(*config_file) {
-        SERVER_LOGGER.Critical(fmt.Sprintf("configuration file %s is not found.\n", *config_file))
+    if !FileExists(*configFile) {
+        SERVER_LOGGER.Critical(fmt.Sprintf("configuration file %s is not found.\n", *configFile))
         os.Exit(-1)
     }
 
     var err error
-    SERVER_CONFIG, err = GetConfig(*config_file)
+    SERVER_CONFIG, err = GetConfig(*configFile)
     if err != nil {
         SERVER_LOGGER.Critical(fmt.Sprintf("configuration load failed, %s", err.Error()))
         os.Exit(-1)

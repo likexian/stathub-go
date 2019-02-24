@@ -54,15 +54,12 @@ package main
 // variable for tpl file
 var (
     TPL_REVHEAD     = "%s"
-    TPL_VERSION     = "%s"
-    TPL_LICENSE     = "Apache License, Version 2.0"
-    TPL_AUTHOR      = "[Li Kexian](https://www.likexian.com/)"
     TPL_CERT        = map[string]string{}
     TPL_STATIC      = map[string]string{}
     TPL_TEMPLATE    = map[string]string{}
 )
 
-func init() {''' % (build, version)
+func init() {''' % (build)
 
 
 mapper = {'cert': 'TPL_CERT', 'static': 'TPL_STATIC', 'template': 'TPL_TEMPLATE'}

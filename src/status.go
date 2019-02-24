@@ -20,6 +20,7 @@ import (
 )
 
 
+// Status storing stat data
 type Status struct {
     Id         string
     IP         string
@@ -42,21 +43,21 @@ type Status struct {
 }
 
 
+// Statuses storing list of Status
 type Statuses []Status
-
-
 func (n Statuses) Len() int {return len(n)}
 func (n Statuses) Swap(i, j int) {n[i], n[j] = n[j], n[i]}
 func (n Statuses) Less(i, j int) bool {return n[i].Name < n[j].Name}
 
 
-func ReadStatus(data_dir string) Statuses {
+// ReadStatus returns read status from dir
+func ReadStatus(dataDir string) Statuses {
     data := []Status{}
-    files, err := ioutil.ReadDir(data_dir)
+    files, err := ioutil.ReadDir(dataDir)
     if err == nil {
         for _, f := range files {
-            if FileExists(data_dir + "/" + f.Name() + "/status") {
-                d, err := simplejson.Load(data_dir + "/" + f.Name() + "/status")
+            if FileExists(dataDir + "/" + f.Name() + "/status") {
+                d, err := simplejson.Load(dataDir + "/" + f.Name() + "/status")
                 if err != nil {
                     continue
                 }
@@ -73,29 +74,29 @@ func ReadStatus(data_dir string) Statuses {
                 s.DiskRate, _ = d.Get("disk_rate").Float64()
                 s.OSRelease, _ = d.Get("os_release").String()
 
-                net_read, _ := d.Get("net_read").Float64()
-                net_write, _ := d.Get("net_write").Float64()
-                disk_read, _ := d.Get("disk_read").Float64()
-                disk_write, _ := d.Get("disk_write").Float64()
-                net_total, _ := d.Get("net_total").Float64()
-                time_stamp, _ := d.Get("time_stamp").Int()
+                netRead, _ := d.Get("net_read").Float64()
+                netWrite, _ := d.Get("net_write").Float64()
+                diskRead, _ := d.Get("disk_read").Float64()
+                diskWrite, _ := d.Get("disk_write").Float64()
+                netTotal, _ := d.Get("net_total").Float64()
+                timeStamp, _ := d.Get("time_stamp").Int()
                 uptime, _ := d.Get("uptime").Int()
 
                 s.Uptime = SecondToHumanTime(int(uptime))
                 s.OSRelease = PrettyLinuxVersion(s.OSRelease)
 
-                s.NetRead = HumanByte(net_read)
-                s.NetWrite = HumanByte(net_write)
-                s.DiskRead = HumanByte(disk_read)
-                s.DiskWrite = HumanByte(disk_write)
-                s.NetTotal = HumanByte(net_total)
+                s.NetRead = HumanByte(netRead)
+                s.NetWrite = HumanByte(netWrite)
+                s.DiskRead = HumanByte(diskRead)
+                s.DiskWrite = HumanByte(diskWrite)
+                s.NetTotal = HumanByte(netTotal)
 
-                now_date := time.Now().Format("2006-01-02")
-                get_date := time.Unix(int64(time_stamp), 0).Format("2006-01-02")
-                if now_date == get_date {
-                    s.LastUpdate = time.Unix(int64(time_stamp), 0).Format("15:04:05")
+                nowDate := time.Now().Format("2006-01-02")
+                getDate := time.Unix(int64(timeStamp), 0).Format("2006-01-02")
+                if nowDate == getDate {
+                    s.LastUpdate = time.Unix(int64(timeStamp), 0).Format("15:04:05")
                 } else {
-                    s.LastUpdate = get_date
+                    s.LastUpdate = getDate
                 }
 
                 s.Status = "success"
@@ -103,10 +104,10 @@ func ReadStatus(data_dir string) Statuses {
                     s.Status = "warning"
                 }
 
-                diff_seconds := time.Now().Unix() - int64(time_stamp)
-                if diff_seconds > 180 {
+                diffSeconds := time.Now().Unix() - int64(timeStamp)
+                if diffSeconds > 180 {
                     s.Status = "danger"
-                } else if diff_seconds > 120 {
+                } else if diffSeconds > 120 {
                     s.Status = "warning"
                 }
 
@@ -121,68 +122,66 @@ func ReadStatus(data_dir string) Statuses {
 }
 
 
-func WriteStatus(data_dir string, data *simplejson.Json) (err error) {
-    data_id, _ := data.Get("id").String()
-    data_id_dir := data_dir + "/" + data_id[:8]
-    if !FileExists(data_id_dir) {
-        err = os.Mkdir(data_id_dir, 0755)
+// WriteStatus write status to dir
+func WriteStatus(dataDir string, data *simplejson.Json) (err error) {
+    dataId, _ := data.Get("id").String()
+    dataIdDir := dataDir + "/" + dataId[:8]
+    if !FileExists(dataIdDir) {
+        err = os.Mkdir(dataIdDir, 0755)
         if err != nil {
             return
         }
     }
 
-    current, err := simplejson.Load(data_id_dir + "/current")
+    current, err := simplejson.Load(dataIdDir + "/current")
     if err == nil {
-        o_time_stamp, _ := current.Get("time_stamp").Int()
-        o_disk_read, _ := current.Get("disk_read").Float64()
-        o_disk_write, _ := current.Get("disk_write").Float64()
-        o_net_read, _ := current.Get("net_read").Float64()
-        o_net_write, _ := current.Get("net_write").Float64()
-        o_net_total, _ := current.Get("net_total").Float64()
+        oTimeStamp, _ := current.Get("time_stamp").Int()
+        oDiskRead, _ := current.Get("disk_read").Float64()
+        oDiskWrite, _ := current.Get("disk_write").Float64()
+        oNetRead, _ := current.Get("net_read").Float64()
+        oNetWrite, _ := current.Get("net_write").Float64()
+        oNetTotal, _ := current.Get("net_total").Float64()
 
-        n_time_stamp, _ := data.Get("time_stamp").Int()
-        n_disk_read, _ := data.Get("disk_read").Float64()
-        n_disk_write, _ := data.Get("disk_write").Float64()
-        n_net_read, _ := data.Get("net_read").Float64()
-        n_net_write, _ := data.Get("net_write").Float64()
+        nTimeStamp, _ := data.Get("time_stamp").Int()
+        nDiskRead, _ := data.Get("disk_read").Float64()
+        nDiskWrite, _ := data.Get("disk_write").Float64()
+        nNetRead, _ := data.Get("net_read").Float64()
+        nNetWrite, _ := data.Get("net_write").Float64()
 
-        status_set, _ := current.Map()
-        diff_seconds := float64(n_time_stamp - o_time_stamp)
-        if diff_seconds <= 0 {
+        statusSet, _ := current.Map()
+        diffSeconds := float64(nTimeStamp - oTimeStamp)
+        if diffSeconds <= 0 {
             err = errors.New("report time too short")
             return
         }
 
-        status_set["disk_read"] = (n_disk_read - o_disk_read) / diff_seconds
-        status_set["disk_write"] = (n_disk_write - o_disk_write) / diff_seconds
-        status_set["net_read"] = (n_net_read - o_net_read) / diff_seconds
-        status_set["net_write"] = (n_net_write - o_net_write) / diff_seconds
+        statusSet["disk_read"] = (nDiskRead - oDiskRead) / diffSeconds
+        statusSet["disk_write"] = (nDiskWrite - oDiskWrite) / diffSeconds
+        statusSet["netRead"] = (nNetRead - oNetRead) / diffSeconds
+        statusSet["net_write"] = (nNetWrite - oNetWrite) / diffSeconds
 
-        o_net := o_net_read + o_net_write
-        n_net := n_net_read + n_net_write
-        diff := n_net
-        if n_net >= o_net {
-            diff = n_net - o_net
+        oNet := oNetRead + oNetWrite
+        nNet := nNetRead + nNetWrite
+        diff := nNet
+        if nNet >= oNet {
+            diff = nNet - oNet
         }
 
-        if (time.Unix(int64(o_time_stamp), 0).Format("2006-01") == time.Unix(int64(n_time_stamp), 0).Format("2006-01")) {
-            status_set["net_total"] = o_net_total + diff
+        if (time.Unix(int64(oTimeStamp), 0).Format("2006-01") == time.Unix(int64(nTimeStamp), 0).Format("2006-01")) {
+            statusSet["net_total"] = oNetTotal + diff
         } else {
-            status_set["net_total"] = 0
+            statusSet["net_total"] = 0
         }
-        data.Set("net_total", status_set["net_total"])
+        data.Set("net_total", statusSet["net_total"])
 
-        current.Set("time_stamp", n_time_stamp)
-        _, err = current.Dump(data_id_dir + "/status")
+        current.Set("time_stamp", nTimeStamp)
+        _, err = current.Dump(dataIdDir + "/status")
         if err != nil {
             return
         }
     }
 
-    _, err = data.Dump(data_id_dir + "/current")
-    if err != nil {
-        return
-    }
+    _, err = data.Dump(dataIdDir + "/current")
 
     return
 }

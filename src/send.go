@@ -24,7 +24,7 @@ import (
 // httpSend send data to stat api
 func httpSend(server, key, stat string) (err error) {
     surl := server + "/api/stat"
-    skey := PassWord(key, stat)
+    skey := Md5(key, stat)
 
     request, err := http.NewRequest("POST", surl, bytes.NewBuffer([]byte(stat)))
     if err != nil {
@@ -33,7 +33,7 @@ func httpSend(server, key, stat string) (err error) {
 
     request.Header.Set("X-Client-Key", skey)
     request.Header.Set("Content-Type", "application/json")
-    request.Header.Set("User-Agent", "Stat Hub API Client/" + TPL_VERSION + " (i@likexian.com)")
+    request.Header.Set("User-Agent", "Stat Hub API Client/" + Version() + " (i@likexian.com)")
 
     tr := &http.Transport{
         // If not self-signed certificate please disabled this.

@@ -18,6 +18,7 @@ import (
 )
 
 
+// Stat storing stat data
 type Stat struct {
     Id        string  `json:"id"`
     TimeStamp int64   `json:"time_stamp"`
@@ -32,104 +33,105 @@ type Stat struct {
     SwapRate  float64 `json:"swap_rate"`
     DiskRate  float64 `json:"disk_rate"`
     DiskWarn  string  `json:"disk_warn"`
-    DiskRead  uint64  `json:"disk_read"`
-    DiskWrite uint64  `json:"disk_write"`
-    NetRead   uint64  `json:"net_read"`
-    NetWrite  uint64  `json:"net_write"`
+    DiskRead  uint64  `json:"diskRead"`
+    DiskWrite uint64  `json:"diskWrite"`
+    NetRead   uint64  `json:"netRead"`
+    NetWrite  uint64  `json:"netWrite"`
 }
 
 
+// GetStat return stat data
 func GetStat(id string, name string) (result string, err error) {
     stat := Stat{}
     stat.Id = id
     stat.TimeStamp = time.Now().Unix()
 
-    host_info, err := hoststat.GetHostInfo()
+    hostInfo, err := hoststat.GetHostInfo()
     if err != nil {
         SERVER_LOGGER.Debug("get host info failed: %s", err.Error())
     }
-    stat.OSRelease = host_info.Release + " " + host_info.OSBit
+    stat.OSRelease = hostInfo.Release + " " + hostInfo.OSBit
 
     if name == "" {
-        stat.HostName = host_info.HostName
+        stat.HostName = hostInfo.HostName
     } else {
         stat.HostName = name
     }
 
-    cpu_info, err := hoststat.GetCPUInfo()
+    cpuInfo, err := hoststat.GetCPUInfo()
     if err != nil {
         SERVER_LOGGER.Debug("get cpu info failed: %s", err.Error())
     }
-    stat.CPUName = cpu_info.ModelName
-    stat.CPUCore = cpu_info.CoreCount
+    stat.CPUName = cpuInfo.ModelName
+    stat.CPUCore = cpuInfo.CoreCount
 
-    cpu_stat, err := hoststat.GetCPUStat()
+    cpuStat, err := hoststat.GetCPUStat()
     if err != nil {
         SERVER_LOGGER.Debug("get cpu stat failed: %s", err.Error())
     }
-    stat.CPURate = Round(100 - cpu_stat.IdleRate, 2)
+    stat.CPURate = Round(100 - cpuStat.IdleRate, 2)
 
-    mem_stat, err := hoststat.GetMemStat()
+    memStat, err := hoststat.GetMemStat()
     if err != nil {
         SERVER_LOGGER.Debug("get mem stat failed: %s", err.Error())
     }
-    stat.MemRate = mem_stat.MemRate
-    stat.SwapRate = mem_stat.SwapRate
+    stat.MemRate = memStat.MemRate
+    stat.SwapRate = memStat.SwapRate
 
-    disk_stat, err := hoststat.GetDiskStat()
+    diskStat, err := hoststat.GetDiskStat()
     if err != nil {
         SERVER_LOGGER.Debug("get disk stat failed: %s", err.Error())
     }
-    disk_total := uint64(0)
-    disk_used := uint64(0)
-    for _, v := range disk_stat {
-        disk_total += v.Total
-        disk_used += v.Used
+    diskTotal := uint64(0)
+    diskUsed := uint64(0)
+    for _, v := range diskStat {
+        diskTotal += v.Total
+        diskUsed += v.Used
         if v.UsedRate > 90 {
             stat.DiskWarn += fmt.Sprintf("%s %.2f;", v.Mount, v.UsedRate)
         }
     }
-    stat.DiskRate = Round(float64(disk_used) / float64(disk_total), 2)
+    stat.DiskRate = Round(float64(diskUsed) / float64(diskTotal), 2)
 
-    io_stat, err := hoststat.GetIOStat()
+    ioStat, err := hoststat.GetIOStat()
     if err != nil {
         SERVER_LOGGER.Debug("get io stat failed: %s", err.Error())
     }
-    disk_read := uint64(0)
-    disk_write := uint64(0)
-    for _, v := range io_stat {
-        disk_read += v.ReadBytes
-        disk_write += v.WriteBytes
+    diskRead := uint64(0)
+    diskWrite := uint64(0)
+    for _, v := range ioStat {
+        diskRead += v.ReadBytes
+        diskWrite += v.WriteBytes
     }
-    stat.DiskRead = disk_read
-    stat.DiskWrite = disk_write
+    stat.DiskRead = diskRead
+    stat.DiskWrite = diskWrite
 
-    net_stat, err := hoststat.GetNetStat()
+    netStat, err := hoststat.GetNetStat()
     if err != nil {
         SERVER_LOGGER.Debug("get net stat failed: %s", err.Error())
     }
-    net_write := uint64(0)
-    net_read := uint64(0)
-    for _, v := range net_stat {
+    netWrite := uint64(0)
+    netRead := uint64(0)
+    for _, v := range netStat {
         if v.Device != "lo" {
-            net_write += v.TXBytes
-            net_read += v.RXBytes
+            netWrite += v.TXBytes
+            netRead += v.RXBytes
         }
     }
-    stat.NetWrite = net_write
-    stat.NetRead = net_read
+    stat.NetWrite = netWrite
+    stat.NetRead = netRead
 
-    uptime_stat, err := hoststat.GetUptimeStat()
+    uptimeStat, err := hoststat.GetUptimeStat()
     if err != nil {
         SERVER_LOGGER.Debug("get uptime stat failed: %s", err.Error())
     }
-    stat.Uptime = uint64(uptime_stat.Uptime)
+    stat.Uptime = uint64(uptimeStat.Uptime)
 
-    load_stat, err := hoststat.GetLoadStat()
+    loadStat, err := hoststat.GetLoadStat()
     if err != nil {
         SERVER_LOGGER.Debug("get load stat failed: %s", err.Error())
     }
-    stat.Load = fmt.Sprintf("%.2f %.2f %.2f", load_stat.LoadNow, load_stat.LoadPre, load_stat.LoadFar)
+    stat.Load = fmt.Sprintf("%.2f %.2f %.2f", loadStat.LoadNow, loadStat.LoadPre, loadStat.LoadFar)
 
     data := simplejson.New(stat)
     result, err = data.Dumps()

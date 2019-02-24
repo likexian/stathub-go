@@ -22,18 +22,19 @@ import (
 )
 
 
+// HttpService start http service
 func HttpService() {
-    http.HandleFunc("/", IndexHandler)
-    http.HandleFunc("/login", LoginHandler)
-    http.HandleFunc("/logout", LogoutHandler)
-    http.HandleFunc("/passwd", PasswdHandler)
-    http.HandleFunc("/help", HelpHandler)
-    http.HandleFunc("/node", NodeHandler)
+    http.HandleFunc("/", indexHandler)
+    http.HandleFunc("/login", loginHandler)
+    http.HandleFunc("/logout", logoutHandler)
+    http.HandleFunc("/passwd", passwdHandler)
+    http.HandleFunc("/help", helpHandler)
+    http.HandleFunc("/node", nodeHandler)
     http.HandleFunc("/pkgs/", pkgsHandler)
-    http.HandleFunc("/static/", StaticHandler)
-    http.HandleFunc("/robots.txt", RobotsTXTHandler)
-    http.HandleFunc("/api/stat", APIStatHandler)
-    http.HandleFunc("/api/node", APINodeHandler)
+    http.HandleFunc("/static/", staticHandler)
+    http.HandleFunc("/robots.txt", robotsTXTHandler)
+    http.HandleFunc("/api/stat", apiStatHandler)
+    http.HandleFunc("/api/node", apiNodeHandler)
 
     SERVER_LOGGER.Info("start http service")
     err := http.ListenAndServeTLS(":15944",
@@ -44,7 +45,7 @@ func HttpService() {
 }
 
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
     if isRobots(w, r) {
         httpError(w, r, http.StatusForbidden)
         return
@@ -83,13 +84,13 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
     status := ReadStatus(SERVER_CONFIG.DataDir)
     data := map[string]interface{}{
         "data": status,
-        "version": TPL_VERSION,
+        "version": Version(),
     }
     tpl.Execute(w, data)
 }
 
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+func loginHandler(w http.ResponseWriter, r *http.Request) {
     if isRobots(w, r) {
         httpError(w, r, http.StatusForbidden)
         return
@@ -103,10 +104,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         password := r.PostForm.Get("password")
-        if PassWord(SERVER_CONFIG.ServerKey, password) != SERVER_CONFIG.PassWord {
+        if Md5(SERVER_CONFIG.ServerKey, password) != SERVER_CONFIG.PassWord {
             http.Redirect(w, r, "/login", http.StatusFound)
         } else {
-            value := PassWord(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord)
+            value := Md5(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord)
             cookie := http.Cookie{Name: "id", Value: value, HttpOnly: true}
             http.SetCookie(w, &cookie)
             http.Redirect(w, r, "/", http.StatusFound)
@@ -137,7 +138,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
     expires := time.Now()
     expires = expires.AddDate(0, 0, -1)
     cookie := http.Cookie{Name: "id", Value: "", Expires: expires, HttpOnly: true}
@@ -147,7 +148,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func PasswdHandler(w http.ResponseWriter, r *http.Request) {
+func passwdHandler(w http.ResponseWriter, r *http.Request) {
     if !isLogin(w, r) {
         http.Redirect(w, r, "/login", http.StatusFound)
         return
@@ -164,7 +165,7 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
         if password == "" {
             http.Redirect(w, r, "/passwd", http.StatusFound)
         } else {
-            SERVER_CONFIG.PassWord = PassWord(SERVER_CONFIG.ServerKey, password)
+            SERVER_CONFIG.PassWord = Md5(SERVER_CONFIG.ServerKey, password)
             err := SaveConfig(SERVER_CONFIG)
             if err != nil {
                 httpError(w, r, http.StatusInternalServerError)
@@ -198,7 +199,7 @@ func PasswdHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func HelpHandler(w http.ResponseWriter, r *http.Request) {
+func helpHandler(w http.ResponseWriter, r *http.Request) {
     if !isLogin(w, r) {
         http.Redirect(w, r, "/login", http.StatusFound)
         return
@@ -228,7 +229,7 @@ func HelpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func NodeHandler(w http.ResponseWriter, r *http.Request) {
+func nodeHandler(w http.ResponseWriter, r *http.Request) {
     key := r.URL.Query().Get("key")
     if key != SERVER_CONFIG.ServerKey {
         httpError(w, r, http.StatusForbidden)
@@ -249,16 +250,16 @@ func NodeHandler(w http.ResponseWriter, r *http.Request) {
         }
     }
 
-    tpl.Execute(w, map[string]string{"server": r.Host, "key": SERVER_CONFIG.ServerKey, "version": TPL_VERSION})
+    tpl.Execute(w, map[string]string{"server": r.Host, "key": SERVER_CONFIG.ServerKey, "version": Version()})
 }
 
 
-func RobotsTXTHandler(w http.ResponseWriter, r *http.Request) {
+func robotsTXTHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "User-agent: *\r\nDisallow: /")
 }
 
 
-func APINodeHandler(w http.ResponseWriter, r *http.Request) {
+func apiNodeHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     if !isLogin(w, r) {
         result := `{"status": {"code": 0, "message": "login timeout"}}`
@@ -280,15 +281,15 @@ func APINodeHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    data_id, _ := data.Get("id").String()
-    data_id_dir := SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir + "/" + data_id[3:]
-    if !FileExists(data_id_dir) {
+    dataId, _ := data.Get("id").String()
+    dataIdDir := SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir + "/" + dataId[3:]
+    if !FileExists(dataIdDir) {
         result := `{"status": {"code": 0, "message": "node id invalid"}}`
         fmt.Fprintf(w, result)
         return
     }
 
-    err = os.RemoveAll(data_id_dir)
+    err = os.RemoveAll(dataIdDir)
     if err != nil {
         result := `{"status": {"code": 0, "message": "` + err.Error() + `"}}`
         fmt.Fprintf(w, result)
@@ -300,19 +301,17 @@ func APINodeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func APIStatHandler(w http.ResponseWriter, r *http.Request) {
-    ip := strings.Split(r.RemoteAddr, ":")[0]
-    if test, ok := r.Header["X-Real-Ip"]; ok {
-        ip = test[0]
+func apiStatHandler(w http.ResponseWriter, r *http.Request) {
+    ip := getHTTPHeader(r, "X-Real-Ip")
+    if ip == "" {
+        ip = strings.Split(r.RemoteAddr, ":")[0]
     }
 
-    client_key := ""
-    if test, ok := r.Header["X-Client-Key"]; !ok {
+    clientKey := getHTTPHeader(r, "X-Client-Key")
+    if clientKey == "" {
         result := `{"status": {"code": 0, "message": "key invalid"}}`
         fmt.Fprintf(w, result)
         return
-    } else {
-        client_key = test[0]
     }
 
     body, err := ioutil.ReadAll(r.Body)
@@ -323,8 +322,8 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     text := string(body)
-    server_key := PassWord(SERVER_CONFIG.ServerKey, text)
-    if server_key != client_key {
+    serverKey := Md5(SERVER_CONFIG.ServerKey, text)
+    if serverKey != clientKey {
         result := `{"status": {"code": 0, "message": "key invalid"}}`
         fmt.Fprintf(w, result)
         return
@@ -353,7 +352,7 @@ func APIStatHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func StaticHandler(w http.ResponseWriter, r *http.Request) {
+func staticHandler(w http.ResponseWriter, r *http.Request) {
     n := strings.LastIndex(r.URL.Path, ".")
     if n == -1 {
         httpError(w, r, http.StatusNotFound)
@@ -393,6 +392,7 @@ func getHTTPHeader(r *http.Request, name string) string {
 }
 
 
+// httpError returns a http error
 func httpError(w http.ResponseWriter, r *http.Request, status int) {
     w.WriteHeader(status)
     if status == http.StatusForbidden {
@@ -405,21 +405,23 @@ func httpError(w http.ResponseWriter, r *http.Request, status int) {
 }
 
 
+// isLogin returns request has login
 func isLogin(w http.ResponseWriter, r *http.Request) bool {
     cookie, err := r.Cookie("id")
     if err != nil || cookie.Value == "" {
         return false
-    } else {
-        value := PassWord(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord)
-        if value != cookie.Value {
-            return false
-        }
+    }
+
+    value := Md5(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord)
+    if value != cookie.Value {
+        return false
     }
 
     return true
 }
 
 
+// isRobots returns is a robot request
 func isRobots(w http.ResponseWriter, r *http.Request) bool {
     agent := strings.ToLower(getHTTPHeader(r, "User-Agent"))
     robots := []string{"bot", "spider", "archiver", "yahoo! slurp", "haosou"}
