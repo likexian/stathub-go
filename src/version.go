@@ -9,20 +9,17 @@
 
 package main
 
-
 // Version returns package version
 func Version() string {
-    return "0.101.2"
+	return "0.101.3"
 }
-
 
 // Author returns package author
 func Author() string {
-    return "[Li Kexian](https://www.likexian.com/)"
+	return "[Li Kexian](https://www.likexian.com/)"
 }
-
 
 // License returns package license
 func License() string {
-    return "Apache License, Version 2.0"
+	return "Apache License, Version 2.0"
 }

@@ -53,10 +53,10 @@ package main
 
 // variable for tpl file
 var (
-    TPL_REVHEAD     = "%s"
-    TPL_CERT        = map[string]string{}
-    TPL_STATIC      = map[string]string{}
-    TPL_TEMPLATE    = map[string]string{}
+\tTPL_REVHEAD  = "%s"
+\tTPL_CERT     = map[string]string{}
+\tTPL_STATIC   = map[string]string{}
+\tTPL_TEMPLATE = map[string]string{}
 )
 
 func init() {''' % (build)
@@ -67,7 +67,7 @@ for i in mapper:
     for j in os.listdir(i):
         f = '%s/%s' % (i, j)
         t = read_file(f)
-        template += '\n%s%s["%s"] = `%s`\n' % (' ' * 4, mapper[i], j, t)
+        template += '\n%s%s["%s"] = `%s`\n' % ("\t", mapper[i], j, t)
 
 template += '\n}\n'
 write_file('template.go', template)
