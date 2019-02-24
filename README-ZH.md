@@ -1,8 +1,13 @@
 # Stat Hub
 
-A smart Hub for holding server stat
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![GoDoc](https://godoc.org/github.com/likexian/stathub-go?status.svg)](https://godoc.org/github.com/likexian/stathub-go)
+[![Build Status](https://travis-ci.org/likexian/stathub-go.svg?branch=master)](https://travis-ci.org/likexian/stathub-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/likexian/stathub-go)](https://goreportcard.com/report/github.com/likexian/stathub-go)
+[![Download Total](https://img.shields.io/github/downloads/likexian/stathub-go/total.svg)](https://github.com/likexian/stathub-go/releases)
+[![Paypal Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXJZTJEZTLUM8)
 
-[![Build Status](https://secure.travis-ci.org/likexian/stathub-go.png)](https://secure.travis-ci.org/likexian/stathub-go)
+A smart Hub for holding server stat
 
 [English README](README.md) | [中文说明](README-ZH.md)
 
@@ -10,7 +15,7 @@ A smart Hub for holding server stat
 
 Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
-它由两部分组成，一是服务端，用于接收、储存和展示状态；另一个是客户端，它用于收集并发送状态到服务端。而这一切，您只需要两个二进制文件。
+它由两部分组成，一是服务端，用于接收、储存和展示状态；另一个是客户端，它用于收集并发送状态到服务端。而这一切，您只需要一个二进制文件。
 
 ## 演示
 
@@ -18,8 +23,8 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 ## 特性
 
-- Go 语言编写
-- 只需两个文件就可以完成一切
+- Golang 编写
+- 只需一个文件就可以完成一切
 - 部署简单，没有依赖不需要数据库
 - 支持SSL安全，支持域名访问，安全并简单
 
@@ -78,16 +83,23 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-## LICENSE
+## 依赖
+
+- [github.com/likexian/daemon-go](https://github.com/likexian/daemon-go)
+- [github.com/likexian/host-stat-go](https://github.com/likexian/host-stat-go)
+- [github.com/likexian/logger-go](https://github.com/likexian/logger-go)
+- [github.com/likexian/simplejson-go](https://github.com/likexian/simplejson-go)
+
+## 版权
 
 Copyright 2015-2019, Li Kexian
 
 Apache License, Version 2.0
 
-## About
+## 关于
 
 - [Li Kexian](https://www.likexian.com/)
 
-## DONATE
+## 赞赏
 
 - [Help me make perfect](https://www.likexian.com/donate/)

@@ -11,7 +11,7 @@ package main
 
 // variable for tpl file
 var (
-    TPL_REVHEAD     = "bbaff12"
+    TPL_REVHEAD     = "6fd7e5f"
     TPL_VERSION     = "0.101.1"
     TPL_LICENSE     = "Apache License, Version 2.0"
     TPL_AUTHOR      = "[Li Kexian](https://www.likexian.com/)"

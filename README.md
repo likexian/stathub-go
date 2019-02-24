@@ -1,8 +1,13 @@
 # Stat Hub
 
-A smart Hub for holding server stat
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![GoDoc](https://godoc.org/github.com/likexian/stathub-go?status.svg)](https://godoc.org/github.com/likexian/stathub-go)
+[![Build Status](https://travis-ci.org/likexian/stathub-go.svg?branch=master)](https://travis-ci.org/likexian/stathub-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/likexian/stathub-go)](https://goreportcard.com/report/github.com/likexian/stathub-go)
+[![Download Total](https://img.shields.io/github/downloads/likexian/stathub-go/total.svg)](https://github.com/likexian/stathub-go/releases)
+[![Paypal Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXJZTJEZTLUM8)
 
-[![Build Status](https://secure.travis-ci.org/likexian/stathub-go.png)](https://secure.travis-ci.org/likexian/stathub-go)
+A smart Hub for holding server stat
 
 [中文说明](README-ZH.md) | [English README](README.md)
 
@@ -10,7 +15,7 @@ A smart Hub for holding server stat
 
 Stat Hub is a service for collecting and displaying servers stat.
 
-Stat Hub have two parts, one is the SERVER for recving, storing and displaying stat, the other is the CLIENT for collecting and sending stat to SERVER. Just two binary files is needed for all of this.
+Stat Hub have two parts, one is the SERVER for recving, storing and displaying stat, the other is the CLIENT for collecting and sending stat to SERVER. Just ONE binary files is needed for all of this.
 
 ## DEMO
 
@@ -18,8 +23,8 @@ Stat Hub have two parts, one is the SERVER for recving, storing and displaying s
 
 ## Feature
 
-- Powered by Go lang
-- Only two binary files, doing and displaying data
+- Powered by Golang
+- Only one binary files, collecting and displaying data
 - Easy deploy, no depends, no database required
 - SSL support, your domain support, secure and easy
 
@@ -77,6 +82,13 @@ Sure, please add the folling config to nginx conf file.
         proxy_pass https://127.0.0.1:15944;
         proxy_set_header X-Real-IP $remote_addr;
     }
+
+## Dependencies
+
+- [github.com/likexian/daemon-go](https://github.com/likexian/daemon-go)
+- [github.com/likexian/host-stat-go](https://github.com/likexian/host-stat-go)
+- [github.com/likexian/logger-go](https://github.com/likexian/logger-go)
+- [github.com/likexian/simplejson-go](https://github.com/likexian/simplejson-go)
 
 ## LICENSE
 
