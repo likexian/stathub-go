@@ -16,6 +16,7 @@ import (
 	"os"
 	"sort"
 	"time"
+	"strings"
 )
 
 // Status storing stat data
@@ -79,6 +80,7 @@ func ReadStatus(dataDir string) Statuses {
 				timeStamp, _ := d.Get("time_stamp").Int()
 				uptime, _ := d.Get("uptime").Int()
 
+				s.Load = strings.Fields(s.Load)[0]
 				s.Uptime = SecondToHumanTime(int(uptime))
 				s.OSRelease = PrettyLinuxVersion(s.OSRelease)
 
