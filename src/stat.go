@@ -85,10 +85,10 @@ func GetStat(id string, name string) (result string, err error) {
 		diskTotal += v.Total
 		diskUsed += v.Used
 		if v.UsedRate > 90 {
-			stat.DiskWarn += fmt.Sprintf("%s %.2f;", v.Mount, v.UsedRate)
+			stat.DiskWarn += fmt.Sprintf("%s %.2f%%;", v.Mount, v.UsedRate)
 		}
 	}
-	stat.DiskRate = Round(float64(diskUsed)/float64(diskTotal), 2)
+	stat.DiskRate = Round(float64(diskUsed)*100/float64(diskTotal), 2)
 
 	ioStat, err := hoststat.GetIOStat()
 	if err != nil {
