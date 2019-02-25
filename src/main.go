@@ -13,7 +13,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/likexian/daemon-go"
-	"github.com/likexian/host-stat-go"
 	"github.com/likexian/logger-go"
 	"os"
 	"path/filepath"
@@ -57,12 +56,11 @@ func main() {
 	}
 
 	if *initServer {
-		hostInfo, _ := hoststat.GetHostInfo()
 		timeStamp := fmt.Sprintf("%d", SERVER_START)
 		id := Md5(fmt.Sprintf("%d", os.Getpid()), timeStamp)
 		key := Md5(id, timeStamp)
 		password := Md5(key, "likexian")
-		err := newServerConfig(*configFile, id, hostInfo.HostName, password, key)
+		err := newServerConfig(*configFile, id, "", password, key)
 		if err != nil {
 			SERVER_LOGGER.Critical(err.Error())
 			os.Exit(-1)
@@ -81,10 +79,9 @@ func main() {
 			SERVER_LOGGER.Critical("server url is required, set it by --server-url.")
 			os.Exit(-1)
 		}
-		hostInfo, _ := hoststat.GetHostInfo()
 		timeStamp := fmt.Sprintf("%d", SERVER_START)
 		id := Md5(fmt.Sprintf("%d", os.Getpid()), timeStamp)
-		err := newClientConfig(*configFile, id, hostInfo.HostName, *serverKey, *serverUrl)
+		err := newClientConfig(*configFile, id, "", *serverKey, *serverUrl)
 		if err != nil {
 			SERVER_LOGGER.Critical(err.Error())
 			os.Exit(-1)
