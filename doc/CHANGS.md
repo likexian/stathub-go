@@ -1,4 +1,10 @@
-Changes with Stat Hub 0.101.0 Beta    2019-02-25
+Changes with Stat Hub 0.101.7 Beta    2019-02-26
+
+- Bugfix: fixed calc disk use rate
+- Bugfix: only show last load number
+
+
+Changes with Stat Hub 0.101.4 Beta    2019-02-25
 
 - Bugfix: add the logger
 - Bugfix: refine the code

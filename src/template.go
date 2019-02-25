@@ -11,7 +11,7 @@ package main
 
 // variable for tpl file
 var (
-	TPL_REVHEAD  = "6de0846"
+	TPL_REVHEAD  = "7a22b4a"
 	TPL_CERT     = map[string]string{}
 	TPL_STATIC   = map[string]string{}
 	TPL_TEMPLATE = map[string]string{}
@@ -17969,9 +17969,10 @@ fi
 tar zxf stathub.$(uname -m).tar.gz
 rm -rf stathub.$(uname -m).tar.gz
 chmod +x stathub service
+[ ! -d conf ] && $sudo mkdir $BASEDIR/conf
 
-if [ ! -f stathub.conf ]; then
-    $sudo ./stathub -c stathub.conf --init-client --server-url https://{{.server}} --server-key {{.key}}
+if [ ! -f conf/stathub.conf ]; then
+    $sudo ./stathub -c conf/stathub.conf --init-client --server-url https://{{.server}} --server-key {{.key}}
 fi
 
 if [ -z "$(grep stathub /etc/rc.local)" ]; then

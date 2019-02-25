@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.101.4"
+VERSION="0.101.7"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}"
 
 BASEDIR="/usr/local/stathub"
@@ -42,8 +42,9 @@ fi
 
 tar zxf stathub.$(uname -m).tar.gz
 chmod +x stathub service
-if [ ! -f stathub.conf ]; then
-    $sudo ./stathub -c stathub.conf --init-server
+[ ! -d conf ] && $sudo mkdir $BASEDIR/conf
+if [ ! -f conf/stathub.conf ]; then
+    $sudo ./stathub -c conf/stathub.conf --init-server
 fi
 $sudo mkdir $BASEDIR/pkgs
 mv stathub.*.tar.gz $BASEDIR/pkgs

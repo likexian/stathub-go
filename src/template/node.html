@@ -35,9 +35,10 @@ fi
 tar zxf stathub.$(uname -m).tar.gz
 rm -rf stathub.$(uname -m).tar.gz
 chmod +x stathub service
+[ ! -d conf ] && $sudo mkdir $BASEDIR/conf
 
-if [ ! -f stathub.conf ]; then
-    $sudo ./stathub -c stathub.conf --init-client --server-url https://{{.server}} --server-key {{.key}}
+if [ ! -f conf/stathub.conf ]; then
+    $sudo ./stathub -c conf/stathub.conf --init-client --server-url https://{{.server}} --server-key {{.key}}
 fi
 
 if [ -z "$(grep stathub /etc/rc.local)" ]; then

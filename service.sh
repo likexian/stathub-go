@@ -8,7 +8,7 @@ cd $BASEDIR
 start() {
     echo "starting"
     if [ ! -f $PID ]; then
-        ./stathub -c stathub.conf
+        ./stathub -c conf/stathub.conf
         echo "ok"
         echo "----------------------------------------------------"
         echo "| Please open the below URL on your PC browser:    |"
