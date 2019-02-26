@@ -52,7 +52,7 @@ func main() {
 
 	if *configFile == "" {
 		flag.Usage()
-		os.Exit(-1)
+		os.Exit(1)
 	}
 
 	if *initServer {
@@ -62,8 +62,7 @@ func main() {
 		password := Md5(key, "likexian")
 		err := newServerConfig(*configFile, id, "", password, key)
 		if err != nil {
-			SERVER_LOGGER.Critical(err.Error())
-			os.Exit(-1)
+			SERVER_LOGGER.Fatal(err.Error())
 		} else {
 			SERVER_LOGGER.Info("init server configuration successful")
 			os.Exit(0)
@@ -72,19 +71,16 @@ func main() {
 
 	if *initClient {
 		if *serverKey == "" {
-			SERVER_LOGGER.Critical("server key is required, set it by --server-key.")
-			os.Exit(-1)
+			SERVER_LOGGER.Fatal("server key is required, set it by --server-key.")
 		}
 		if *serverUrl == "" {
-			SERVER_LOGGER.Critical("server url is required, set it by --server-url.")
-			os.Exit(-1)
+			SERVER_LOGGER.Fatal("server url is required, set it by --server-url.")
 		}
 		timeStamp := fmt.Sprintf("%d", SERVER_START)
 		id := Md5(fmt.Sprintf("%d", os.Getpid()), timeStamp)
 		err := newClientConfig(*configFile, id, "", *serverKey, *serverUrl)
 		if err != nil {
-			SERVER_LOGGER.Critical(err.Error())
-			os.Exit(-1)
+			SERVER_LOGGER.Fatal(err.Error())
 		} else {
 			SERVER_LOGGER.Info("init client configuration successful")
 			os.Exit(0)
@@ -92,37 +88,32 @@ func main() {
 	}
 
 	if !FileExists(*configFile) {
-		SERVER_LOGGER.Critical(fmt.Sprintf("configuration file %s is not found.\n", *configFile))
-		os.Exit(-1)
+		SERVER_LOGGER.Fatal(fmt.Sprintf("configuration file %s is not found.\n", *configFile))
 	}
 
 	var err error
 	SERVER_CONFIG, err = GetConfig(*configFile)
 	if err != nil {
-		SERVER_LOGGER.Critical(fmt.Sprintf("configuration load failed, %s", err.Error()))
-		os.Exit(-1)
+		SERVER_LOGGER.Fatal(fmt.Sprintf("configuration load failed, %s", err.Error()))
 	}
 
 	if SERVER_CONFIG.Role == "server" {
 		if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir) {
 			err := os.MkdirAll(SERVER_CONFIG.BaseDir+SERVER_CONFIG.DataDir, 0755)
 			if err != nil {
-				SERVER_LOGGER.Critical(err.Error())
-				os.Exit(-1)
+				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
 		if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSCert) {
 			err := WriteFile(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSCert, TPL_CERT["cert.pem"])
 			if err != nil {
-				SERVER_LOGGER.Critical(err.Error())
-				os.Exit(-1)
+				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
 		if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSKey) {
 			err := WriteFile(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSKey, TPL_CERT["cert.key"])
 			if err != nil {
-				SERVER_LOGGER.Critical(err.Error())
-				os.Exit(-1)
+				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
 	}
@@ -132,8 +123,7 @@ func main() {
 		if ds != "" && !FileExists(ds) {
 			err := os.MkdirAll(ds, 0755)
 			if err != nil {
-				SERVER_LOGGER.Critical(err.Error())
-				os.Exit(-1)
+				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
 	}
@@ -147,8 +137,7 @@ func main() {
 		}
 		err := c.Daemon()
 		if err != nil {
-			SERVER_LOGGER.Critical(err.Error())
-			os.Exit(-1)
+			SERVER_LOGGER.Fatal(err.Error())
 		}
 	}
 
