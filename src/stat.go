@@ -31,10 +31,10 @@ type Stat struct {
 	SwapRate  float64 `json:"swap_rate"`
 	DiskRate  float64 `json:"disk_rate"`
 	DiskWarn  string  `json:"disk_warn"`
-	DiskRead  uint64  `json:"diskRead"`
-	DiskWrite uint64  `json:"diskWrite"`
-	NetRead   uint64  `json:"netRead"`
-	NetWrite  uint64  `json:"netWrite"`
+	DiskRead  uint64  `json:"disk_read"`
+	DiskWrite uint64  `json:"disk_write"`
+	NetRead   uint64  `json:"net_read"`
+	NetWrite  uint64  `json:"net_write"`
 }
 
 // GetStat return stat data
