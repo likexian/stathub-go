@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.101.7"
+VERSION="0.101.9"
 STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}"
 
 BASEDIR="/usr/local/stathub"

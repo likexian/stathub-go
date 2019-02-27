@@ -1,3 +1,9 @@
+Changes with Stat Hub 0.101.9 Beta    2019-02-27
+
+- Bugfix: fixed disk and net stat display
+- Bugfix: set debug off when building
+
+
 Changes with Stat Hub 0.101.7 Beta    2019-02-26
 
 - Bugfix: fixed calc disk use rate

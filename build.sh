@@ -7,6 +7,10 @@ command_exists() {
 echo '+ building stathub start'
 rm -rf stathub.*.tar.gz
 
+git add .
+sed -ie "s/DEBUG\([^\=]*\)= true/DEBUG\1= false/g" src/const.go
+rm -rf src/const.goe
+
 for i in "i686" "x86_64"; do
     rm -rf tmp && mkdir tmp
 
@@ -39,6 +43,8 @@ for i in "i686" "x86_64"; do
     cp tmp/stathub.$i.tar.gz .
     rm -rf tmp
 done
+
+git checkout .
 
 VERSION=`grep -C1 'func Version' src/version.go | grep 'return ' | awk -F'"' '{print $2}'`
 sed -ie "s/VERSION=\".*\"/VERSION=\"$VERSION\"/g" setup.sh
