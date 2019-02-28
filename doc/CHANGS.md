@@ -1,3 +1,8 @@
+Changes with Stat Hub 0.102.2 Beta    2019-02-28
+
+- Bugfix: add logrotate support
+
+
 Changes with Stat Hub 0.102.1 Beta    2019-02-28
 
 - Bugfix: chown data dir to daemon user

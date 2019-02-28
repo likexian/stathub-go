@@ -7,7 +7,7 @@ cd $BASEDIR
 
 start() {
     echo "starting"
-    if [ ! -f $PID ]; then
+    if [ ! -f $PIDFILE ]; then
         ./stathub -c conf/stathub.conf
         echo "ok"
         echo "----------------------------------------------------"
@@ -24,9 +24,9 @@ start() {
 
 stop() {
     echo "stopping"
-    if [ -f $PID ]; then
-        kill -9 `cat $PID`
-        rm -rf $PID
+    if [ -f $PIDFILE ]; then
+        kill -9 `cat $PIDFILE`
+        rm -rf $PIDFILE
         echo "ok"
     fi
 }

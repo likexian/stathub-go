@@ -45,7 +45,7 @@ func GetStat(id string, name string) (result string, err error) {
 
 	hostInfo, err := hoststat.GetHostInfo()
 	if err != nil {
-		SERVER_LOGGER.Debug("get host info failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get host info failed: %s", err.Error())
 	}
 	stat.OSRelease = hostInfo.Release + " " + hostInfo.OSBit
 
@@ -57,27 +57,27 @@ func GetStat(id string, name string) (result string, err error) {
 
 	cpuInfo, err := hoststat.GetCPUInfo()
 	if err != nil {
-		SERVER_LOGGER.Debug("get cpu info failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get cpu info failed: %s", err.Error())
 	}
 	stat.CPUName = cpuInfo.ModelName
 	stat.CPUCore = cpuInfo.CoreCount
 
 	cpuStat, err := hoststat.GetCPUStat()
 	if err != nil {
-		SERVER_LOGGER.Debug("get cpu stat failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get cpu stat failed: %s", err.Error())
 	}
 	stat.CPURate = Round(100-cpuStat.IdleRate, 2)
 
 	memStat, err := hoststat.GetMemStat()
 	if err != nil {
-		SERVER_LOGGER.Debug("get mem stat failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get mem stat failed: %s", err.Error())
 	}
 	stat.MemRate = memStat.MemRate
 	stat.SwapRate = memStat.SwapRate
 
 	diskStat, err := hoststat.GetDiskStat()
 	if err != nil {
-		SERVER_LOGGER.Debug("get disk stat failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get disk stat failed: %s", err.Error())
 	}
 	diskTotal := uint64(0)
 	diskUsed := uint64(0)
@@ -92,7 +92,7 @@ func GetStat(id string, name string) (result string, err error) {
 
 	ioStat, err := hoststat.GetIOStat()
 	if err != nil {
-		SERVER_LOGGER.Debug("get io stat failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get io stat failed: %s", err.Error())
 	}
 	diskRead := uint64(0)
 	diskWrite := uint64(0)
@@ -105,7 +105,7 @@ func GetStat(id string, name string) (result string, err error) {
 
 	netStat, err := hoststat.GetNetStat()
 	if err != nil {
-		SERVER_LOGGER.Debug("get net stat failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get net stat failed: %s", err.Error())
 	}
 	netWrite := uint64(0)
 	netRead := uint64(0)
@@ -120,13 +120,13 @@ func GetStat(id string, name string) (result string, err error) {
 
 	uptimeStat, err := hoststat.GetUptimeStat()
 	if err != nil {
-		SERVER_LOGGER.Debug("get uptime stat failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get uptime stat failed: %s", err.Error())
 	}
 	stat.Uptime = uint64(uptimeStat.Uptime)
 
 	loadStat, err := hoststat.GetLoadStat()
 	if err != nil {
-		SERVER_LOGGER.Debug("get load stat failed: %s", err.Error())
+		SERVER_LOGGER.ErrorOnce("get load stat failed: %s", err.Error())
 	}
 	stat.Load = fmt.Sprintf("%.2f %.2f %.2f", loadStat.LoadNow, loadStat.LoadPre, loadStat.LoadFar)
 

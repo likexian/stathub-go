@@ -11,7 +11,7 @@ package main
 
 // variable for tpl file
 var (
-	TPL_REVHEAD  = "faa6343"
+	TPL_REVHEAD  = "7f8a987"
 	TPL_CERT     = map[string]string{}
 	TPL_STATIC   = map[string]string{}
 	TPL_TEMPLATE = map[string]string{}
