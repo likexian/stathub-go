@@ -102,6 +102,47 @@ func WriteFile(fname, text string) (err error) {
 	return ioutil.WriteFile(fname, []byte(text), 0644)
 }
 
+// Chown do recurse chown go file or folder
+func Chown(fname string, uid, gid int) (err error) {
+	isDir, err := IsDir(fname)
+	if err != nil {
+		return
+	}
+
+	err = os.Chown(fname, uid, gid)
+	if err != nil || !isDir {
+		return
+	}
+
+	if !strings.HasSuffix(fname, "/") {
+		fname += "/"
+	}
+
+	fs, err := ioutil.ReadDir(fname)
+	if err != nil {
+		return
+	}
+
+	for _, f := range fs {
+		err = Chown(fname+f.Name(), uid, gid)
+		if err != nil {
+			return
+		}
+	}
+
+	return
+}
+
+// IsDir returns if path is a dir
+func IsDir(fname string) (bool, error) {
+	f, err := os.Stat(fname)
+	if err != nil {
+		return false, err
+	}
+
+	return f.Mode().IsDir(), nil
+}
+
 // SecondToHumanTime returns readable string for seconds
 func SecondToHumanTime(second int) string {
 	if second < 60 {

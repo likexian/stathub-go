@@ -1,3 +1,8 @@
+Changes with Stat Hub 0.102.1 Beta    2019-02-28
+
+- Bugfix: chown data dir to daemon user
+
+
 Changes with Stat Hub 0.101.9 Beta    2019-02-27
 
 - Bugfix: fixed disk and net stat display

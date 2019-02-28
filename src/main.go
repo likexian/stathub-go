@@ -97,6 +97,14 @@ func main() {
 		SERVER_LOGGER.Fatal(fmt.Sprintf("configuration load failed, %s", err.Error()))
 	}
 
+	var uid, gid int
+	if !DEBUG && SERVER_CONFIG.DaemonUser != "" {
+		uid, gid, err = daemon.LookupUser(SERVER_CONFIG.DaemonUser)
+		if err != nil {
+			SERVER_LOGGER.Fatal(err.Error())
+		}
+	}
+
 	if SERVER_CONFIG.Role == "server" {
 		if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir) {
 			err := os.MkdirAll(SERVER_CONFIG.BaseDir+SERVER_CONFIG.DataDir, 0755)
@@ -116,12 +124,24 @@ func main() {
 				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
+		if uid > 0 {
+			err := Chown(SERVER_CONFIG.BaseDir+SERVER_CONFIG.DataDir, uid, gid)
+			if err != nil {
+				SERVER_LOGGER.Fatal(err.Error())
+			}
+		}
 	}
 
-	for _, v := range []string{SERVER_CONFIG.PidFile, SERVER_CONFIG.LogFile} {
+	for _, v := range []string{*configFile, SERVER_CONFIG.PidFile, SERVER_CONFIG.LogFile} {
 		ds, _ := filepath.Split(SERVER_CONFIG.BaseDir + v)
 		if ds != "" && !FileExists(ds) {
 			err := os.MkdirAll(ds, 0755)
+			if err != nil {
+				SERVER_LOGGER.Fatal(err.Error())
+			}
+		}
+		if uid > 0 {
+			err := Chown(ds, uid, gid)
 			if err != nil {
 				SERVER_LOGGER.Fatal(err.Error())
 			}

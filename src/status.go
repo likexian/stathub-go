@@ -15,8 +15,8 @@ import (
 	"io/ioutil"
 	"os"
 	"sort"
-	"time"
 	"strings"
+	"time"
 )
 
 // Status storing stat data
