@@ -84,6 +84,11 @@ func ReadStatus(dataDir string) Statuses {
 				s.Uptime = SecondToHumanTime(int(uptime))
 				s.OSRelease = PrettyLinuxVersion(s.OSRelease)
 
+				s.CPURate = Round(s.CPURate, 2)
+				s.MemRate = Round(s.MemRate, 2)
+				s.SwapRate = Round(s.SwapRate, 2)
+				s.DiskRate = Round(s.DiskRate, 2)
+
 				s.NetRead = HumanByte(netRead)
 				s.NetWrite = HumanByte(netWrite)
 				s.DiskRead = HumanByte(diskRead)
