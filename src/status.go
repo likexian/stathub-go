@@ -105,6 +105,7 @@ func ReadStatus(dataDir string) Statuses {
 
 				s.Status = "success"
 				if s.DiskWarn != "" {
+					s.DiskWarn = strings.Trim(s.DiskWarn, ";")
 					s.Status = "warning"
 				}
 
@@ -160,7 +161,7 @@ func WriteStatus(dataDir string, data *simplejson.Json) (err error) {
 
 		statusSet["disk_read"] = (nDiskRead - oDiskRead) / diffSeconds
 		statusSet["disk_write"] = (nDiskWrite - oDiskWrite) / diffSeconds
-		statusSet["netRead"] = (nNetRead - oNetRead) / diffSeconds
+		statusSet["net_read"] = (nNetRead - oNetRead) / diffSeconds
 		statusSet["net_write"] = (nNetWrite - oNetWrite) / diffSeconds
 
 		oNet := oNetRead + oNetWrite

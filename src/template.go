@@ -11,7 +11,7 @@ package main
 
 // variable for tpl file
 var (
-	TPL_REVHEAD  = "8d38067"
+	TPL_REVHEAD  = "c5ac9fb"
 	TPL_CERT     = map[string]string{}
 	TPL_STATIC   = map[string]string{}
 	TPL_TEMPLATE = map[string]string{}
@@ -18101,7 +18101,7 @@ $sudo ./service start
     </div>
     <div class="pull-right">
         Stat will refresh after <span id="after_seconds">00</span> seconds,
-        <a style="cursor:pointer" id="after_action" onclick="after_action()">stop</a>.
+        <a style="cursor:pointer" id="after_action">stop</a>.
     </div>
     <div class="clear"></div>
 </div>
