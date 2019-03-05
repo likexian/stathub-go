@@ -36,8 +36,7 @@ type Config struct {
 // SaveConfig save the config to file
 func SaveConfig(config Config) (err error) {
 	data := simplejson.New(config)
-	_, err = data.Dump(config.File)
-	return
+	return data.Dump(config.File)
 }
 
 // GetConfig returns the config of file

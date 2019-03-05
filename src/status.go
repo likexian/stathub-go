@@ -179,13 +179,13 @@ func WriteStatus(dataDir string, data *simplejson.Json) (err error) {
 		data.Set("net_total", statusSet["net_total"])
 
 		current.Set("time_stamp", nTimeStamp)
-		_, err = current.Dump(dataIdDir + "/status")
+		err = current.Dump(dataIdDir + "/status")
 		if err != nil {
 			return
 		}
 	}
 
-	_, err = data.Dump(dataIdDir + "/current")
+	err = data.Dump(dataIdDir + "/current")
 
 	return
 }

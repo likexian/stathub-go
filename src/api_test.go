@@ -13,6 +13,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/likexian/simplejson-go"
+	"github.com/likexian/gokit/assert"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -35,16 +36,6 @@ const (
 )
 
 func startServer() {
-	err := WriteFile(testFile, testText)
-	if err != nil {
-		panic(err)
-	}
-
-	err = os.Chmod(testFile, 0755)
-	if err != nil {
-		panic(err)
-	}
-
 	var stdout bytes.Buffer
 	cmd := exec.Command(testFile)
 	cmd.Stdout = &stdout
@@ -54,9 +45,16 @@ func startServer() {
 }
 
 func TestApiStat(t *testing.T) {
+	os.Remove(confFile)
+
+	err := WriteFile(testFile, testText)
+	assert.Nil(t, err)
+
+	err = os.Chmod(testFile, 0755)
+	assert.Nil(t, err)
+
 	go startServer()
 
-	os.Remove(confFile)
 	for {
 		if FileExists(confFile) {
 			time.Sleep(1 * time.Second)
@@ -66,10 +64,7 @@ func TestApiStat(t *testing.T) {
 	}
 
 	CLIENT_CONF, err := GetConfig(confFile)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 10; i++ {
@@ -102,9 +97,7 @@ func TestApiStat(t *testing.T) {
 			data := simplejson.New(stat)
 			result, _ := data.Dumps()
 			err := httpSend(CLIENT_CONF.ServerUrl, CLIENT_CONF.ServerKey, result)
-			if err != nil {
-				t.Error(err)
-			}
+			assert.Nil(t, err)
 		}
 	}
 
