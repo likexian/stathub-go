@@ -1,3 +1,8 @@
+Changes with Stat Hub 0.102.3 Beta    2019-03-15
+
+- Bugfix: some bug fixed
+
+
 Changes with Stat Hub 0.102.2 Beta    2019-02-28
 
 - Bugfix: add logrotate support
