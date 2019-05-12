@@ -90,11 +90,11 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 - [github.com/likexian/logger-go](https://github.com/likexian/logger-go)
 - [github.com/likexian/simplejson-go](https://github.com/likexian/simplejson-go)
 
-## 版权
+## 版权协议
 
-Copyright 2015-2019, Li Kexian
+Copyright 2015-2019 Li Kexian
 
-Apache License, Version 2.0
+Licensed under the Apache License 2.0
 
 ## 关于
 

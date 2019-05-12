@@ -1,0 +1,10 @@
+github.com/likexian/daemon-go v0.0.0-20190301061732-8e441c1cee3d h1:udDhUrFPyeyM74tUOrv37adW/KV5WfloWkzoYxItThk=
+github.com/likexian/daemon-go v0.0.0-20190301061732-8e441c1cee3d/go.mod h1:INiOYNWR+IbdpFiUEc4oLU7Av2iE6RbrZagoaabYWyw=
+github.com/likexian/gokit v0.0.0-20190305152714-5c388d51fbd4 h1:np/UjVibV7uBFCr2o5YMpDX57Zp0d3ArMT7g26gpdf8=
+github.com/likexian/gokit v0.0.0-20190305152714-5c388d51fbd4/go.mod h1:QdfYv6y6qPA9pbBA2qXtoT8BMKha6UyNbxWGWl/9Jfk=
+github.com/likexian/host-stat-go v0.0.0-20190228023633-df00c4c0fa03 h1:BoVJ9dFvNtpgJg4uPvqFTRpLJON/he4SN4ZCfFNkkv8=
+github.com/likexian/host-stat-go v0.0.0-20190228023633-df00c4c0fa03/go.mod h1:1KCmHWe1oURH/VXbb+mJJlgCat4RfbXJJYiAsvpX4fk=
+github.com/likexian/logger-go v0.0.0-20190301040038-ca7f414dfd54 h1:P+okeCkU85+WZ38K6hMcIjLTbeY0DbXoH2qwwQ+dkFs=
+github.com/likexian/logger-go v0.0.0-20190301040038-ca7f414dfd54/go.mod h1:kbDQaMOCV+mxz6F7LVpbzXeisTf9sS6yY8gQ/qKTbeg=
+github.com/likexian/simplejson-go v0.0.0-20190305164048-132fd7cdefab h1:YSXMUllbP+Zy+8LvO353VRTpobJlHx2EN2L2gdvonvE=
+github.com/likexian/simplejson-go v0.0.0-20190305164048-132fd7cdefab/go.mod h1:VF2PBCay4KcXDJM2XybuWvIOgekFVmMgTHNq2x2ssPc=

@@ -92,9 +92,9 @@ Sure, please add the folling config to nginx conf file.
 
 ## LICENSE
 
-Copyright 2015-2019, Li Kexian
+Copyright 2015-2019 Li Kexian
 
-Apache License, Version 2.0
+Licensed under the Apache License 2.0
 
 ## About
 
