@@ -22,11 +22,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/likexian/daemon-go"
-	"github.com/likexian/logger-go"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/likexian/gokit/xdaemon"
+	"github.com/likexian/gokit/xlog"
+	"github.com/likexian/gokit/xos"
 )
 
 var (
@@ -35,14 +37,14 @@ var (
 	// SERVER_CONFIG is server config data
 	SERVER_CONFIG = Config{}
 	// SERVER_LOGGER is server logger
-	SERVER_LOGGER = logger.New(os.Stderr, logger.INFO)
+	SERVER_LOGGER = xlog.New(os.Stderr, xlog.INFO)
 )
 
 func main() {
 	SERVER_START = time.Now().Unix()
 
 	if DEBUG {
-		SERVER_LOGGER = logger.New(os.Stderr, logger.DEBUG)
+		SERVER_LOGGER = xlog.New(os.Stderr, xlog.DEBUG)
 	} else {
 		SERVER_LOGGER.SetSizeRotate(3, 100*1024*1024)
 	}
@@ -141,7 +143,7 @@ func main() {
 	}
 
 	if !DEBUG && SERVER_CONFIG.DaemonUser != "" {
-		uid, gid, err := daemon.LookupUser(SERVER_CONFIG.DaemonUser)
+		uid, gid, err := xos.LookupUser(SERVER_CONFIG.DaemonUser)
 		if err != nil {
 			SERVER_LOGGER.Fatal("Lookup daemon user %s failed, %s", SERVER_CONFIG.DaemonUser, err.Error())
 		}
@@ -152,7 +154,7 @@ func main() {
 	}
 
 	if !DEBUG {
-		c := daemon.Config{
+		c := xdaemon.Config{
 			Pid:   SERVER_CONFIG.BaseDir + SERVER_CONFIG.PidFile,
 			Log:   SERVER_CONFIG.BaseDir + SERVER_CONFIG.LogFile,
 			User:  SERVER_CONFIG.DaemonUser,
