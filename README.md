@@ -85,9 +85,8 @@ Sure, please add the folling config to nginx conf file.
 
 ## Dependencies
 
-- [github.com/likexian/daemon-go](https://github.com/likexian/daemon-go)
+- [github.com/likexian/gokit](https://github.com/likexian/gokit)
 - [github.com/likexian/host-stat-go](https://github.com/likexian/host-stat-go)
-- [github.com/likexian/logger-go](https://github.com/likexian/logger-go)
 - [github.com/likexian/simplejson-go](https://github.com/likexian/simplejson-go)
 
 ## LICENSE
