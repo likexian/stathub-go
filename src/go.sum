@@ -2,8 +2,8 @@ github.com/likexian/gokit v0.0.0-20190309162924-0a377eecf7aa/go.mod h1:QdfYv6y6q
 github.com/likexian/gokit v0.0.0-20190418170008-ace88ad0983b/go.mod h1:KKqSnk/VVSW8kEyO2vVCXoanzEutKdlBAPohmGXkxCk=
 github.com/likexian/gokit v0.0.0-20190501133040-e77ea8b19cdc/go.mod h1:3kvONayqCaj+UgrRZGpgfXzHdMYCAO0KAt4/8n0L57Y=
 github.com/likexian/gokit v0.0.0-20190515154418-0f6bc9e9ef89/go.mod h1:kn+nTv3tqh6yhor9BC4Lfiu58SmH8NmQ2PmEl+uM6nU=
-github.com/likexian/gokit v0.0.0-20190601162212-1914d7e1fd96 h1:V+OW7r6JnJ5Dg48M6T1oWCt2yGYOtz1rSDyIGL25pcY=
-github.com/likexian/gokit v0.0.0-20190601162212-1914d7e1fd96/go.mod h1:kn+nTv3tqh6yhor9BC4Lfiu58SmH8NmQ2PmEl+uM6nU=
+github.com/likexian/gokit v0.0.0-20190604165112-68b8a4ba758c h1:KByA4IxKqqYwpqzk/P+w1DBpkPbvy3DArTP/U3LSxTQ=
+github.com/likexian/gokit v0.0.0-20190604165112-68b8a4ba758c/go.mod h1:kn+nTv3tqh6yhor9BC4Lfiu58SmH8NmQ2PmEl+uM6nU=
 github.com/likexian/host-stat-go v0.0.0-20190516151207-c9cf36dd6ce9 h1:T+vCR7yIEklCx9FERFAYZRoDoiEAVR9Y0gPNr3NbQlk=
 github.com/likexian/host-stat-go v0.0.0-20190516151207-c9cf36dd6ce9/go.mod h1:HnQ43JSFdSUSAsbXMVCCgA3wqIJxCWTVn7oTwouyz4M=
 github.com/likexian/simplejson-go v0.0.0-20190409170913-40473a74d76d/go.mod h1:Typ1BfnATYtZ/+/shXfFYLrovhFyuKvzwrdOnIDHlmg=
