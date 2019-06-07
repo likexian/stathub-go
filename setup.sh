@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="0.102.3"
-STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}"
+VERSION="0.102.4"
+STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/stathub.$(uname -m).tar.gz"
 
 BASEDIR="/usr/local/stathub"
 
@@ -24,16 +24,14 @@ command_exists() {
     type "$1" &> /dev/null
 }
 
-for i in "i686" "x86_64"; do
-    if command_exists wget; then
-        wget --no-check-certificate "$STATHUB_URL/stathub.$i.tar.gz"
-    elif command_exists curl; then
-        curl --insecure -O "$STATHUB_URL/stathub.$i.tar.gz"
-    else
-        echo "Unable to find curl or wget, Please install it and try again."
-        exit 1
-    fi
-done
+if command_exists wget; then
+    wget --no-check-certificate $STATHUB_URL
+elif command_exists curl; then
+    curl --insecure -O $STATHUB_URL
+else
+    echo "Unable to find curl or wget, Please install and try again."
+    exit 1
+fi
 
 if [ ! -f stathub.$(uname -m).tar.gz ]; then
     echo "Unable to get server file, Please manual download it"
