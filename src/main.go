@@ -27,6 +27,8 @@ import (
 	"time"
 
 	"github.com/likexian/gokit/xdaemon"
+	"github.com/likexian/gokit/xfile"
+	"github.com/likexian/gokit/xhash"
 	"github.com/likexian/gokit/xlog"
 	"github.com/likexian/gokit/xos"
 )
@@ -71,9 +73,9 @@ func main() {
 
 	if *initServer {
 		timeStamp := fmt.Sprintf("%d", SERVER_START)
-		id := Md5(fmt.Sprintf("%d", os.Getpid()), timeStamp)
-		key := Md5(id, timeStamp)
-		password := Md5(key, "likexian")
+		id := xhash.Md5(os.Getpid(), timeStamp).Hex()
+		key := xhash.Md5(id, timeStamp).Hex()
+		password := xhash.Md5(key, "likexian").Hex()
 		err := newServerConfig(*configFile, id, "", password, key)
 		if err != nil {
 			SERVER_LOGGER.Fatal(err.Error())
@@ -91,7 +93,7 @@ func main() {
 			SERVER_LOGGER.Fatal("server url is required, set it by --server-url.")
 		}
 		timeStamp := fmt.Sprintf("%d", SERVER_START)
-		id := Md5(fmt.Sprintf("%d", os.Getpid()), timeStamp)
+		id := xhash.Md5(os.Getpid(), timeStamp).Hex()
 		err := newClientConfig(*configFile, id, "", *serverKey, *serverUrl)
 		if err != nil {
 			SERVER_LOGGER.Fatal(err.Error())
@@ -101,7 +103,7 @@ func main() {
 		}
 	}
 
-	if !FileExists(*configFile) {
+	if !xfile.Exists(*configFile) {
 		SERVER_LOGGER.Fatal(fmt.Sprintf("configuration file %s is not found.\n", *configFile))
 	}
 
@@ -112,20 +114,20 @@ func main() {
 	}
 
 	if SERVER_CONFIG.Role == "server" {
-		if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir) {
+		if !xfile.Exists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir) {
 			err := os.MkdirAll(SERVER_CONFIG.BaseDir+SERVER_CONFIG.DataDir, 0755)
 			if err != nil {
 				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
-		if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSCert) {
-			err := WriteFile(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSCert, TPL_CERT["cert.pem"])
+		if !xfile.Exists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSCert) {
+			err := xfile.WriteText(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSCert, TPL_CERT["cert.pem"])
 			if err != nil {
 				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
-		if !FileExists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSKey) {
-			err := WriteFile(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSKey, TPL_CERT["cert.key"])
+		if !xfile.Exists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSKey) {
+			err := xfile.WriteText(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSKey, TPL_CERT["cert.key"])
 			if err != nil {
 				SERVER_LOGGER.Fatal(err.Error())
 			}
@@ -134,7 +136,7 @@ func main() {
 
 	for _, v := range []string{*configFile, SERVER_CONFIG.PidFile, SERVER_CONFIG.LogFile} {
 		ds, _ := filepath.Split(SERVER_CONFIG.BaseDir + v)
-		if ds != "" && !FileExists(ds) {
+		if ds != "" && !xfile.Exists(ds) {
 			err := os.MkdirAll(ds, 0755)
 			if err != nil {
 				SERVER_LOGGER.Fatal(err.Error())
@@ -147,7 +149,7 @@ func main() {
 		if err != nil {
 			SERVER_LOGGER.Fatal("Lookup daemon user %s failed, %s", SERVER_CONFIG.DaemonUser, err.Error())
 		}
-		err = Chown(SERVER_CONFIG.BaseDir, uid, gid)
+		err = xfile.ChownAll(SERVER_CONFIG.BaseDir, uid, gid)
 		if err != nil {
 			SERVER_LOGGER.Fatal("Chown base dir to daemon user %s failed, %s", SERVER_CONFIG.DaemonUser, err.Error())
 		}

@@ -23,16 +23,18 @@ import (
 	"bytes"
 	"crypto/tls"
 	"errors"
-	"github.com/likexian/simplejson-go"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/likexian/gokit/xhash"
+	"github.com/likexian/simplejson-go"
 )
 
 // httpSend send data to stat api
 func httpSend(server, key, stat string) (err error) {
 	surl := server + "/api/stat"
-	skey := Md5(key, stat)
+	skey := xhash.Md5(key, stat).Hex()
 
 	request, err := http.NewRequest("POST", surl, bytes.NewBuffer([]byte(stat)))
 	if err != nil {

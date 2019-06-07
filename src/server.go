@@ -21,13 +21,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/likexian/simplejson-go"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/likexian/gokit/xfile"
+	"github.com/likexian/gokit/xhash"
+	"github.com/likexian/simplejson-go"
 )
 
 // HttpService start http service
@@ -110,10 +113,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		password := r.PostForm.Get("password")
-		if Md5(SERVER_CONFIG.ServerKey, password) != SERVER_CONFIG.PassWord {
+		if xhash.Md5(SERVER_CONFIG.ServerKey, password).Hex() != SERVER_CONFIG.PassWord {
 			http.Redirect(w, r, "/login", http.StatusFound)
 		} else {
-			value := Md5(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord)
+			value := xhash.Md5(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord).Hex()
 			cookie := http.Cookie{Name: "id", Value: value, HttpOnly: true}
 			http.SetCookie(w, &cookie)
 			http.Redirect(w, r, "/", http.StatusFound)
@@ -169,7 +172,7 @@ func passwdHandler(w http.ResponseWriter, r *http.Request) {
 		if password == "" {
 			http.Redirect(w, r, "/passwd", http.StatusFound)
 		} else {
-			SERVER_CONFIG.PassWord = Md5(SERVER_CONFIG.ServerKey, password)
+			SERVER_CONFIG.PassWord = xhash.Md5(SERVER_CONFIG.ServerKey, password).Hex()
 			err := SaveConfig(SERVER_CONFIG)
 			if err != nil {
 				httpError(w, r, http.StatusInternalServerError)
@@ -283,7 +286,7 @@ func apiNodeHandler(w http.ResponseWriter, r *http.Request) {
 
 	dataId, _ := data.Get("id").String()
 	dataIdDir := SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir + "/" + dataId[3:]
-	if !FileExists(dataIdDir) {
+	if !xfile.Exists(dataIdDir) {
 		result := `{"status": {"code": 0, "message": "node id invalid"}}`
 		fmt.Fprintf(w, result)
 		return
@@ -321,7 +324,7 @@ func apiStatHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	text := string(body)
-	serverKey := Md5(SERVER_CONFIG.ServerKey, text)
+	serverKey := xhash.Md5(SERVER_CONFIG.ServerKey, text).Hex()
 	if serverKey != clientKey {
 		result := `{"status": {"code": 0, "message": "key invalid"}}`
 		fmt.Fprintf(w, result)
@@ -406,7 +409,7 @@ func isLogin(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
-	value := Md5(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord)
+	value := xhash.Md5(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord).Hex()
 	if value != cookie.Value {
 		return false
 	}

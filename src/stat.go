@@ -21,9 +21,11 @@ package main
 
 import (
 	"fmt"
+	"time"
+
+	"github.com/likexian/gokit/xhuman"
 	"github.com/likexian/host-stat-go"
 	"github.com/likexian/simplejson-go"
-	"time"
 )
 
 // Stat storing stat data
@@ -76,7 +78,7 @@ func GetStat(id string, name string) (result string, err error) {
 	if err != nil {
 		SERVER_LOGGER.ErrorOnce("get cpu stat failed: %s", err.Error())
 	}
-	stat.CPURate = Round(100-cpuStat.IdleRate, 2)
+	stat.CPURate = xhuman.Round(100-cpuStat.IdleRate, 2)
 
 	memStat, err := hoststat.GetMemStat()
 	if err != nil {
@@ -98,7 +100,7 @@ func GetStat(id string, name string) (result string, err error) {
 			stat.DiskWarn += fmt.Sprintf("%s %.2f%%;", v.Mount, v.UsedRate)
 		}
 	}
-	stat.DiskRate = Round(float64(diskUsed)*100/float64(diskTotal), 2)
+	stat.DiskRate = xhuman.Round(float64(diskUsed)*100/float64(diskTotal), 2)
 
 	ioStat, err := hoststat.GetIOStat()
 	if err != nil {

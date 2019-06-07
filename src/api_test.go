@@ -22,13 +22,16 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/likexian/gokit/assert"
-	"github.com/likexian/simplejson-go"
 	"math/rand"
 	"os"
 	"os/exec"
 	"testing"
 	"time"
+
+	"github.com/likexian/gokit/assert"
+	"github.com/likexian/gokit/xfile"
+	"github.com/likexian/gokit/xhash"
+	"github.com/likexian/simplejson-go"
 )
 
 const (
@@ -57,7 +60,7 @@ func startServer() {
 func TestApiStat(t *testing.T) {
 	os.Remove(confFile)
 
-	err := WriteFile(testFile, testText)
+	err := xfile.WriteText(testFile, testText)
 	assert.Nil(t, err)
 
 	err = os.Chmod(testFile, 0755)
@@ -66,7 +69,7 @@ func TestApiStat(t *testing.T) {
 	go startServer()
 
 	for {
-		if FileExists(confFile) {
+		if xfile.Exists(confFile) {
 			time.Sleep(1 * time.Second)
 			break
 		}
@@ -86,7 +89,7 @@ func TestApiStat(t *testing.T) {
 		now := time.Now().Unix() - int64(rand.Intn(86400)*rand.Intn(3))
 		for j := 0; j < 2; j++ {
 			stat = Stat{
-				Id:        Md5(fmt.Sprintf("%d", i), ""),
+				Id:        xhash.Md5(fmt.Sprintf("%d", i), "").Hex(),
 				TimeStamp: now + int64(j*60),
 				HostName:  fmt.Sprintf("ns%d", i),
 				OSRelease: "CentOS 6.5 32Bit",

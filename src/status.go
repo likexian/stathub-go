@@ -21,12 +21,16 @@ package main
 
 import (
 	"errors"
-	"github.com/likexian/simplejson-go"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/likexian/gokit/xfile"
+	"github.com/likexian/gokit/xhuman"
+	"github.com/likexian/simplejson-go"
 )
 
 // Status storing stat data
@@ -64,7 +68,7 @@ func ReadStatus(dataDir string) Statuses {
 	files, err := ioutil.ReadDir(dataDir)
 	if err == nil {
 		for _, f := range files {
-			if FileExists(dataDir + "/" + f.Name() + "/status") {
+			if xfile.Exists(dataDir + "/" + f.Name() + "/status") {
 				d, err := simplejson.Load(dataDir + "/" + f.Name() + "/status")
 				if err != nil {
 					continue
@@ -92,18 +96,17 @@ func ReadStatus(dataDir string) Statuses {
 
 				s.Load = strings.Fields(s.Load)[0]
 				s.Uptime = SecondToHumanTime(int(uptime))
-				s.OSRelease = PrettyLinuxVersion(s.OSRelease)
 
-				s.CPURate = Round(s.CPURate, 2)
-				s.MemRate = Round(s.MemRate, 2)
-				s.SwapRate = Round(s.SwapRate, 2)
-				s.DiskRate = Round(s.DiskRate, 2)
+				s.CPURate = xhuman.Round(s.CPURate, 2)
+				s.MemRate = xhuman.Round(s.MemRate, 2)
+				s.SwapRate = xhuman.Round(s.SwapRate, 2)
+				s.DiskRate = xhuman.Round(s.DiskRate, 2)
 
-				s.NetRead = HumanByte(netRead)
-				s.NetWrite = HumanByte(netWrite)
-				s.DiskRead = HumanByte(diskRead)
-				s.DiskWrite = HumanByte(diskWrite)
-				s.NetTotal = HumanByte(netTotal)
+				s.NetRead = xhuman.FormatByteSize(int64(netRead), 1)
+				s.NetWrite = xhuman.FormatByteSize(int64(netWrite), 1)
+				s.DiskRead = xhuman.FormatByteSize(int64(diskRead), 1)
+				s.DiskWrite = xhuman.FormatByteSize(int64(diskWrite), 1)
+				s.NetTotal = xhuman.FormatByteSize(int64(netTotal), 1)
 
 				nowDate := time.Now().Format("2006-01-02")
 				getDate := time.Unix(int64(timeStamp), 0).Format("2006-01-02")
@@ -140,7 +143,7 @@ func ReadStatus(dataDir string) Statuses {
 func WriteStatus(dataDir string, data *simplejson.Json) (err error) {
 	dataId, _ := data.Get("id").String()
 	dataIdDir := dataDir + "/" + dataId[:8]
-	if !FileExists(dataIdDir) {
+	if !xfile.Exists(dataIdDir) {
 		err = os.Mkdir(dataIdDir, 0755)
 		if err != nil {
 			return
@@ -198,4 +201,17 @@ func WriteStatus(dataDir string, data *simplejson.Json) (err error) {
 	err = data.Dump(dataIdDir + "/current")
 
 	return
+}
+
+// SecondToHumanTime returns readable string for seconds
+func SecondToHumanTime(second int) string {
+	if second < 60 {
+		return fmt.Sprintf("%d sec", second)
+	} else if second < 3600 {
+		return fmt.Sprintf("%d min", uint64(second/60))
+	} else if second < 86400 {
+		return fmt.Sprintf("%d hours", uint64(second/3600))
+	}
+
+	return fmt.Sprintf("%d days", uint64(second/86400))
 }
