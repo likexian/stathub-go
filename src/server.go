@@ -41,7 +41,6 @@ func HttpService() {
 	http.HandleFunc("/passwd", passwdHandler)
 	http.HandleFunc("/help", helpHandler)
 	http.HandleFunc("/node", nodeHandler)
-	http.HandleFunc("/pkgs/", pkgsHandler)
 	http.HandleFunc("/static/", staticHandler)
 	http.HandleFunc("/robots.txt", robotsTXTHandler)
 	http.HandleFunc("/api/stat", apiStatHandler)
@@ -376,10 +375,6 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 			httpError(w, r, http.StatusNotFound)
 		}
 	}
-}
-
-func pkgsHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, r.URL.Path[1:])
 }
 
 func getHTTPHeader(r *http.Request, name string) string {
