@@ -415,7 +415,7 @@ func isLogin(w http.ResponseWriter, r *http.Request) bool {
 // isRobots returns is a robot request
 func isRobots(w http.ResponseWriter, r *http.Request) bool {
 	agent := strings.ToLower(getHTTPHeader(r, "User-Agent"))
-	robots := []string{"bot", "spider", "archiver", "yahoo! slurp", "haosou"}
+	robots := []string{"bot", "spider", "archiver", "crawler", "search"}
 	for _, v := range robots {
 		if strings.Contains(agent, v) {
 			return true
