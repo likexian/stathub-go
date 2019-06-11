@@ -21,7 +21,7 @@ package main
 
 // variable for tpl file
 var (
-	TPL_REVHEAD  = "0fabede"
+	TPL_REVHEAD  = "630ec86"
 	TPL_CERT     = map[string]string{}
 	TPL_STATIC   = map[string]string{}
 	TPL_TEMPLATE = map[string]string{}
@@ -18179,7 +18179,7 @@ $('.delete-node').click(function(e){
                 data: JSON.stringify({"id": id, "action": "delete"}),
                 contentType: 'application/json',
                 success: function(data) {
-                    if (data.status.code == 1) {
+                    if (data.status.code == 0) {
                         alert('node deleted');
                         tr.remove();
                     } else {

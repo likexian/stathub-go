@@ -102,10 +102,10 @@ func ReadStatus(dataDir string) Statuses {
 				s.SwapRate = xhuman.Round(s.SwapRate, 2)
 				s.DiskRate = xhuman.Round(s.DiskRate, 2)
 
-				s.NetRead = xhuman.FormatByteSize(int64(netRead), 1)
-				s.NetWrite = xhuman.FormatByteSize(int64(netWrite), 1)
-				s.DiskRead = xhuman.FormatByteSize(int64(diskRead), 1)
-				s.DiskWrite = xhuman.FormatByteSize(int64(diskWrite), 1)
+				s.NetRead = xhuman.FormatByteSize(int64(netRead), 0)
+				s.NetWrite = xhuman.FormatByteSize(int64(netWrite), 0)
+				s.DiskRead = xhuman.FormatByteSize(int64(diskRead), 0)
+				s.DiskWrite = xhuman.FormatByteSize(int64(diskWrite), 0)
 				s.NetTotal = xhuman.FormatByteSize(int64(netTotal), 1)
 
 				nowDate := time.Now().Format("2006-01-02")
