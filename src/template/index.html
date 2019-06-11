@@ -159,7 +159,7 @@ $('.delete-node').click(function(e){
                 data: JSON.stringify({"id": id, "action": "delete"}),
                 contentType: 'application/json',
                 success: function(data) {
-                    if (data.status.code == 1) {
+                    if (data.status.code == 0) {
                         alert('node deleted');
                         tr.remove();
                     } else {

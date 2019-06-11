@@ -71,8 +71,8 @@ func httpSend(server, key, stat string) (err error) {
 		return
 	}
 
-	status := jsonData.Get("status.code").MustInt(0)
-	if status != 1 {
+	status := jsonData.Get("status.code").MustInt(1)
+	if status != 0 {
 		message := jsonData.Get("status.message").MustString("unknown error")
 		return errors.New("server return: " + message)
 	}

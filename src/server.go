@@ -33,6 +33,15 @@ import (
 	"github.com/likexian/simplejson-go"
 )
 
+type ApiStatus struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+type ApiResult struct {
+	Status ApiStatus `json:"status"`
+}
+
 // HttpService start http service
 func HttpService() {
 	http.HandleFunc("/", indexHandler)
@@ -263,46 +272,66 @@ func robotsTXTHandler(w http.ResponseWriter, r *http.Request) {
 
 func apiNodeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	result := ApiResult{
+		Status: ApiStatus{},
+	}
+
+	defer func() {
+		text, _ := simplejson.Dumps(result)
+		fmt.Fprintf(w, text)
+	}()
+
 	if !isLogin(w, r) {
-		result := `{"status": {"code": 0, "message": "login timeout"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "login timeout"
 		return
 	}
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		result := `{"status": {"code": 0, "message": "data error"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "data error"
 		return
 	}
 
 	data, err := simplejson.Loads(string(body))
 	if err != nil {
-		result := `{"status": {"code": 0, "message": "data invalid"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "data invalid"
 		return
 	}
 
 	dataId, _ := data.Get("id").String()
 	dataIdDir := SERVER_CONFIG.BaseDir + SERVER_CONFIG.DataDir + "/" + dataId[3:]
 	if !xfile.Exists(dataIdDir) {
-		result := `{"status": {"code": 0, "message": "node id invalid"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "node id invalid"
 		return
 	}
 
 	err = os.RemoveAll(dataIdDir)
 	if err != nil {
-		result := `{"status": {"code": 0, "message": "` + err.Error() + `"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = err.Error()
 		return
 	}
 
-	result := `{"status": {"code": 1, "message": "ok"}}`
-	fmt.Fprintf(w, result)
+	return
 }
 
 func apiStatHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	result := ApiResult{
+		Status: ApiStatus{},
+	}
+
+	defer func() {
+		text, _ := simplejson.Dumps(result)
+		fmt.Fprintf(w, text)
+	}()
+
 	ip := getHTTPHeader(r, "X-Real-Ip")
 	if ip == "" {
 		ip = strings.Split(r.RemoteAddr, ":")[0]
@@ -310,30 +339,30 @@ func apiStatHandler(w http.ResponseWriter, r *http.Request) {
 
 	clientKey := getHTTPHeader(r, "X-Client-Key")
 	if clientKey == "" {
-		result := `{"status": {"code": 0, "message": "key invalid"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "key empty"
 		return
 	}
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		result := `{"status": {"code": 0, "message": "body invalid"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "body error"
 		return
 	}
 
 	text := string(body)
 	serverKey := xhash.Md5(SERVER_CONFIG.ServerKey, text).Hex()
 	if serverKey != clientKey {
-		result := `{"status": {"code": 0, "message": "key invalid"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "key invalid"
 		return
 	}
 
 	data, err := simplejson.Loads(text)
 	if err != nil {
-		result := `{"status": {"code": 0, "message": "body invalid"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = "body invalid"
 		return
 	}
 
@@ -343,13 +372,12 @@ func apiStatHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = WriteStatus(SERVER_CONFIG.DataDir, data)
 	if err != nil {
-		result := `{"status": {"code": 0, "message": "` + err.Error() + `"}}`
-		fmt.Fprintf(w, result)
+		result.Status.Code = 1
+		result.Status.Message = err.Error()
 		return
 	}
 
-	result := `{"status": {"code": 1, "message": "ok"}}`
-	fmt.Fprintf(w, result)
+	return
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
