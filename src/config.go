@@ -21,8 +21,9 @@ package main
 
 import (
 	"errors"
-	"github.com/likexian/simplejson-go"
 	"strings"
+
+	"github.com/likexian/simplejson-go"
 )
 
 // Config storing server and client config
@@ -124,7 +125,7 @@ func GetConfig(fname string) (config Config, err error) {
 		config.ServerUrl = config.ServerUrl[:len(config.ServerUrl)-1]
 	}
 
-	SaveConfig(config)
+	err = SaveConfig(config)
 
 	return
 }

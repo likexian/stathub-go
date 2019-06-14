@@ -53,8 +53,11 @@ func startServer() {
 	cmd := exec.Command(testFile)
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stdout
-	cmd.Run()
-	fmt.Println(string(stdout.Bytes()))
+	err := cmd.Run()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(stdout.String())
 }
 
 func TestApiStat(t *testing.T) {
@@ -115,7 +118,7 @@ func TestApiStat(t *testing.T) {
 	}
 
 	cmd := exec.Command("bash", "-c", "kill -9 `ps aux|grep [t]est.conf|awk '{print $2}'`")
-	cmd.Run()
+	_ = cmd.Run()
 
 	os.Remove(confFile)
 	os.Remove(testFile)

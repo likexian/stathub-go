@@ -104,7 +104,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		"data":    status,
 		"version": Version(),
 	}
-	tpl.Execute(w, data)
+	_ = tpl.Execute(w, data)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -150,7 +150,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		tpl.Execute(w, map[string]string{"action": "login"})
+		_ = tpl.Execute(w, map[string]string{"action": "login"})
 	}
 }
 
@@ -160,7 +160,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	cookie := http.Cookie{Name: "id", Value: "", Expires: expires, HttpOnly: true}
 	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, "/login", http.StatusFound)
-	return
 }
 
 func passwdHandler(w http.ResponseWriter, r *http.Request) {
@@ -209,7 +208,7 @@ func passwdHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		tpl.Execute(w, map[string]string{"action": "passwd"})
+		_ = tpl.Execute(w, map[string]string{"action": "passwd"})
 	}
 }
 
@@ -239,7 +238,7 @@ func helpHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	tpl.Execute(w, map[string]string{"server": r.Host, "key": SERVER_CONFIG.ServerKey})
+	_ = tpl.Execute(w, map[string]string{"server": r.Host, "key": SERVER_CONFIG.ServerKey})
 }
 
 func nodeHandler(w http.ResponseWriter, r *http.Request) {
@@ -263,7 +262,7 @@ func nodeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	tpl.Execute(w, map[string]string{"server": r.Host, "key": SERVER_CONFIG.ServerKey, "version": Version()})
+	_ = tpl.Execute(w, map[string]string{"server": r.Host, "key": SERVER_CONFIG.ServerKey, "version": Version()})
 }
 
 func robotsTXTHandler(w http.ResponseWriter, r *http.Request) {
@@ -279,7 +278,7 @@ func apiNodeHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer func() {
 		text, _ := simplejson.Dumps(result)
-		fmt.Fprintf(w, text)
+		_, _ = fmt.Fprint(w, text)
 	}()
 
 	if !isLogin(w, r) {
@@ -316,8 +315,6 @@ func apiNodeHandler(w http.ResponseWriter, r *http.Request) {
 		result.Status.Message = err.Error()
 		return
 	}
-
-	return
 }
 
 func apiStatHandler(w http.ResponseWriter, r *http.Request) {
@@ -329,7 +326,7 @@ func apiStatHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer func() {
 		text, _ := simplejson.Dumps(result)
-		fmt.Fprintf(w, text)
+		_, _ = fmt.Fprint(w, text)
 	}()
 
 	ip := getHTTPHeader(r, "X-Real-Ip")
@@ -376,8 +373,6 @@ func apiStatHandler(w http.ResponseWriter, r *http.Request) {
 		result.Status.Message = err.Error()
 		return
 	}
-
-	return
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
@@ -433,11 +428,7 @@ func isLogin(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	value := xhash.Md5(SERVER_CONFIG.ServerKey, SERVER_CONFIG.PassWord).Hex()
-	if value != cookie.Value {
-		return false
-	}
-
-	return true
+	return value == cookie.Value
 }
 
 // isRobots returns is a robot request

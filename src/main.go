@@ -48,7 +48,7 @@ func main() {
 	if DEBUG {
 		SERVER_LOGGER = xlog.New(os.Stderr, xlog.DEBUG)
 	} else {
-		SERVER_LOGGER.SetSizeRotate(3, 100*1024*1024)
+		_ = SERVER_LOGGER.SetSizeRotate(3, 100*1024*1024)
 	}
 
 	showVersion := flag.Bool("v", false, "show current version")
