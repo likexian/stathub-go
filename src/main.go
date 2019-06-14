@@ -35,7 +35,7 @@ import (
 
 var (
 	// SERVER_START is server start timestamp
-	SERVER_START = int64(0)
+	SERVER_START = time.Now().Unix()
 	// SERVER_CONFIG is server config data
 	SERVER_CONFIG = Config{}
 	// SERVER_LOGGER is server logger
@@ -43,8 +43,6 @@ var (
 )
 
 func main() {
-	SERVER_START = time.Now().Unix()
-
 	if DEBUG {
 		SERVER_LOGGER = xlog.New(os.Stderr, xlog.DEBUG)
 	} else {
