@@ -78,10 +78,12 @@ Follow the guide
 
 Sure, please add the folling config to nginx conf file.
 
-    location / {
-        proxy_pass https://127.0.0.1:15944;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
+```nginxconf
+location / {
+    proxy_pass https://127.0.0.1:15944;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+```
 
 ## Dependencies
 
