@@ -78,10 +78,12 @@ Stat Hub 是一个帮您收集并展示众多服务器状态的服务。
 
 没问题，请将以下配置加到 nginx 配置文件。
 
-    location / {
-        proxy_pass https://127.0.0.1:15944;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
+```nginxconf
+location / {
+    proxy_pass https://127.0.0.1:15944;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+```
 
 ## 依赖
 
